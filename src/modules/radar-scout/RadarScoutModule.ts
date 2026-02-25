@@ -544,8 +544,8 @@ export class RadarScoutModule {
       const value = player.stats[metricId];
       if (value === undefined) continue;
 
-      // Calculate percentile UNIQUEMENT par rapport au pool du même rôle
-      const percentile = this.core.normalize.calculatePercentile(value, metricId, comparisonPool);
+      // Calculate percentile UNIQUEMENT par rapport au pool du même rôle (méthode Strict Below)
+      const percentile = this.calculateStrictPercentile(value, metric, comparisonPool);
 
       // Create centile bar avec le mode d'affichage actuel
       const centileBar = new CentileBar();
@@ -602,6 +602,50 @@ export class RadarScoutModule {
     if (value === undefined) return 50; // Valeur par défaut
     
     return this.core.normalize.normalize(value, metric, player.role);
+  }
+
+  /**
+   * Calcule le percentile selon la méthode "Strict Below"
+   * - Compare uniquement aux joueurs du même rôle
+   * - below = count(v in V where v < x) [strictement inférieur]
+   * - percentile = (below / N) * 100
+   * - Inversion pour les métriques "lower is better"
+   * 
+   * @param value - Valeur du joueur
+   * @param metricId - ID de la métrique
+   * @param metric - Config de la métrique (pour direction)
+   * @param rolePlayers - Pool de joueurs du même rôle
+   * @returns Percentile (0-100), clampé
+   */
+  private calculateStrictPercentile(
+    value: number,
+    metric: MetricConfig,
+    rolePlayers: Player[]
+  ): number {
+    if (rolePlayers.length === 0) return 50;
+
+    // Extraire toutes les valeurs non-NaN pour cette métrique
+    const allValues = rolePlayers
+      .map(p => p.stats[metric.id])
+      .filter((v): v is number => v !== undefined && !isNaN(v));
+
+    if (allValues.length === 0) return 50;
+    if (allValues.length === 1) return 50;
+
+    const N = allValues.length;
+
+    // Méthode "Strict Below": count(v < x)
+    const below = allValues.filter(v => v < value).length;
+    let percentile = (below / N) * 100;
+
+    // Inversion pour les métriques "lower is better"
+    // Seulement: Deaths, Death Share, FB Victim
+    if (metric.direction === 'lower-is-better') {
+      percentile = 100 - percentile;
+    }
+
+    // Clamp entre 0 et 100
+    return Math.max(0, Math.min(100, percentile));
   }
 
   private async handleExport(): Promise<void> {
@@ -789,7 +833,7 @@ export class RadarScoutModule {
         const value = player.stats[metric.id];
         if (value === undefined) continue;
 
-        const percentile = this.core.normalize.calculatePercentile(value, metric.id, comparisonPool);
+        const percentile = this.calculateStrictPercentile(value, metric, comparisonPool);
         const grade = GradeCalculator.getGrade(percentile);
         const color = GradeCalculator.getGradeColor(grade);
 

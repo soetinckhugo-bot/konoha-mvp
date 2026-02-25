@@ -6,7 +6,12 @@
 import type { CoreAPI, Player, MetricConfig } from '../../core/types';
 import { RadarChart } from './components/RadarChart';
 import { RadarDataService } from './services/RadarDataService';
-import { getMetricsForRole, toMetricConfig, ROLE_COLORS, METRIC_DISPLAY_NAMES, PERCENTILE_CATEGORIES, getRoleWeight } from './config/roleMetrics';
+import { getMetricsForRole, toMetricConfig, ROLE_COLORS, METRIC_DISPLAY_NAMES, PERCENTILE_CATEGORIES, getRoleWeight, ALL_METRICS } from './config/roleMetrics';
+
+// Set des métriques "lower is better" pour inversion des percentiles
+const LOWER_IS_BETTER_METRICS = new Set(
+  ALL_METRICS.filter(m => m.direction === 'lower-is-better').map(m => m.id)
+);
 
 export class RadarScoutModule {
   private core: CoreAPI;
@@ -624,7 +629,8 @@ export class RadarScoutModule {
       (player, metric) => {
         const value = player.stats[metric.id];
         if (value === undefined) return 50;
-        return this.calculatePercentileForRole(value, metric.id, rolePlayers);
+        const isInverted = metric.direction === 'lower-is-better';
+        return this.calculatePercentileForRole(value, metric.id, rolePlayers, isInverted);
       }
     );
 
@@ -720,8 +726,9 @@ export class RadarScoutModule {
       const sortedMetrics = metricIds
         .map(metricId => {
           const value = player.stats[metricId];
+          const isInverted = LOWER_IS_BETTER_METRICS.has(metricId);
           const percentile = value !== undefined 
-            ? this.calculatePercentileForRole(value, metricId, filteredPlayers)
+            ? this.calculatePercentileForRole(value, metricId, filteredPlayers, isInverted)
             : 0;
           return { metricId, percentile, value };
         })
@@ -758,16 +765,23 @@ export class RadarScoutModule {
   }
 
   /**
-   * Calcule le percentile d'une valeur par rapport aux joueurs du même rôle
+   * Calcule le percentile selon la méthode "Strict Below"
+   * - Compare uniquement aux joueurs du même rôle
+   * - below = count(v in V where v < x) [strictement inférieur]
+   * - percentile = (below / N) * 100
+   * - Inversion pour les métriques "lower is better" (Deaths, Death Share, FB Victim)
+   * 
    * @param value - Valeur du joueur
    * @param metricId - ID de la métrique
    * @param rolePlayers - Liste des joueurs du même rôle
+   * @param isInverted - true si "lower is better" (inverser le percentile)
    * @returns Percentile (0-100)
    */
   private calculatePercentileForRole(
     value: number, 
     metricId: string, 
-    rolePlayers: Player[]
+    rolePlayers: Player[],
+    isInverted: boolean = false
   ): number {
     if (rolePlayers.length === 0) return 50;
 
@@ -779,16 +793,19 @@ export class RadarScoutModule {
     if (allValues.length === 0) return 50;
     if (allValues.length === 1) return 50;
 
-    // Min-max normalization: best player = 100, worst = 0
-    const max = Math.max(...allValues);
-    const min = Math.min(...allValues);
-    
-    // If all values are the same, return 50
-    if (max === min) return 50;
-    
-    // Return percentile: 0-100 scale based on min-max
-    // Best player (max) gets 100, worst (min) gets 0
-    return ((value - min) / (max - min)) * 100;
+    const N = allValues.length;
+
+    // Méthode "Strict Below": count(v < x)
+    const below = allValues.filter(v => v < value).length;
+    let percentile = (below / N) * 100;
+
+    // Inversion pour les métriques "lower is better"
+    if (isInverted) {
+      percentile = 100 - percentile;
+    }
+
+    // Clamp entre 0 et 100
+    return Math.max(0, Math.min(100, percentile));
   }
 
   /**
@@ -1159,8 +1176,9 @@ export class RadarScoutModule {
       const sortedMetrics = metricIds
         .map(metricId => {
           const value = player.stats[metricId];
+          const isInverted = LOWER_IS_BETTER_METRICS.has(metricId);
           const percentile = value !== undefined 
-            ? this.calculatePercentileForRole(value, metricId, rolePlayers)
+            ? this.calculatePercentileForRole(value, metricId, rolePlayers, isInverted)
             : 0;
           return { metricId, percentile, value };
         })
