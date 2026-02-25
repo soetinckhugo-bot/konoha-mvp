@@ -333,29 +333,109 @@ export class RadarScoutModule {
   }
 
   private async handleExport(): Promise<void> {
-    const chartContainer = this.container?.querySelector('.radar-main') as HTMLElement;
-    if (!chartContainer) return;
+    const playerId = this.core.getState('selectedPlayerId');
+    const players = this.core.getState('players');
+    const player = players.find(p => p.id === playerId);
+    
+    if (!player) {
+      alert('Veuillez d\'abord sélectionner un joueur');
+      return;
+    }
+
+    // Créer un conteneur dédié pour l'export
+    const exportContainer = document.createElement('div');
+    exportContainer.style.cssText = `
+      position: fixed;
+      left: -9999px;
+      width: 1200px;
+      height: 800px;
+      background: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a25 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      font-family: 'Space Grotesk', sans-serif;
+    `;
+
+    // Titre
+    const title = document.createElement('h1');
+    title.textContent = `${player.name} - ${player.role}`;
+    title.style.cssText = `
+      font-size: 48px;
+      font-weight: 700;
+      color: #4ECDC4;
+      margin-bottom: 20px;
+      text-align: center;
+    `;
+    exportContainer.appendChild(title);
+
+    // Sous-titre (équipe)
+    const subtitle = document.createElement('p');
+    subtitle.textContent = player.team;
+    subtitle.style.cssText = `
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 40px;
+    `;
+    exportContainer.appendChild(subtitle);
+
+    // Container pour le radar
+    const radarContainer = document.createElement('div');
+    radarContainer.style.cssText = `
+      width: 800px;
+      height: 500px;
+      position: relative;
+    `;
+    exportContainer.appendChild(radarContainer);
+
+    // Clone le canvas du radar
+    const originalCanvas = this.radarChart?.getCanvas();
+    if (originalCanvas) {
+      const clonedCanvas = document.createElement('canvas');
+      clonedCanvas.width = 800;
+      clonedCanvas.height = 500;
+      const ctx = clonedCanvas.getContext('2d');
+      if (ctx) {
+        // Dessiner fond transparent
+        ctx.fillStyle = 'transparent';
+        ctx.fillRect(0, 0, 800, 500);
+        // Copier l'image originale
+        ctx.drawImage(originalCanvas, 0, 0, 800, 500);
+      }
+      radarContainer.appendChild(clonedCanvas);
+    }
+
+    // Footer
+    const footer = document.createElement('p');
+    footer.textContent = '🎯 KONOHA - League Scout';
+    footer.style.cssText = `
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 40px;
+    `;
+    exportContainer.appendChild(footer);
+
+    // Ajouter au DOM temporairement
+    document.body.appendChild(exportContainer);
 
     try {
-      const blob = await this.core.export.toPNG(chartContainer, {
+      const blob = await this.core.export.toPNG(exportContainer, {
         mode: 'solo',
         width: 1200,
         height: 800,
-        scale: 2
+        scale: 2,
+        transparent: false
       });
       
-      const playerId = this.core.getState('selectedPlayerId');
-      const players = this.core.getState('players');
-      const player = players.find(p => p.id === playerId);
-      
-      const filename = player 
-        ? `konoha_${player.name}_${player.role}.png`
-        : 'konoha_export.png';
-      
+      const filename = `konoha_${player.name}_${player.role}.png`;
       this.core.export.download(blob, filename);
     } catch (err) {
       console.error('Export failed:', err);
       alert('Erreur lors de l\'export. Veuillez réessayer.');
+    } finally {
+      // Cleanup
+      document.body.removeChild(exportContainer);
     }
   }
 
