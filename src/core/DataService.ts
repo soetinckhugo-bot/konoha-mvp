@@ -186,9 +186,16 @@ export class DataService {
       'firstblood%': 'fb_percent',
       'fb% ': 'fb_percent',
       
+      // === COMBAT - FB Victim ===
+      'fbvictim': 'fb_victim',
+      'fbvictim_added': 'fb_victim',
+      'fb_victim': 'fb_victim',
+      'firstbloodvictim': 'fb_victim',
+      
       // === COMBAT - Solo Kills ===
       'solokills': 'solo_kills',
       'solo_kills': 'solo_kills',
+      'solokills ': 'solo_kills',
       
       // === COMBAT - Steals ===
       'stl': 'steals',

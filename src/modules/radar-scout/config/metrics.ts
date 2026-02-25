@@ -149,6 +149,54 @@ export const defaultMetrics: MetricConfig[] = [
     decimals: 2,
     description: 'Wards Cleared Per Minute',
     icon: '🧹'
+  },
+  {
+    id: 'solo_kills',
+    name: 'Solo Kills',
+    category: 'combat',
+    type: 'number',
+    direction: 'higher-is-better',
+    normalize: { min: 0, max: 20, roleSpecific: true },
+    format: 'integer',
+    decimals: 0,
+    description: 'Solo Kills',
+    icon: '🥷'
+  },
+  {
+    id: 'fb_victim',
+    name: 'FB Victim',
+    category: 'combat',
+    type: 'number',
+    direction: 'lower-is-better',
+    normalize: { min: 0, max: 20, roleSpecific: true },
+    format: 'integer',
+    decimals: 0,
+    description: 'First Blood Victim',
+    icon: '🩸'
+  },
+  {
+    id: 'xpd_at_15',
+    name: 'XPD@15',
+    category: 'early',
+    type: 'number',
+    direction: 'higher-is-better',
+    normalize: { min: -2000, max: 2000, roleSpecific: true },
+    format: 'decimal',
+    decimals: 0,
+    description: 'XP Difference at 15 minutes',
+    icon: '📈'
+  },
+  {
+    id: 'egpm',
+    name: 'EGPM',
+    category: 'economy',
+    type: 'number',
+    direction: 'higher-is-better',
+    normalize: { min: 0, max: 500, roleSpecific: true },
+    format: 'decimal',
+    decimals: 0,
+    description: 'Earned Gold Per Minute',
+    icon: '💵'
   }
 ];
 
@@ -161,12 +209,20 @@ export const csvColumnMapping: Record<string, string> = {
   'dt%': 'dt_percent',
   'cspm': 'cspm',
   'csd@15': 'csd_at_15',
+  'csd15': 'csd_at_15',
   'gd@15': 'gd_at_15',
+  'gd15': 'gd_at_15',
+  'xpd@15': 'xpd_at_15',
+  'xpd15': 'xpd_at_15',
   'visionscore': 'vspm',
   'vs': 'vspm',
   'dpm': 'dpm',
   'firstblood%': 'fb_percent',
   'fb%': 'fb_percent',
   'wpm': 'wpm',
-  'wcpm': 'wcpm'
+  'wcpm': 'wcpm',
+  'solokills': 'solo_kills',
+  'fbvictim': 'fb_victim',
+  'fbvictim_added': 'fb_victim',
+  'egpm': 'egpm'
 };
