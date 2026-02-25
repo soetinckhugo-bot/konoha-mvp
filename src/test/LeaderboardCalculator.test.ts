@@ -33,15 +33,15 @@ describe('ROLE_WEIGHTS_V4', () => {
   });
 
   it('should have high weights for key ADC metrics', () => {
-    expect(ROLE_WEIGHTS_V4.ADC.cspm).toBe(2);  // Très important
+    expect(ROLE_WEIGHTS_V4.ADC.cspm).toBe(1.5);  // Important
     expect(ROLE_WEIGHTS_V4.ADC.dpm).toBe(1.5);
-    expect(ROLE_WEIGHTS_V4.ADC.dmg_percent).toBe(1.5);
+    expect(ROLE_WEIGHTS_V4.ADC.ks_percent).toBe(1.5);
   });
 
   it('should have high weights for key Support metrics', () => {
-    expect(ROLE_WEIGHTS_V4.SUPPORT.deaths).toBe(2);  // Très important
-    expect(ROLE_WEIGHTS_V4.SUPPORT.assists).toBe(2);
-    expect(ROLE_WEIGHTS_V4.SUPPORT.kp_percent).toBe(2);
+    expect(ROLE_WEIGHTS_V4.SUPPORT.deaths).toBe(1.5);  // Important
+    expect(ROLE_WEIGHTS_V4.SUPPORT.assists).toBe(1.5);
+    expect(ROLE_WEIGHTS_V4.SUPPORT.kp_percent).toBe(1.5);
   });
 
   it('should have lower weights for vision metrics on Support', () => {
@@ -54,8 +54,8 @@ describe('ROLE_WEIGHTS_V4', () => {
 describe('getRoleWeight', () => {
   it('should return correct weight for existing metrics', () => {
     expect(getRoleWeight('TOP', 'cspm')).toBe(1.5);
-    expect(getRoleWeight('ADC', 'cspm')).toBe(2);
-    expect(getRoleWeight('SUPPORT', 'deaths')).toBe(2);
+    expect(getRoleWeight('ADC', 'cspm')).toBe(1.5);
+    expect(getRoleWeight('SUPPORT', 'deaths')).toBe(1.5);
   });
 
   it('should return default weight of 1 for undefined metrics', () => {

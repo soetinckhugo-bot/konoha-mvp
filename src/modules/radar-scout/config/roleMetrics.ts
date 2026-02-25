@@ -158,7 +158,7 @@ export const ROLE_METRICS: Record<string, RoleMetricDef[]> = {
     { id: 'vision_share', name: 'VS%', category: 'vision', direction: 'higher-is-better', inverted: false, format: 'percentage' },
     { id: 'gd_at_15', name: 'GD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'csd_at_15', name: 'CSD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
-    { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'lower-is-better', inverted: true, format: 'decimal' },
+    { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' }
   ],
   
@@ -282,91 +282,91 @@ function getIconForMetric(id: string): string {
  */
 export const ROLE_WEIGHTS_V4: Record<string, Record<string, number>> = {
   TOP: {
-    win_rate: 0,           // Exclu - reflète l'équipe
-    kp_percent: 1,
-    counter_pick_rate: 1,
-    death_share: 1.5,      // Important (inverted)
-    cspm: 1.5,             // Important
-    dmg_percent: 1,
-    gpm: 1,
-    gold_share: 1,         // Inverted
-    fb_victim: 1.5,        // Important (inverted)
-    solo_kills: 1,
-    xpd_at_15: 1,
-    csd_at_15: 1,
-    gd_at_15: 1.5          // Important
+    win_rate: 0,           // W% = 0 (toujours exclu)
+    kp_percent: 1,         // KP = 1
+    counter_pick_rate: 1,  // CTR% = 1
+    death_share: 1,        // DTH% = 1
+    cspm: 1.5,             // CSPM = 1.5
+    dmg_percent: 1,        // DMG% = 1
+    egpm: 1,               // GPM (EGPM) = 1
+    gold_share: 1.5,       // GOLD% = 1.5
+    fb_victim: 1,          // FB Victim = 1
+    solo_kills: 1.5,       // SoloKills = 1.5
+    xpd_at_15: 1.5,        // XPD@15 = 1.5
+    csd_at_15: 1.5,        // CSD@15 = 1.5
+    gd_at_15: 1            // GD@15 = 1
   },
   
   JUNGLE: {
-    win_rate: 0,           // Exclu
-    kda: 0.5,
-    kp_percent: 1.5,       // Important
-    death_share: 1,
-    fb_percent: 1.5,       // Important
-    dmg_percent_at_15: 1,
-    gpm: 1,
-    gold_share: 1,         // Inverted
-    vspm: 1.5,             // Important
-    vision_share: 1,
-    gd_at_15: 1.5,         // Important
-    csd_at_15: 1,
-    xpd_at_15: 1,          // Inverted
-    fb_victim: 1.5         // Important (inverted)
+    win_rate: 0,           // W% = 0
+    kda: 1,                // KDA = 1
+    kp_percent: 1.5,       // KP = 1.5
+    death_share: 1,        // DTH% = 1
+    fb_percent: 1.5,       // FB% = 1.5
+    dmg_percent_at_15: 1,  // D%P15 = 1
+    egpm: 1,               // EGPM = 1
+    gold_share: 1,         // GOLD% = 1
+    vspm: 1.5,             // VSPM = 1.5
+    vision_share: 1,       // VS% = 1
+    gd_at_15: 1.5,         // GD@15 = 1.5
+    csd_at_15: 1,          // CSD@15 = 1
+    xpd_at_15: 1,          // XPD@15 = 1 (PAS inversé!)
+    fb_victim: 1           // FB Victim = 1
   },
   
   MID: {
-    win_rate: 0,           // Exclu
-    kda: 1,
-    kp_percent: 1,
-    ks_percent: 1.5,       // Important
-    death_share: 1.5,      // Important (inverted)
-    fb_percent: 1,
-    cspm: 1.5,             // Important
-    dmg_percent: 1.5,      // Important
-    gpm: 1,
-    gd_at_15: 1,
-    csd_at_15: 1,
-    xpd_at_15: 1,
-    fb_victim: 1.5,        // Important (inverted)
-    solo_kills: 1.5        // Important
+    win_rate: 0,           // W% = 0
+    kda: 1,                // KDA = 1
+    kp_percent: 1,         // KP = 1
+    ks_percent: 1.5,       // KS% = 1.5
+    death_share: 1.5,      // DTH% = 1.5
+    fb_percent: 1,         // FB% = 1
+    cspm: 1.5,             // CSPM = 1.5
+    dmg_percent: 1.5,      // DMG% = 1.5
+    egpm: 1,               // EGPM = 1
+    gd_at_15: 1.5,         // GD@15 = 1.5
+    csd_at_15: 1,          // CSD@15 = 1
+    xpd_at_15: 1.5,        // XPD@15 = 1.5
+    fb_victim: 1.5,        // FB Victim = 1.5
+    solo_kills: 1.5        // SoloKills = 1.5
   },
   
   ADC: {
-    win_rate: 0,           // Exclu
-    kda: 1.5,              // Important
-    kp_percent: 1,
-    ks_percent: 1.5,       // Important
-    death_share: 1.5,      // Important (inverted)
-    cspm: 2,               // Très important
-    cs_share_at_15: 1.5,   // Important
-    dpm: 1.5,              // Important
-    dmg_percent: 1.5,      // Important
-    dmg_percent_at_15: 1,
-    gpm: 1,
-    gold_share: 1,         // Inverted
-    gd_at_15: 1,
-    csd_at_15: 1,
-    xpd_at_15: 1,
-    fb_victim: 1.5         // Important (inverted)
+    win_rate: 0,           // W% = 0
+    kda: 1.5,              // KDA = 1.5
+    kp_percent: 1,         // KP = 1
+    ks_percent: 1.5,       // KS% = 1.5
+    death_share: 1.5,      // DTH% = 1.5
+    cspm: 1.5,             // CSPM = 1.5
+    cs_share_at_15: 1,     // CS%P15 = 1
+    dpm: 1.5,              // DPM = 1.5
+    dmg_percent: 1,        // DMG% = 1
+    dmg_percent_at_15: 1,  // D%P15 = 1
+    egpm: 1.5,             // EGPM = 1.5
+    gold_share: 1,         // GOLD% = 1
+    gd_at_15: 1,           // GD@15 = 1
+    csd_at_15: 1.5,        // CSD@15 = 1.5
+    xpd_at_15: 1,          // XPD@15 = 1
+    fb_victim: 1           // FB Victim = 1
   },
   
   SUPPORT: {
-    win_rate: 0,           // Exclu
-    counter_pick_rate: 1,
-    deaths: 2,             // Très important (inverted)
-    assists: 2,            // Très important
-    kp_percent: 2,         // Très important
-    death_share: 1.5,      // Important (inverted)
-    fb_percent: 1,
-    wpm: 0.5,              // Moins important
-    cwpm: 0.5,             // Moins important
-    wcpm: 0.5,             // Moins important
-    vision_share: 0.5,     // Moins important
-    vspm: 0.5,             // Moins important
-    vwpm: 0.5,             // Moins important
-    xpd_at_15: 1.5,        // Important
-    xpd_at_10: 1.5,        // Important
-    fb_victim: 1.5         // Important (inverted)
+    win_rate: 0,           // W% = 0
+    counter_pick_rate: 1,  // CTR% = 1
+    deaths: 1.5,           // D = 1.5
+    assists: 1.5,          // A = 1.5
+    kp_percent: 1.5,       // KP = 1.5
+    death_share: 1,        // DTH% = 1
+    fb_percent: 1.5,       // FB% = 1.5
+    wpm: 0.5,              // WPM = 0.5
+    cwpm: 0.5,             // CWPM = 0.5
+    wcpm: 0.5,             // WCPM = 0.5
+    vision_share: 0.5,     // VS% = 0.5
+    vspm: 0.5,             // VSPM = 0.5
+    vwpm: 0.5,             // VWPM = 0.5
+    xpd_at_15: 1,          // XPD@15 = 1
+    xpd_at_10: 1,          // XPD@10 = 1
+    fb_victim: 1           // FB Victim = 1
   }
 };
 

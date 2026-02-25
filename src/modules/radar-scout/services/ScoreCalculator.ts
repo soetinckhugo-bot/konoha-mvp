@@ -4,50 +4,10 @@
  */
 
 import type { Player, MetricConfig, LoLRole } from '../../../core/types';
+import { ROLE_WEIGHTS_V4 } from '../config/roleMetrics';
 
-// Pondérations par rôle pour le scoring
-export const ROLE_WEIGHTS: Record<LoLRole, Record<string, number>> = {
-  TOP: {
-    cspm: 1.5,
-    csd_at_15: 1.5,
-    gd_at_15: 1.5,
-    dth_percent: 1.5, // Moins de morts = important
-    dmg_percent: 1.2,
-    kda: 1.2
-  },
-  JUNGLE: {
-    kda: 1.5,
-    fb_percent: 1.5,
-    vspm: 1.5,
-    gd_at_15: 1.3,
-    xpd_at_15: 1.2,
-    kp_percent: 1.2
-  },
-  MID: {
-    kda: 1.5,
-    dmg_percent: 1.5,
-    gd_at_15: 1.3,
-    csd_at_15: 1.2,
-    cspm: 1.2,
-    solo_kills: 1.3
-  },
-  ADC: {
-    dpm: 1.5,
-    dmg_percent: 1.5,
-    cspm: 1.3,
-    gd_at_15: 1.2,
-    csd_at_15: 1.2,
-    kda: 1.2
-  },
-  SUPPORT: {
-    vspm: 1.5,
-    wpm: 1.5,
-    kp_percent: 1.3,
-    fb_percent: 1.2,
-    xpd_at_15: 1.2,
-    dth_percent: 1.5 // Moins de morts = important
-  }
-};
+// Utiliser les poids V4 (exportés pour compatibilité)
+export const ROLE_WEIGHTS = ROLE_WEIGHTS_V4;
 
 export interface ScoreResult {
   total: number;
