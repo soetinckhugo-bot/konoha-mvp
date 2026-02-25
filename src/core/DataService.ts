@@ -1,6 +1,6 @@
 /**
  * DataService - CSV Parsing avec PapaParse
- * Story 2.2
+ * Story 2.2 - LCK Cup 2026 Support
  */
 
 import Papa from 'papaparse';
@@ -112,16 +112,17 @@ export class DataService {
     const name = nameCol ? String(row[nameCol]) : `Player_${index}`;
     if (!name || name === 'undefined') return null;
 
-    // Extraire les stats
+    // Extraire les stats avec les noms originaux des colonnes
     const stats: Record<string, number> = {};
     metrics.forEach(metric => {
       const val = row[metric];
+      const normalizedId = this.normalizeMetricId(metric);
       if (typeof val === 'number') {
-        stats[this.normalizeMetricId(metric)] = val;
+        stats[normalizedId] = val;
       } else if (typeof val === 'string') {
         const parsed = parseFloat(val);
         if (!isNaN(parsed)) {
-          stats[this.normalizeMetricId(metric)] = parsed;
+          stats[normalizedId] = parsed;
         }
       }
     });
@@ -131,31 +132,102 @@ export class DataService {
       name,
       team: teamCol ? String(row[teamCol] || '') : '',
       role: this.normalizeRole(roleCol ? String(row[roleCol]) : null),
-      gamesPlayed: 0,  // TODO: Détecter si colonne existe
+      gamesPlayed: this.extractGamesPlayed(row),
       stats,
       _source: 'csv',
       _importedAt: Date.now()
     };
   }
 
+  private extractGamesPlayed(row: Record<string, unknown>): number {
+    const gp = row['GP'] || row['gp'] || row['Games'] || row['games'];
+    if (typeof gp === 'number') return gp;
+    if (typeof gp === 'string') {
+      const parsed = parseInt(gp, 10);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  }
+
   private normalizeMetricId(colName: string): string {
-    // Mapping spécifique pour les colonnes connues
+    // Mapping COMPLET pour LCK Cup 2026 et Oracle's Elixir
     const mapping: Record<string, string> = {
+      // === GENERAL ===
+      'gp': 'games_played',
+      'w%': 'win_rate',
+      'ctr%': 'counter_pick_rate',
+      
+      // === COMBAT - Kills/Deaths/Assists ===
+      'k': 'kills',
+      'd': 'deaths',
+      'a': 'assists',
       'kda': 'kda',
+      
+      // === COMBAT - Participation ===
       'kp': 'kp_percent',
       'kp%': 'kp_percent',
-      'dmg%': 'dmg_percent',
-      'dt%': 'dt_percent',
-      'cspm': 'cspm',
-      'csd@15': 'csd_at_15',
-      'gd@15': 'gd_at_15',
-      'visionscore': 'vspm',
-      'vs': 'vspm',
+      'ks%': 'ks_percent',
+      'kills share': 'ks_percent',
+      
+      // === COMBAT - Damage ===
       'dpm': 'dpm',
-      'firstblood%': 'fb_percent',
+      'dmg%': 'dmg_percent',
+      'damage%': 'dmg_percent',
+      'd%p15': 'dmg_percent_at_15',
+      'd%p15 ': 'dmg_percent_at_15',
+      'tdpg': 'team_dmg_per_gold',
+      
+      // === COMBAT - Deaths ===
+      'dth%': 'death_share',
+      'dt%': 'dt_percent',
+      
+      // === COMBAT - First Blood ===
       'fb%': 'fb_percent',
+      'firstblood%': 'fb_percent',
+      'fb% ': 'fb_percent',
+      
+      // === COMBAT - Solo Kills ===
+      'solokills': 'solo_kills',
+      'solo_kills': 'solo_kills',
+      
+      // === COMBAT - Steals ===
+      'stl': 'steals',
+      
+      // === FARMING - CS ===
+      'cspm': 'cspm',
+      'cs%p15': 'cs_share_at_15',
+      
+      // === FARMING - CS Difference ===
+      'csd10': 'csd_at_10',
+      'csd@10': 'csd_at_10',
+      'csd15': 'csd_at_15',
+      'csd@15': 'csd_at_15',
+      
+      // === ECONOMY - Gold ===
+      'egpm': 'egpm',
+      'earned gpm': 'egpm',
+      'gold%': 'gold_share',
+      'gold% ': 'gold_share',
+      'gd10': 'gd_at_10',
+      'gd@10': 'gd_at_10',
+      'gd15': 'gd_at_15',
+      'gd@15': 'gd_at_15',
+      
+      // === XP ===
+      'xpd10': 'xpd_at_10',
+      'xpd@10': 'xpd_at_10',
+      'xpd15': 'xpd_at_15',
+      'xpd@15': 'xpd_at_15',
+      
+      // === VISION ===
       'wpm': 'wpm',
-      'wcpm': 'wcpm'
+      'cwpm': 'cwpm',
+      'control wards per minute': 'cwpm',
+      'wcpm': 'wcpm',
+      'wards cleared per minute': 'wcpm',
+      'vs%': 'vision_share',
+      'vspm': 'vspm',
+      'vision score per minute': 'vspm'
     };
     
     const normalized = colName.toLowerCase().trim();

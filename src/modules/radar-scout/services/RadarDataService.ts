@@ -1,13 +1,39 @@
 /**
- * RadarDataService - Génération des données pour le radar
- * Story 3.2
+ * @fileoverview RadarDataService - Génération des configurations radar
+ * 
+ * Ce service transforme les données brutes des joueurs en configurations
+ * Chart.js prêtes à être rendues. Il gère le caching et les différents modes
+ * de visualisation (solo, comparaison, benchmark).
+ * 
+ * @module RadarDataService
+ * @version 1.0.0
+ * @author KONOHA Team
  */
 
 import type { Player, MetricConfig, RadarConfig, RadarDataset, RadarViewMode } from '../../../core/types';
+import { GradeCalculator } from './GradeCalculator';
 
 export class RadarDataService {
+  /** Cache interne pour éviter les recalculs */
   private cache = new Map<string, RadarConfig>();
 
+  /**
+   * Génère ou récupère depuis le cache une configuration radar
+   * 
+   * @param mode - Mode de visualisation ('solo' | 'compare' | 'benchmark')
+   * @param playerId - ID du joueur principal
+   * @param metrics - Liste des métriques à afficher
+   * @param players - Pool de tous les joueurs
+   * @param comparedPlayerId - ID du joueur à comparer (mode 'compare')
+   * @param getNormalizedValue - Fonction de normalisation optionnelle
+   * @returns Configuration RadarConfig pour Chart.js
+   * 
+   * @example
+   * ```typescript
+   * const config = service.getConfig('solo', 'player1', metrics, players);
+   * radarChart.render(config);
+   * ```
+   */
   getConfig(
     mode: RadarViewMode,
     playerId: string,
@@ -76,14 +102,23 @@ export class RadarDataService {
       ? getComputedStyle(document.documentElement).getPropertyValue(colorVar.replace('var(', '').replace(')', '')).trim() || '#4ECDC4'
       : colorVar;
     
+    // Calculer les valeurs normalisées
+    const data = metrics.map(m => getNormalizedValue 
+      ? getNormalizedValue(player, m) 
+      : (player.stats[m.id] || 0));
+    
+    // Calculer les grades pour chaque point (pour coloration)
+    const pointTiers = data.map(value => GradeCalculator.getGrade(value));
+    
     return {
       label: player.name,
       playerId: player.id,
-      data: metrics.map(m => getNormalizedValue ? getNormalizedValue(player, m) : (player.stats[m.id] || 0)),
+      data,
       rawData: metrics.map(m => player.stats[m.id] || 0),
-      backgroundColor: color + '40',  // 25% opacity
+      backgroundColor: color + '33',  // 20% opacity
       borderColor: color,
-      borderWidth: 2
+      borderWidth: 2,
+      pointTiers
     };
   }
 

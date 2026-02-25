@@ -4,16 +4,20 @@
  */
 
 import { KonohaCore } from './core';
+import type { Player } from './core/types';
 import RadarScoutPlugin from './modules/radar-scout';
 import './styles/tokens.css';
 import './styles/main.css';
 import './styles/radar-scout.css';
+import './styles/radar-v4.css';
 
 // Initialize KONOHA Core
 const core = KonohaCore.getInstance();
 
 // Register RadarScout plugin
 const radarPlugin = new RadarScoutPlugin();
+let isPluginMounted = false; // 🔧 FIX: Track mount state
+
 core.registerPlugin({
   id: radarPlugin.id,
   name: radarPlugin.name,
@@ -30,16 +34,41 @@ const mountPlugin = async () => {
   // Setup file upload
   setupFileUpload();
   
-  // Check if we have data
+  // Try to load cached data
+  loadCachedData();
+  
+  // Check if we have data (from cache or fresh)
   const players = core.api.getState('players');
   if (players.length > 0) {
-    // Mount the plugin
-    await radarPlugin.mount(core.api);
+    // 🔧 FIX: Only mount if not already mounted
+    if (!isPluginMounted) {
+      await radarPlugin.mount(core.api);
+      isPluginMounted = true;
+    }
   } else {
     // Show welcome screen
     showWelcomeScreen();
   }
 };
+
+function loadCachedData(): void {
+  try {
+    const cachedPlayers = core.api.data.load<Player[]>('cached_players');
+    if (cachedPlayers && cachedPlayers.length > 0) {
+      core.api.setState('players', cachedPlayers);
+      
+      // Recalculate ranges and centiles
+      const ranges = core.api.normalize.calculateRanges?.(cachedPlayers);
+      if (ranges) {
+        // Apply ranges through data service
+      }
+      
+      console.log(`✅ Loaded ${cachedPlayers.length} players from cache`);
+    }
+  } catch (err) {
+    console.warn('Failed to load cached data:', err);
+  }
+}
 
 function setupFileUpload(): void {
   const uploadZone = document.getElementById('upload-zone') as HTMLElement;
@@ -99,7 +128,7 @@ async function handleFile(file: File): Promise<void> {
   }
 
   try {
-    await core.importCSV(file);
+    await core.api.importCSV(file);
     
     const players = core.api.getState('players');
     
@@ -118,8 +147,11 @@ async function handleFile(file: File): Promise<void> {
     if (welcomeScreen) welcomeScreen.style.display = 'none';
     if (appContainer) {
       appContainer.style.display = 'block';
-      // Mount plugin
-      await radarPlugin.mount(core.api);
+      // 🔧 FIX: Only mount if not already mounted
+      if (!isPluginMounted) {
+        await radarPlugin.mount(core.api);
+        isPluginMounted = true;
+      }
     }
 
   } catch (err) {

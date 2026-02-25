@@ -1,20 +1,34 @@
 /**
- * NormalizationService - Normalisation des valeurs 0-100
- * Story 2.5
+ * @fileoverview NormalizationService - Service de normalisation des valeurs métriques
+ * 
+ * Ce service gère la normalisation des valeurs brutes vers une échelle 0-100,
+ * le calcul des percentiles et l'attribution des grades (S/A/B/C).
+ * 
+ * @module NormalizationService
+ * @version 1.0.0
+ * @author KONOHA Team
  */
 
-import type { MetricConfig, LoLRole, Player } from './types';
+import type { MetricConfig, LoLRole, Player, Grade } from './types';
 import { GRADE_THRESHOLDS } from './types';
 
+/** Résultat d'une normalisation complète */
 export interface NormalizedValue {
+  /** Valeur brute originale */
   raw: number;
-  normalized: number;  // 0-100
-  percentile: number;  // 0-100
-  grade: 'S' | 'A' | 'B' | 'C' | 'D';
+  /** Valeur normalisée sur échelle 0-100 */
+  normalized: number;
+  /** Percentile dans la distribution (0-100) */
+  percentile: number;
+  /** Grade attribué (S/A/B/C) */
+  grade: Grade;
 }
 
+/** Plage de valeurs pour une métrique */
 export interface MetricRange {
+  /** Valeur minimale */
   min: number;
+  /** Valeur maximale */
   max: number;
 }
 
@@ -22,16 +36,35 @@ export class NormalizationService {
   private metricRanges: Record<string, MetricRange> = {};
   private centiles: Record<string, number[]> = {};
 
+  /**
+   * Définit les plages de valeurs pour les métriques
+   * @param ranges - Object mapping metricId -> {min, max}
+   */
   setMetricRanges(ranges: Record<string, MetricRange>): void {
     this.metricRanges = ranges;
   }
 
+  /**
+   * Définit les distributions de centiles
+   * @param centiles - Object mapping metricId -> tableau de valeurs triées
+   */
   setCentiles(centiles: Record<string, number[]>): void {
     this.centiles = centiles;
   }
 
   /**
-   * Normalise une valeur selon la config métrique
+   * Normalise une valeur selon la configuration métrique
+   * 
+   * @param value - Valeur brute à normaliser
+   * @param metric - Configuration de la métrique
+   * @param role - Rôle optionnel pour plages spécifiques
+   * @returns Valeur normalisée entre 0 et 100
+   * 
+   * @example
+   * ```typescript
+   * const normalized = service.normalize(5.2, kdaMetric, 'MID');
+   * // Returns: 52 (sur échelle 0-100)
+   * ```
    */
   normalize(
     value: number,
@@ -56,7 +89,11 @@ export class NormalizationService {
   }
 
   /**
-   * Calcule le centile d'une valeur
+   * Calcule le centile d'une valeur dans la distribution
+   * 
+   * @param value - Valeur à évaluer
+   * @param metricId - Identifiant de la métrique
+   * @returns Percentile (0-100), 50 par défaut si pas de données
    */
   calculatePercentile(value: number, metricId: string): number {
     const distribution = this.centiles[metricId];
@@ -68,14 +105,16 @@ export class NormalizationService {
   }
 
   /**
-   * Détermine le grade selon le centile
+   * Détermine le grade selon le percentile (4 tiers)
+   * 
+   * @param percentile - Percentile (0-100)
+   * @returns Grade S (90-100), A (80-89), B (60-79), C (<60)
    */
-  getGrade(percentile: number): 'S' | 'A' | 'B' | 'C' | 'D' {
+  getGrade(percentile: number): Grade {
     if (percentile >= GRADE_THRESHOLDS.S) return 'S';
     if (percentile >= GRADE_THRESHOLDS.A) return 'A';
     if (percentile >= GRADE_THRESHOLDS.B) return 'B';
-    if (percentile >= GRADE_THRESHOLDS.C) return 'C';
-    return 'D';
+    return 'C';
   }
 
   /**

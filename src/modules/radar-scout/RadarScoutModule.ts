@@ -1,11 +1,17 @@
 /**
  * RadarScoutModule - Classe principale du module
- * Story 3.1
+ * Story 3.1 + Feature Pack V2
  */
 
 import type { CoreAPI, Player, MetricConfig, RadarViewMode } from '../../core/types';
 import { RadarChart } from './components/RadarChart';
+import { CentileBar } from './components/CentileBar';
+import { DuelView } from './components/DuelView';
+import { LeaderboardPanel } from './components/LeaderboardPanel';
 import { RadarDataService } from './services/RadarDataService';
+import { ExportRenderService } from './services/ExportRenderService';
+import { GradeCalculator } from './services/GradeCalculator';
+// Services imports
 import { defaultMetrics } from './config/metrics';
 
 export class RadarScoutModule {
@@ -14,6 +20,11 @@ export class RadarScoutModule {
   private unsubscribers: (() => void)[] = [];
   private radarChart: RadarChart | null = null;
   private dataService: RadarDataService;
+  private centileBar: CentileBar | null = null;
+  private duelView: DuelView | null = null;
+  private leaderboardPanel: LeaderboardPanel | null = null;
+  private currentExportMode: 'solo' | 'social' = 'solo';
+  private centileViewMode: 'percentiles' | 'values' = 'percentiles';
 
   constructor(core: CoreAPI) {
     this.core = core;
@@ -31,6 +42,7 @@ export class RadarScoutModule {
           <button class="view-btn active" data-view="solo">Solo</button>
           <button class="view-btn" data-view="compare">Comparer</button>
           <button class="view-btn" data-view="benchmark">Benchmark</button>
+          <button class="view-btn" data-view="duel">Duel</button>
         </div>
       </div>
       
@@ -50,6 +62,18 @@ export class RadarScoutModule {
             </select>
           </div>
           
+          <div class="control-section" id="role-filter-section">
+            <label class="control-label">Filtrer par rôle</label>
+            <select id="role-filter" class="kono-select">
+              <option value="all">Tous les rôles</option>
+              <option value="TOP">Top</option>
+              <option value="JUNGLE">Jungle</option>
+              <option value="MID">Mid</option>
+              <option value="ADC">ADC</option>
+              <option value="SUPPORT">Support</option>
+            </select>
+          </div>
+          
           <div class="control-section">
             <label class="control-label">Métriques</label>
             <div id="metrics-list" class="metrics-list"></div>
@@ -58,6 +82,7 @@ export class RadarScoutModule {
         
         <div class="radar-main">
           <div id="radar-chart-container" class="radar-chart-container"></div>
+          <div id="duel-view-container" class="duel-view-container" style="display: none;"></div>
           <div id="radar-empty" class="radar-empty">
             <div class="empty-icon">📊</div>
             <p>Sélectionnez un joueur pour visualiser</p>
@@ -65,17 +90,55 @@ export class RadarScoutModule {
         </div>
         
         <div class="radar-panel">
-          <div class="panel-section">
+          <div class="panel-section" id="stats-section">
             <h3>Statistiques</h3>
             <div id="stats-details" class="stats-details">
               <p class="stats-placeholder">Sélectionnez un joueur</p>
             </div>
           </div>
           
-          <div class="panel-section">
+          <div class="panel-section" id="centiles-section">
+            <div class="centiles-header">
+              <h3>📊 Percentile Analysis</h3>
+              <div class="centile-toggle">
+                <button class="centile-toggle-btn ${this.centileViewMode === 'percentiles' ? 'active' : ''}" data-mode="percentiles" title="Voir les percentiles">
+                  <span>％</span>
+                </button>
+                <button class="centile-toggle-btn ${this.centileViewMode === 'values' ? 'active' : ''}" data-mode="values" title="Voir les valeurs brutes">
+                  <span>123</span>
+                </button>
+              </div>
+            </div>
+            <p class="centile-subtitle">Player position vs ${this.core.getState('currentRole') === 'all' ? 'league' : this.core.getState('currentRole') + 's'}</p>
+            <div id="centiles-container" class="centiles-container">
+              <p class="stats-placeholder">Sélectionnez un joueur</p>
+            </div>
+          </div>
+          
+          <div class="panel-section" id="leaderboard-section">
+            <h3>🏆 Leaderboard</h3>
+            <div id="leaderboard-container"></div>
+          </div>
+          
+          <div class="panel-section" id="export-section">
             <h3>Export</h3>
+            <div class="export-mode-toggle">
+              <button class="export-mode-btn ${this.currentExportMode === 'solo' ? 'active' : ''}" data-mode="solo">
+                <span class="mode-icon">📄</span>
+                <span class="mode-label">Solo</span>
+                <span class="mode-dimensions">1200×800</span>
+              </button>
+              <button class="export-mode-btn ${this.currentExportMode === 'social' ? 'active' : ''}" data-mode="social">
+                <span class="mode-icon">📱</span>
+                <span class="mode-label">Social</span>
+                <span class="mode-dimensions">1080×1080</span>
+              </button>
+            </div>
             <button id="export-btn" class="kono-btn kono-btn-secondary" disabled>
-              📷 Exporter PNG
+              📷 Exporter Radar
+            </button>
+            <button id="export-analysis-btn" class="kono-btn kono-btn-secondary" disabled style="margin-top: var(--kono-space-2);">
+              📊 Exporter Percentile Analysis
             </button>
           </div>
         </div>
@@ -116,11 +179,8 @@ export class RadarScoutModule {
         viewBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // Show/hide compare section
-        const compareSection = this.container!.querySelector('#compare-section') as HTMLElement;
-        if (compareSection) {
-          compareSection.style.display = view === 'compare' ? 'block' : 'none';
-        }
+        // Show/hide sections based on view
+        this.updateViewVisibility(view);
       });
     });
 
@@ -138,9 +198,86 @@ export class RadarScoutModule {
       this.core.setState('comparedPlayerId', value || null);
     });
 
-    // Export button
+    // Role filter
+    const roleFilter = this.container.querySelector('#role-filter') as HTMLSelectElement;
+    roleFilter?.addEventListener('change', (e) => {
+      const value = (e.target as HTMLSelectElement).value;
+      this.core.setState('currentRole', value as any);
+    });
+
+    // Export mode toggle
+    const exportModeBtns = this.container.querySelectorAll('.export-mode-btn');
+    exportModeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode') as 'solo' | 'social';
+        this.currentExportMode = mode;
+        
+        exportModeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Export buttons
     const exportBtn = this.container.querySelector('#export-btn') as HTMLButtonElement;
     exportBtn?.addEventListener('click', () => this.handleExport());
+    
+    const exportAnalysisBtn = this.container.querySelector('#export-analysis-btn') as HTMLButtonElement;
+    exportAnalysisBtn?.addEventListener('click', () => this.handleExportAnalysis());
+
+    // Centile view toggle
+    const centileToggleBtns = this.container.querySelectorAll('.centile-toggle-btn');
+    centileToggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode') as 'percentiles' | 'values';
+        this.centileViewMode = mode;
+        
+        centileToggleBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Re-render centiles panel
+        this.updateCentilesPanel();
+      });
+    });
+  }
+
+  private updateViewVisibility(view: RadarViewMode): void {
+    if (!this.container) return;
+
+    const compareSection = this.container.querySelector('#compare-section') as HTMLElement;
+    const radarContainer = this.container.querySelector('#radar-chart-container') as HTMLElement;
+    const duelContainer = this.container.querySelector('#duel-view-container') as HTMLElement;
+    const statsSection = this.container.querySelector('#stats-section') as HTMLElement;
+    const centilesSection = this.container.querySelector('#centiles-section') as HTMLElement;
+    const leaderboardSection = this.container.querySelector('#leaderboard-section') as HTMLElement;
+
+    // Reset visibility
+    if (compareSection) compareSection.style.display = 'none';
+    if (radarContainer) radarContainer.style.display = 'none';
+    if (duelContainer) duelContainer.style.display = 'none';
+    if (statsSection) statsSection.style.display = 'block';
+    // Centiles and Leaderboard always visible when player selected
+    if (centilesSection) centilesSection.style.display = 'block';
+    if (leaderboardSection) leaderboardSection.style.display = 'block';
+
+    switch (view) {
+      case 'compare':
+        if (compareSection) compareSection.style.display = 'block';
+        if (radarContainer) radarContainer.style.display = 'block';
+        break;
+      case 'benchmark':
+        if (radarContainer) radarContainer.style.display = 'block';
+        break;
+      case 'duel':
+        if (compareSection) compareSection.style.display = 'block';
+        if (duelContainer) duelContainer.style.display = 'block';
+        if (statsSection) statsSection.style.display = 'none';
+        if (centilesSection) centilesSection.style.display = 'none';
+        break;
+      case 'solo':
+      default:
+        if (radarContainer) radarContainer.style.display = 'block';
+        break;
+    }
   }
 
   private setupSubscriptions(): void {
@@ -148,6 +285,7 @@ export class RadarScoutModule {
     const unsubPlayer = this.core.subscribe('selectedPlayerId', () => {
       this.updateView();
       this.updateStatsPanel();
+      this.updateCentilesPanel();
     });
     this.unsubscribers.push(unsubPlayer);
 
@@ -163,9 +301,17 @@ export class RadarScoutModule {
     });
     this.unsubscribers.push(unsubView);
 
+    // Subscribe to role filter
+    const unsubRole = this.core.subscribe('currentRole', () => {
+      this.updateView();
+      this.updateLeaderboard();
+    });
+    this.unsubscribers.push(unsubRole);
+
     // Subscribe to players data
     const unsubPlayers = this.core.subscribe('players', () => {
       this.updatePlayerSelects();
+      this.updateLeaderboard();
     });
     this.unsubscribers.push(unsubPlayers);
 
@@ -242,10 +388,15 @@ export class RadarScoutModule {
 
     const emptyState = this.container?.querySelector('#radar-empty') as HTMLElement;
     const chartContainer = this.container?.querySelector('#radar-chart-container') as HTMLElement;
+    const duelContainer = this.container?.querySelector('#duel-view-container') as HTMLElement;
+
+    // Update visibility
+    this.updateViewVisibility(view);
 
     if (!playerId || players.length === 0) {
       if (emptyState) emptyState.style.display = 'flex';
       if (chartContainer) chartContainer.style.display = 'none';
+      if (duelContainer) duelContainer.style.display = 'none';
       return;
     }
 
@@ -262,32 +413,64 @@ export class RadarScoutModule {
       return;
     }
 
-    // Créer config radar
-    const config = this.dataService.getConfig(
-      view,
-      playerId,
-      metrics,
-      players,
-      comparedId || undefined,
-      (player, metric) => this.getNormalizedValue(player, metric)
-    );
+    // Handle different views
+    if (view === 'duel') {
+      this.renderDuelView(playerId, comparedId, players, metrics);
+      if (emptyState) emptyState.style.display = 'none';
+      if (chartContainer) chartContainer.style.display = 'none';
+      if (duelContainer) duelContainer.style.display = 'block';
+    } else {
+      // Render radar chart
+      const config = this.dataService.getConfig(
+        view,
+        playerId,
+        metrics,
+        players,
+        comparedId || undefined,
+        (player, metric) => this.getNormalizedValue(player, metric)
+      );
 
-    // Render
-    if (emptyState) emptyState.style.display = 'none';
-    if (chartContainer) chartContainer.style.display = 'block';
-    
-    this.radarChart?.render(config);
+      if (emptyState) emptyState.style.display = 'none';
+      if (chartContainer) chartContainer.style.display = 'block';
+      if (duelContainer) duelContainer.style.display = 'none';
+      
+      this.radarChart?.render(config);
+    }
 
-    // Enable export button
+    // Enable export buttons
     const exportBtn = this.container?.querySelector('#export-btn') as HTMLButtonElement;
     if (exportBtn) exportBtn.disabled = false;
+    
+    const exportAnalysisBtn = this.container?.querySelector('#export-analysis-btn') as HTMLButtonElement;
+    if (exportAnalysisBtn) exportAnalysisBtn.disabled = false;
   }
 
-  private getNormalizedValue(player: Player, metric: MetricConfig): number {
-    const value = player.stats[metric.id];
-    if (value === undefined) return 50; // Valeur par défaut
+  private renderDuelView(
+    playerId: string,
+    comparedId: string | null,
+    players: Player[],
+    metrics: MetricConfig[]
+  ): void {
+    const container = this.container?.querySelector('#duel-view-container');
+    if (!container || !comparedId) {
+      container && (container.innerHTML = '<p class="stats-placeholder">Sélectionnez deux joueurs pour le duel</p>');
+      return;
+    }
+
+    const player1 = players.find(p => p.id === playerId);
+    const player2 = players.find(p => p.id === comparedId);
+
+    if (!player1 || !player2) return;
+
+    // Clean up previous duel view
+    this.duelView?.destroy();
     
-    return this.core.normalize.normalize(value, metric, player.role);
+    // Create new duel view
+    this.duelView = new DuelView(this.core);
+    const duelElement = this.duelView.render({ player1, player2, metrics, core: this.core });
+    
+    container.innerHTML = '';
+    container.appendChild(duelElement);
   }
 
   private updateStatsPanel(): void {
@@ -332,9 +515,101 @@ export class RadarScoutModule {
     statsDetails.innerHTML = statsHtml || '<p class="stats-placeholder">Aucune métrique sélectionnée</p>';
   }
 
+  private updateCentilesPanel(): void {
+    const playerId = this.core.getState('selectedPlayerId');
+    const players = this.core.getState('players');
+    const selectedMetrics = this.core.getState('selectedMetrics');
+    const container = this.container?.querySelector('#centiles-container');
+
+    if (!playerId || !container) return;
+
+    const player = players.find(p => p.id === playerId);
+    if (!player) return;
+
+    // Clean up previous centile bars
+    container.innerHTML = '';
+
+    // Récupérer les configs de métriques
+    const allMetrics = this.core.listMetrics();
+    const metricsMap = new Map(allMetrics.map(m => [m.id, m]));
+
+    // IMPORTANT: Calculer les percentiles UNIQUEMENT par rapport aux joueurs du MÊME RÔLE
+    const rolePlayers = players.filter(p => p.role === player.role);
+    const comparisonPool = rolePlayers.length >= 3 ? rolePlayers : players;
+
+    for (const metricId of selectedMetrics.slice(0, 5)) { // Limit to 5
+      const metric = metricsMap.get(metricId) || defaultMetrics.find(m => m.id === metricId);
+      if (!metric) continue;
+
+      const value = player.stats[metricId];
+      if (value === undefined) continue;
+
+      // Calculate percentile UNIQUEMENT par rapport au pool du même rôle
+      const percentile = this.core.normalize.calculatePercentile(value, metricId, comparisonPool);
+
+      // Create centile bar avec le mode d'affichage actuel
+      const centileBar = new CentileBar();
+      const centileElement = centileBar.render({
+        metric,
+        player,
+        percentile,
+        value,
+        showGrade: true,
+        context: `${player.role}s`, // ex: "MIDs" ou "ADCs"
+        displayMode: this.centileViewMode // 'percentiles' ou 'values'
+      });
+
+      container.appendChild(centileElement);
+    }
+  }
+
+  private updateLeaderboard(): void {
+    const players = this.core.getState('players');
+    const selectedMetrics = this.core.getState('selectedMetrics');
+    const currentRole = this.core.getState('currentRole');
+    const container = this.container?.querySelector('#leaderboard-container');
+
+    if (!container) return;
+
+    // Clean up previous leaderboard
+    this.leaderboardPanel?.destroy();
+
+    // Récupérer les configs de métriques
+    const allMetrics = this.core.listMetrics();
+    const metricsMap = new Map(allMetrics.map(m => [m.id, m]));
+    const metrics: MetricConfig[] = selectedMetrics
+      .map(id => metricsMap.get(id) || defaultMetrics.find(m => m.id === id))
+      .filter((m): m is MetricConfig => m !== undefined);
+
+    // Create leaderboard
+    this.leaderboardPanel = new LeaderboardPanel(this.core);
+    const leaderboardElement = this.leaderboardPanel.render({
+      players,
+      metrics,
+      selectedRole: currentRole,
+      core: this.core,
+      onPlayerSelect: (playerId) => {
+        this.core.setState('selectedPlayerId', playerId);
+      }
+    });
+
+    container.innerHTML = '';
+    container.appendChild(leaderboardElement);
+  }
+
+  private getNormalizedValue(player: Player, metric: MetricConfig): number {
+    const value = player.stats[metric.id];
+    if (value === undefined) return 50; // Valeur par défaut
+    
+    return this.core.normalize.normalize(value, metric, player.role);
+  }
+
   private async handleExport(): Promise<void> {
     const playerId = this.core.getState('selectedPlayerId');
     const players = this.core.getState('players');
+    const selectedMetrics = this.core.getState('selectedMetrics');
+    const view = this.core.getState('currentView');
+    const comparedId = this.core.getState('comparedPlayerId');
     const player = players.find(p => p.id === playerId);
     
     if (!player) {
@@ -342,7 +617,92 @@ export class RadarScoutModule {
       return;
     }
 
-    // Créer un conteneur dédié pour l'export
+    // Récupérer les configs de métriques
+    const allMetrics = this.core.listMetrics();
+    const metricsMap = new Map(allMetrics.map(m => [m.id, m]));
+    const metrics: MetricConfig[] = selectedMetrics
+      .map(id => metricsMap.get(id) || defaultMetrics.find(m => m.id === id))
+      .filter((m): m is MetricConfig => m !== undefined);
+
+    if (metrics.length === 0) {
+      alert('Aucune métrique sélectionnée');
+      return;
+    }
+
+    // Injecter les styles d'export si pas déjà fait
+    ExportRenderService.injectStyles();
+
+    // Créer le service de rendu
+    const exportService = new ExportRenderService();
+    
+    try {
+      // Rendu du DOM propre
+      const { container, cleanup } = await exportService.render({
+        mode: this.currentExportMode,
+        player,
+        comparePlayer: comparedId ? players.find(p => p.id === comparedId) : undefined,
+        metrics,
+        view,
+        getNormalizedValue: (p, m) => this.getNormalizedValue(p, m),
+        getGrade: (p) => GradeCalculator.getGrade(p)
+      });
+
+      // Attendre que tout soit rendu
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      // Exporter en PNG
+      const dimensions = this.currentExportMode === 'social'
+        ? { width: 1080, height: 1080 }
+        : { width: 1200, height: 800 };
+
+      const blob = await this.core.export.toPNG(container, {
+        mode: this.currentExportMode,
+        width: dimensions.width,
+        height: dimensions.height,
+        scale: 2,
+        transparent: false
+      });
+
+      // Télécharger
+      const filename = `konoha_${player.name}_${player.role}_${this.currentExportMode}_${Date.now()}.png`;
+      this.core.export.download(blob, filename);
+
+      // Cleanup
+      cleanup();
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Erreur lors de l\'export. Veuillez réessayer.');
+    }
+  }
+
+  private async handleExportAnalysis(): Promise<void> {
+    const playerId = this.core.getState('selectedPlayerId');
+    const players = this.core.getState('players');
+    const selectedMetrics = this.core.getState('selectedMetrics');
+    const player = players.find(p => p.id === playerId);
+    
+    if (!player) {
+      alert('Veuillez d\'abord sélectionner un joueur');
+      return;
+    }
+
+    // Récupérer les configs de métriques
+    const allMetrics = this.core.listMetrics();
+    const metricsMap = new Map(allMetrics.map(m => [m.id, m]));
+    const metrics: MetricConfig[] = selectedMetrics
+      .map(id => metricsMap.get(id) || defaultMetrics.find(m => m.id === id))
+      .filter((m): m is MetricConfig => m !== undefined);
+
+    if (metrics.length === 0) {
+      alert('Aucune métrique sélectionnée');
+      return;
+    }
+
+    // IMPORTANT: Calculer les percentiles UNIQUEMENT par rapport aux joueurs du MÊME RÔLE
+    const rolePlayers = players.filter(p => p.role === player.role);
+    const comparisonPool = rolePlayers.length >= 3 ? rolePlayers : players;
+
+    // Créer le conteneur d'export
     const exportContainer = document.createElement('div');
     exportContainer.style.cssText = `
       position: fixed;
@@ -350,69 +710,128 @@ export class RadarScoutModule {
       width: 1200px;
       height: 800px;
       background: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1a25 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
       font-family: 'Space Grotesk', sans-serif;
+      padding: 60px;
+      box-sizing: border-box;
     `;
 
-    // Titre
-    const title = document.createElement('h1');
-    title.textContent = `${player.name} - ${player.role}`;
-    title.style.cssText = `
-      font-size: 48px;
-      font-weight: 700;
-      color: #4ECDC4;
-      margin-bottom: 20px;
+    // Header
+    const header = document.createElement('div');
+    header.style.cssText = `
       text-align: center;
-    `;
-    exportContainer.appendChild(title);
-
-    // Sous-titre (équipe)
-    const subtitle = document.createElement('p');
-    subtitle.textContent = player.team;
-    subtitle.style.cssText = `
-      font-size: 24px;
-      color: rgba(255, 255, 255, 0.7);
       margin-bottom: 40px;
     `;
-    exportContainer.appendChild(subtitle);
-
-    // Container pour le radar
-    const radarContainer = document.createElement('div');
-    radarContainer.style.cssText = `
-      width: 800px;
-      height: 500px;
-      position: relative;
+    header.innerHTML = `
+      <h1 style="font-size: 42px; font-weight: 700; color: #fff; margin: 0 0 8px 0;">${player.name}</h1>
+      <p style="font-size: 18px; color: rgba(255,255,255,0.6); margin: 0;">${player.team} • ${player.role} • Percentile Analysis</p>
+      <p style="font-size: 14px; color: rgba(255,255,255,0.4); margin: 8px 0 0 0;">vs ${comparisonPool.length} ${player.role}s</p>
     `;
-    exportContainer.appendChild(radarContainer);
+    exportContainer.appendChild(header);
 
-    // Clone le canvas du radar
-    const originalCanvas = this.radarChart?.getCanvas();
-    if (originalCanvas) {
-      const clonedCanvas = document.createElement('canvas');
-      clonedCanvas.width = 800;
-      clonedCanvas.height = 500;
-      const ctx = clonedCanvas.getContext('2d');
-      if (ctx) {
-        // Dessiner fond transparent
-        ctx.fillStyle = 'transparent';
-        ctx.fillRect(0, 0, 800, 500);
-        // Copier l'image originale
-        ctx.drawImage(originalCanvas, 0, 0, 800, 500);
+    // Grid des métriques
+    const grid = document.createElement('div');
+    grid.style.cssText = `
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    `;
+
+    // Catégories
+    const categories: Record<string, string> = {
+      combat: 'FIGHT',
+      vision: 'VISION',
+      farming: 'FARMING',
+      early: 'EARLY GAME',
+      economy: 'RESOURCES'
+    };
+
+    const categoryColors: Record<string, string> = {
+      combat: '#FF6B6B',
+      vision: '#4ECDC4',
+      farming: '#FFD93D',
+      early: '#A855F7',
+      economy: '#00E676'
+    };
+
+    // Grouper les métriques par catégorie
+    const metricsByCategory: Record<string, MetricConfig[]> = {};
+    for (const metric of metrics) {
+      if (!metricsByCategory[metric.category]) {
+        metricsByCategory[metric.category] = [];
       }
-      radarContainer.appendChild(clonedCanvas);
+      metricsByCategory[metric.category].push(metric);
     }
 
+    // Créer les cards par catégorie
+    for (const [category, catMetrics] of Object.entries(metricsByCategory).slice(0, 3)) {
+      const card = document.createElement('div');
+      card.style.cssText = `
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 24px;
+      `;
+
+      const catHeader = document.createElement('h3');
+      catHeader.style.cssText = `
+        font-size: 14px;
+        font-weight: 700;
+        color: ${categoryColors[category] || '#fff'};
+        margin: 0 0 20px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      `;
+      catHeader.textContent = categories[category] || category;
+      card.appendChild(catHeader);
+
+      // Métriques
+      for (const metric of catMetrics.slice(0, 4)) {
+        const value = player.stats[metric.id];
+        if (value === undefined) continue;
+
+        const percentile = this.core.normalize.calculatePercentile(value, metric.id, comparisonPool);
+        const grade = GradeCalculator.getGrade(percentile);
+        const color = GradeCalculator.getGradeColor(grade);
+
+        const metricRow = document.createElement('div');
+        metricRow.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 16px;
+        `;
+        metricRow.innerHTML = `
+          <span style="font-size: 14px; color: rgba(255,255,255,0.8);">${metric.name}</span>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+              <div style="width: ${percentile}%; height: 100%; background: ${color}; border-radius: 3px;"></div>
+            </div>
+            <span style="font-size: 14px; font-weight: 700; color: ${color}; min-width: 32px; text-align: right;">${Math.round(percentile)}</span>
+          </div>
+        `;
+        card.appendChild(metricRow);
+      }
+
+      grid.appendChild(card);
+    }
+
+    exportContainer.appendChild(grid);
+
     // Footer
-    const footer = document.createElement('p');
-    footer.textContent = '🎯 KONOHA - League Scout';
+    const footer = document.createElement('div');
     footer.style.cssText = `
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.5);
-      margin-top: 40px;
+      position: absolute;
+      bottom: 40px;
+      left: 60px;
+      right: 60px;
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    `;
+    footer.innerHTML = `
+      <span style="font-size: 14px; color: rgba(255,255,255,0.5);">${player.league || 'KONOHA'} Stats</span>
+      <span style="margin: 0 12px; color: rgba(255,255,255,0.3);">|</span>
+      <span style="font-size: 14px; color: #4ECDC4;">@LeagueScoutHugo | KONOHA</span>
     `;
     exportContainer.appendChild(footer);
 
@@ -420,6 +839,7 @@ export class RadarScoutModule {
     document.body.appendChild(exportContainer);
 
     try {
+      // Exporter en PNG
       const blob = await this.core.export.toPNG(exportContainer, {
         mode: 'solo',
         width: 1200,
@@ -427,14 +847,14 @@ export class RadarScoutModule {
         scale: 2,
         transparent: false
       });
-      
-      const filename = `konoha_${player.name}_${player.role}.png`;
+
+      // Télécharger
+      const filename = `konoha_${player.name}_${player.role}_percentile_analysis_${Date.now()}.png`;
       this.core.export.download(blob, filename);
     } catch (err) {
-      console.error('Export failed:', err);
+      console.error('Export analysis failed:', err);
       alert('Erreur lors de l\'export. Veuillez réessayer.');
     } finally {
-      // Cleanup
       document.body.removeChild(exportContainer);
     }
   }
@@ -444,9 +864,16 @@ export class RadarScoutModule {
     this.unsubscribers.forEach(unsub => unsub());
     this.unsubscribers = [];
 
-    // Destroy chart
+    // Destroy components
     this.radarChart?.destroy();
+    this.centileBar?.destroy();
+    this.duelView?.destroy();
+    this.leaderboardPanel?.destroy();
+    
     this.radarChart = null;
+    this.centileBar = null;
+    this.duelView = null;
+    this.leaderboardPanel = null;
 
     // Remove from DOM
     this.container?.remove();

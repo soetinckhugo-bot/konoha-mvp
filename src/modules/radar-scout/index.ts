@@ -4,7 +4,7 @@
  */
 
 import type { Plugin, CoreAPI, AppState } from '../../core/types';
-import { RadarScoutModule } from './RadarScoutModule';
+import { RadarScoutModule } from './RadarScoutModuleV4';
 import { defaultMetrics } from './config/metrics';
 
 export default class RadarScoutPlugin implements Plugin {

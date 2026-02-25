@@ -28,11 +28,13 @@ export class RadarChart {
       return;
     }
 
-    // Create canvas if not exists
-    if (!this.canvas) {
-      this.canvas = document.createElement('canvas');
-      container.appendChild(this.canvas);
-    }
+    // 🔧 FIX: Clear container to prevent duplicate canvases
+    container.innerHTML = '';
+    this.canvas = null;
+
+    // Create canvas
+    this.canvas = document.createElement('canvas');
+    container.appendChild(this.canvas);
 
     const ctx = this.canvas.getContext('2d');
     if (!ctx) return;
@@ -101,24 +103,47 @@ export class RadarChart {
   }
 
   private buildDatasets(config: RadarConfig) {
-    return config.datasets.map(ds => ({
-      label: ds.label,
-      data: ds.data,
-      backgroundColor: ds.backgroundColor,
-      borderColor: ds.borderColor,
-      borderWidth: ds.borderWidth,
-      pointBackgroundColor: ds.borderColor,
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: ds.borderColor,
-      fill: true
-    }));
+    return config.datasets.map(ds => {
+      // Si des tiers sont fournis, colorer chaque point selon son tier
+      const pointColors = ds.pointTiers?.map(tier => this.getTierColor(tier)) || ds.borderColor;
+      const pointRadii = ds.pointTiers?.map(() => 6) || 6;
+      
+      return {
+        label: ds.label,
+        data: ds.data,
+        backgroundColor: ds.backgroundColor,
+        borderColor: ds.borderColor,
+        borderWidth: ds.borderWidth,
+        pointBackgroundColor: pointColors,
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: ds.borderColor,
+        pointRadius: pointRadii,
+        pointHoverRadius: 8,
+        fill: true
+      };
+    });
+  }
+
+  private getTierColor(tier: string): string {
+    const colors: Record<string, string> = {
+      'S': '#00D9C0', // Elite - Cyan
+      'A': '#4ADE80', // Excellent - Green
+      'B': '#FACC15', // Good - Yellow
+      'C': '#FB923C'  // Weak - Orange
+    };
+    return colors[tier] || '#FB923C';
   }
 
   destroy(): void {
     if (this.chart) {
       this.chart.destroy();
       this.chart = null;
+    }
+    // 🔧 FIX: Also remove canvas from DOM
+    if (this.canvas) {
+      this.canvas.remove();
+      this.canvas = null;
     }
   }
 

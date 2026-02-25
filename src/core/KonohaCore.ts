@@ -129,7 +129,26 @@ export class KonohaCore {
           this.normalizationService.setCentiles(centiles);
           return this.normalizationService.calculatePercentile(value, metricId);
         },
-        getGrade: (percentile) => this.normalizationService.getGrade(percentile)
+        getGrade: (percentile) => this.normalizationService.getGrade(percentile),
+        calculateRanges: (players) => this.normalizationService.calculateRanges(players),
+        calculateCentiles: (players) => this.normalizationService.calculateCentiles(players)
+      },
+
+      // Data Import
+      importCSV: async (file) => {
+        const result = await this.dataService.parseCSV(file);
+        const players = result.players;
+        this.stateManager.setState('players', players);
+        
+        // Calculer les ranges et centiles
+        const ranges = this.normalizationService.calculateRanges(players);
+        this.normalizationService.setMetricRanges(ranges);
+        const centiles = this.normalizationService.calculateCentiles(players);
+        this.normalizationService.setCentiles(centiles);
+        
+        // Sauvegarder dans le cache
+        this.storageService.set('cached_players', players);
+        this.storageService.set('cached_timestamp', Date.now());
       },
 
       // Theming
@@ -195,6 +214,28 @@ export class KonohaCore {
       this.stateManager.setState('metricRanges', ranges);
       this.storageService.saveMetricRanges({ global: ranges, byRole: {} as Record<string, Record<string, { min: number; max: number }>> });
       
+      // Enregistrer les métriques dans le MetricRegistry avec catégories intelligentes
+      for (const metricId of parsed.metrics) {
+        if (!this.metricRegistry.get(metricId)) {
+          // Détecter la catégorie selon le nom de la métrique
+          const category = this.detectMetricCategory(metricId);
+          const type = this.detectMetricType(metricId);
+          const direction = this.detectMetricDirection(metricId);
+          const format = this.detectMetricFormat(metricId);
+          
+          this.metricRegistry.register({
+            id: metricId,
+            name: this.formatMetricName(metricId),
+            category,
+            type,
+            direction,
+            normalize: { min: 0, max: 100 },
+            format,
+            decimals: format === 'percentage' ? 1 : 2
+          });
+        }
+      }
+      
       // Mettre à jour les métriques disponibles
       this.stateManager.setState('availableMetrics', parsed.metrics);
       this.stateManager.setState('selectedMetrics', parsed.metrics.slice(0, 8)); // Sélectionner les 8 premières
@@ -221,4 +262,111 @@ export class KonohaCore {
   getEventBus(): EventBus { return this.eventBus; }
   getMetricRegistry(): MetricRegistry { return this.metricRegistry; }
   getNormalizationService(): NormalizationService { return this.normalizationService; }
+
+  // === Helpers pour détection automatique des métriques ===
+  
+  private detectMetricCategory(metricId: string): 'combat' | 'vision' | 'farming' | 'early' | 'economy' {
+    const id = metricId.toLowerCase();
+    
+    // Vision metrics
+    if (id.includes('vision') || id.includes('wpm') || id.includes('vspm') || id.includes('wcpm') || id.includes('cwpm') || id.includes('vs%')) {
+      return 'vision';
+    }
+    
+    // Farming metrics
+    if (id.includes('cspm') || id.includes('cs') || id.includes('farm')) {
+      return 'farming';
+    }
+    
+    // Early game metrics
+    if (id.includes('@15') || id.includes('at_15') || id.includes('10') || id.includes('@10')) {
+      return 'early';
+    }
+    
+    // Economy metrics
+    if (id.includes('gold') || id.includes('gpm') || id.includes('egpm')) {
+      return 'economy';
+    }
+    
+    // Combat metrics (default)
+    return 'combat';
+  }
+
+  private detectMetricType(metricId: string): 'number' | 'percentage' | 'ratio' {
+    const id = metricId.toLowerCase();
+    
+    if (id.includes('percent') || id.includes('%') || id.includes('share')) {
+      return 'percentage';
+    }
+    
+    if (id === 'kda') {
+      return 'ratio';
+    }
+    
+    return 'number';
+  }
+
+  private detectMetricDirection(metricId: string): 'higher-is-better' | 'lower-is-better' {
+    const id = metricId.toLowerCase();
+    
+    // Lower is better for these
+    if (id.includes('death') || id.includes('dth') || id.includes('counter_pick') || id.includes('ctr')) {
+      return 'lower-is-better';
+    }
+    
+    return 'higher-is-better';
+  }
+
+  private detectMetricFormat(metricId: string): 'decimal' | 'percentage' | 'integer' {
+    const id = metricId.toLowerCase();
+    
+    if (id.includes('percent') || id.includes('%') || id.includes('share')) {
+      return 'percentage';
+    }
+    
+    if (id === 'kills' || id === 'deaths' || id === 'assists' || id === 'games_played' || id === 'steals' || id === 'solo_kills') {
+      return 'integer';
+    }
+    
+    return 'decimal';
+  }
+
+  private formatMetricName(metricId: string): string {
+    // Convertir les IDs techniques en noms lisibles
+    const nameMap: Record<string, string> = {
+      'kda': 'KDA',
+      'kills': 'K',
+      'deaths': 'D',
+      'assists': 'A',
+      'kp_percent': 'KP%',
+      'ks_percent': 'KS%',
+      'dmg_percent': 'DMG%',
+      'dt_percent': 'DT%',
+      'dpm': 'DPM',
+      'fb_percent': 'FB%',
+      'solo_kills': 'SoloKills',
+      'steals': 'STL',
+      'cspm': 'CSPM',
+      'csd_at_15': 'CSD@15',
+      'gd_at_15': 'GD@15',
+      'xpd_at_15': 'XPD@15',
+      'csd_at_10': 'CSD@10',
+      'gd_at_10': 'GD@10',
+      'xpd_at_10': 'XPD@10',
+      'egpm': 'EGPM',
+      'gold_share': 'GOLD%',
+      'wpm': 'WPM',
+      'cwpm': 'CWPM',
+      'wcpm': 'WCPM',
+      'vspm': 'VSPM',
+      'vision_share': 'VS%',
+      'win_rate': 'W%',
+      'counter_pick_rate': 'CTR%'
+    };
+    
+    return nameMap[metricId.toLowerCase()] || 
+           metricId
+             .replace(/_/g, ' ')
+             .replace(/\b\w/g, l => l.toUpperCase());
+  }
 }

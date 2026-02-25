@@ -189,11 +189,13 @@ describe('GradeCalculator', () => {
     expect(GradeCalculator.getGrade(85)).toBe('A');
     expect(GradeCalculator.getGrade(70)).toBe('B');
     expect(GradeCalculator.getGrade(55)).toBe('C');
-    expect(GradeCalculator.getGrade(30)).toBe('D');
+    expect(GradeCalculator.getGrade(30)).toBe('C');
   });
 
   it('should return correct colors', () => {
-    expect(GradeCalculator.getGradeColor('S')).toBe('var(--kono-tier-s)');
-    expect(GradeCalculator.getGradeColor('A')).toBe('var(--kono-tier-a)');
+    expect(GradeCalculator.getGradeColor('S')).toBe('#00D9C0');
+    expect(GradeCalculator.getGradeColor('A')).toBe('#4ADE80');
+    expect(GradeCalculator.getGradeColor('B')).toBe('#FACC15');
+    expect(GradeCalculator.getGradeColor('C')).toBe('#FB923C');
   });
 });

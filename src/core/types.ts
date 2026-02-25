@@ -27,7 +27,7 @@ export type MetricDirection = 'higher-is-better' | 'lower-is-better';
 export type MetricFormat = 'decimal' | 'percentage' | 'time' | 'integer';
 
 /** Modes de visualisation radar */
-export type RadarViewMode = 'solo' | 'compare' | 'benchmark';
+export type RadarViewMode = 'solo' | 'compare' | 'benchmark' | 'duel';
 
 /** Vue temporelle */
 export type Timeframe = 'all' | '10' | '15' | 'compare';
@@ -89,6 +89,12 @@ export interface MetricConfig {
   };
 }
 
+/** Type de grade pour les stats (5 tiers: S/A/B/C/D) */
+export type Grade = 'S' | 'A' | 'B' | 'C' | 'D';
+
+/** Type de grade pour les joueurs (4 tiers) */
+export type PlayerTier = 'ELITE' | 'EXCELLENT' | 'GOOD' | 'WEAK';
+
 /**
  * Valeur métrique avec contexte
  */
@@ -97,7 +103,7 @@ export interface MetricValue {
   raw: number;
   normalized: number;  // 0-100
   percentile: number;  // 0-100
-  grade: 'S' | 'A' | 'B' | 'C' | 'D';
+  grade: Grade;
 }
 
 // =============================================================================
@@ -207,6 +213,11 @@ export interface CoreAPI {
   /** Service de normalisation */
   normalize: NormalizationServiceAPI;
 
+  // ── Data Import ───────────────────────────────────────────────────────────
+  
+  /** Importe un fichier CSV */
+  importCSV(file: File): Promise<void>;
+
   // ── Theming ──────────────────────────────────────────────────────────────
   
   /** Récupère une variable CSS thème */
@@ -269,8 +280,14 @@ export interface NormalizationServiceAPI {
     pool: Player[]
   ): number;
   
-  /** Détermine le grade S/A/B/C/D */
-  getGrade(percentile: number): 'S' | 'A' | 'B' | 'C' | 'D';
+  /** Détermine le grade S/A/B/C/D pour les stats */
+  getGrade(percentile: number): Grade;
+  
+  /** Calcule les plages min/max pour toutes les métriques */
+  calculateRanges(players: Player[]): Record<string, { min: number; max: number }>;
+  
+  /** Calcule les distributions de centiles pour toutes les métriques */
+  calculateCentiles(players: Player[]): Record<string, number[]>;
 }
 
 // =============================================================================
@@ -367,6 +384,8 @@ export interface RadarDataset {
   backgroundColor: string;
   borderColor: string;
   borderWidth: number;
+  pointTiers?: string[]; // Tiers pour chaque point (S, A, B, C)
+  borderDash?: number[]; // Pattern ligne pointillée (benchmark)
 }
 
 export interface RadarOptions {
@@ -445,14 +464,38 @@ export type EmitEvent<T extends keyof CoreEvents> = (
 /** Version de l'API Core */
 export const CORE_API_VERSION = '1.0.0';
 
-/** Grades avec seuils de centiles */
-export const GRADE_THRESHOLDS = {
-  S: 90,
-  A: 80,
-  B: 65,
-  C: 50,
-  D: 0
+/** 
+ * STATS TIERS - 5 tiers pour les métriques individuelles
+ * S: 90-100 (Elite - Cyan)
+ * A: 80-90 (Excellent - Green)  
+ * B: 65-80 (Good - Yellow)
+ * C: 50-65 (Average - Orange)
+ * D: <50 (Weak - Red)
+ */
+export const STATS_GRADE_THRESHOLDS = {
+  S: 90,   // Elite: 100-90
+  A: 80,   // Excellent: 90-80
+  B: 65,   // Good: 80-65
+  C: 50,   // Average: 65-50
+  D: 0     // Weak: <50
 } as const;
+
+/** 
+ * PLAYER TIERS - 4 tiers pour le score global
+ * Elite: 75-100
+ * Excellent: 60-75
+ * Good: 50-60
+ * Weak: <50
+ */
+export const PLAYER_GRADE_THRESHOLDS = {
+  ELITE: 75,      // 75-100
+  EXCELLENT: 60,  // 60-75
+  GOOD: 50,       // 50-60
+  WEAK: 0         // <50
+} as const;
+
+// Alias pour compatibilité
+export const GRADE_THRESHOLDS = STATS_GRADE_THRESHOLDS;
 
 /** Catégories avec couleurs associées */
 export const CATEGORY_COLORS: Record<MetricCategory, string> = {
