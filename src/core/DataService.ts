@@ -51,11 +51,14 @@ export class DataService {
     if (!roleColumn) warnings.push('Colonne rôle non détectée');
 
     // Détecter métriques numériques
-    const metrics = this.detectNumericMetrics(data, columns);
+    const rawMetrics = this.detectNumericMetrics(data, columns);
+    
+    // Normaliser les IDs des métriques
+    const metrics = rawMetrics.map(m => this.normalizeMetricId(m));
 
     // Créer objets Player
     const players = data.map((row, index) => 
-      this.createPlayer(row, index, nameColumn, teamColumn, roleColumn, metrics)
+      this.createPlayer(row, index, nameColumn, teamColumn, roleColumn, rawMetrics)
     ).filter((p): p is Player => p !== null);
 
     return { players, columns, metrics, warnings };
@@ -136,10 +139,27 @@ export class DataService {
   }
 
   private normalizeMetricId(colName: string): string {
-    // Convertir nom colonne en ID métrique
-    // KDA → kda, CSD@15 → csd_at_15, etc.
-    return colName
-      .toLowerCase()
+    // Mapping spécifique pour les colonnes connues
+    const mapping: Record<string, string> = {
+      'kda': 'kda',
+      'kp': 'kp_percent',
+      'kp%': 'kp_percent',
+      'dmg%': 'dmg_percent',
+      'dt%': 'dt_percent',
+      'cspm': 'cspm',
+      'csd@15': 'csd_at_15',
+      'gd@15': 'gd_at_15',
+      'visionscore': 'vspm',
+      'vs': 'vspm',
+      'dpm': 'dpm',
+      'firstblood%': 'fb_percent',
+      'fb%': 'fb_percent',
+      'wpm': 'wpm',
+      'wcpm': 'wcpm'
+    };
+    
+    const normalized = colName.toLowerCase().trim();
+    return mapping[normalized] || normalized
       .replace(/[@\s%]/g, '_')
       .replace(/_+/g, '_')
       .replace(/^_+|_+$/g, '');

@@ -43,6 +43,18 @@ export const defaultMetrics: MetricConfig[] = [
     icon: '💥'
   },
   {
+    id: 'dt_percent',
+    name: 'DT%',
+    category: 'combat',
+    type: 'percentage',
+    direction: 'lower-is-better',
+    normalize: { min: 0, max: 30 },
+    format: 'percentage',
+    decimals: 1,
+    description: 'Damage Taken percentage',
+    icon: '🛡️'
+  },
+  {
     id: 'cspm',
     name: 'CSPM',
     category: 'farming',
@@ -101,6 +113,42 @@ export const defaultMetrics: MetricConfig[] = [
     decimals: 0,
     description: 'Damage Per Minute',
     icon: '🔥'
+  },
+  {
+    id: 'fb_percent',
+    name: 'FB%',
+    category: 'combat',
+    type: 'percentage',
+    direction: 'higher-is-better',
+    normalize: { min: 0, max: 50 },
+    format: 'percentage',
+    decimals: 1,
+    description: 'First Blood rate',
+    icon: '🔴'
+  },
+  {
+    id: 'wpm',
+    name: 'WPM',
+    category: 'vision',
+    type: 'number',
+    direction: 'higher-is-better',
+    normalize: { min: 0, max: 5, roleSpecific: true },
+    format: 'decimal',
+    decimals: 2,
+    description: 'Wards Per Minute',
+    icon: '🚩'
+  },
+  {
+    id: 'wcpm',
+    name: 'WCPM',
+    category: 'vision',
+    type: 'number',
+    direction: 'higher-is-better',
+    normalize: { min: 0, max: 1, roleSpecific: true },
+    format: 'decimal',
+    decimals: 2,
+    description: 'Wards Cleared Per Minute',
+    icon: '🧹'
   }
 ];
 
@@ -110,10 +158,15 @@ export const csvColumnMapping: Record<string, string> = {
   'kp': 'kp_percent',
   'kp%': 'kp_percent',
   'dmg%': 'dmg_percent',
+  'dt%': 'dt_percent',
   'cspm': 'cspm',
   'csd@15': 'csd_at_15',
   'gd@15': 'gd_at_15',
   'visionscore': 'vspm',
   'vs': 'vspm',
-  'dpm': 'dpm'
+  'dpm': 'dpm',
+  'firstblood%': 'fb_percent',
+  'fb%': 'fb_percent',
+  'wpm': 'wpm',
+  'wcpm': 'wcpm'
 };
