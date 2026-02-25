@@ -32,40 +32,65 @@ export class RadarScoutModule {
   }
 
   render(): void {
-    // Créer le container
+    // Créer le container avec style V4
     this.container = document.createElement('div');
-    this.container.className = 'radar-scout-module';
+    this.container.className = 'radar-scout-module v4-style';
     this.container.innerHTML = `
-      <div class="radar-scout-header">
-        <h2 class="module-title">🎯 Radar Scout</h2>
-        <div class="view-toggles">
+      <div class="radar-scout-header v4-header">
+        <div class="v4-title-section">
+          <h2 class="v4-player-name" id="v4-player-name">Select Player</h2>
+          <span class="v4-player-role" id="v4-player-role">-</span>
+        </div>
+        <div class="view-toggles v4-view-toggles">
           <button class="view-btn active" data-view="solo">Solo</button>
-          <button class="view-btn" data-view="compare">Comparer</button>
-          <button class="view-btn" data-view="benchmark">Benchmark</button>
+          <button class="view-btn" data-view="compare">Compare</button>
+          <button class="view-btn" data-view="benchmark">Avg</button>
           <button class="view-btn" data-view="duel">Duel</button>
+        </div>
+        <div class="v4-score-section" id="v4-score-section" style="display: none;">
+          <div class="v4-grade-badge" id="v4-grade">-</div>
+          <div class="v4-score">
+            <span class="v4-score-label">Score</span>
+            <span class="v4-score-value" id="v4-score">-</span>
+          </div>
         </div>
       </div>
       
-      <div class="radar-scout-content">
-        <div class="radar-sidebar">
-          <div class="control-section">
-            <label class="control-label">Joueur</label>
-            <select id="player-select" class="kono-select">
-              <option value="">Sélectionner un joueur</option>
+      <div class="radar-scout-content v4-content">
+        <div class="radar-sidebar v4-sidebar">
+          <div class="control-section v4-player-select">
+            <select id="player-select" class="v4-select">
+              <option value="">Select player</option>
             </select>
           </div>
           
+          <div class="v4-player-info" id="v4-player-card" style="display: none;">
+            <div class="v4-player-avatar"></div>
+            <div class="v4-player-details">
+              <span class="v4-player-team" id="v4-player-team">-</span>
+            </div>
+          </div>
+          
+          <div class="v4-mode-toggle">
+            <button class="v4-mode-btn ${this.centileViewMode === 'percentiles' ? 'active' : ''}" data-mode="percentiles">
+              <span>％</span> Percentiles
+            </button>
+            <button class="v4-mode-btn ${this.centileViewMode === 'values' ? 'active' : ''}" data-mode="values">
+              <span>📊</span> Values
+            </button>
+          </div>
+          
           <div class="control-section" id="compare-section" style="display: none;">
-            <label class="control-label">Comparer avec</label>
-            <select id="compare-select" class="kono-select">
-              <option value="">Sélectionner un joueur</option>
+            <label class="control-label">Compare with</label>
+            <select id="compare-select" class="v4-select">
+              <option value="">Select player</option>
             </select>
           </div>
           
           <div class="control-section" id="role-filter-section">
-            <label class="control-label">Filtrer par rôle</label>
-            <select id="role-filter" class="kono-select">
-              <option value="all">Tous les rôles</option>
+            <label class="control-label">Role</label>
+            <select id="role-filter" class="v4-select">
+              <option value="all">All roles</option>
               <option value="TOP">Top</option>
               <option value="JUNGLE">Jungle</option>
               <option value="MID">Mid</option>
@@ -74,37 +99,37 @@ export class RadarScoutModule {
             </select>
           </div>
           
-          <div class="control-section">
-            <label class="control-label">Métriques</label>
-            <div id="metrics-list" class="metrics-list"></div>
+          <div class="control-section v4-metrics">
+            <label class="control-label">Metrics</label>
+            <div id="metrics-list" class="v4-metrics-list"></div>
           </div>
         </div>
         
-        <div class="radar-main">
-          <div id="radar-chart-container" class="radar-chart-container"></div>
+        <div class="radar-main v4-main">
+          <div id="radar-chart-container" class="radar-chart-container v4-radar"></div>
           <div id="duel-view-container" class="duel-view-container" style="display: none;"></div>
-          <div id="radar-empty" class="radar-empty">
+          <div id="radar-empty" class="radar-empty v4-empty">
             <div class="empty-icon">📊</div>
-            <p>Sélectionnez un joueur pour visualiser</p>
+            <p>Import data and select a player</p>
           </div>
         </div>
         
-        <div class="radar-panel">
-          <div class="panel-section" id="stats-section">
-            <h3>Statistiques</h3>
-            <div id="stats-details" class="stats-details">
-              <p class="stats-placeholder">Sélectionnez un joueur</p>
+        <div class="radar-panel v4-panel">
+          <div class="panel-section v4-stats" id="stats-section">
+            <h3>Stats</h3>
+            <div id="stats-details" class="stats-details v4-stats-details">
+              <p class="stats-placeholder">Select a player</p>
             </div>
           </div>
           
-          <div class="panel-section" id="centiles-section">
+          <div class="panel-section v4-centiles" id="centiles-section">
             <div class="centiles-header">
-              <h3>📊 Percentile Analysis</h3>
+              <h3>📊 Percentiles</h3>
               <div class="centile-toggle">
-                <button class="centile-toggle-btn ${this.centileViewMode === 'percentiles' ? 'active' : ''}" data-mode="percentiles" title="Voir les percentiles">
+                <button class="centile-toggle-btn ${this.centileViewMode === 'percentiles' ? 'active' : ''}" data-mode="percentiles" title="View percentiles">
                   <span>％</span>
                 </button>
-                <button class="centile-toggle-btn ${this.centileViewMode === 'values' ? 'active' : ''}" data-mode="values" title="Voir les valeurs brutes">
+                <button class="centile-toggle-btn ${this.centileViewMode === 'values' ? 'active' : ''}" data-mode="values" title="View raw values">
                   <span>123</span>
                 </button>
               </div>
@@ -479,19 +504,63 @@ export class RadarScoutModule {
     const selectedMetrics = this.core.getState('selectedMetrics');
     const statsDetails = this.container?.querySelector('#stats-details');
 
+    // Update V4 header elements
+    const v4PlayerName = this.container?.querySelector('#v4-player-name') as HTMLElement;
+    const v4PlayerRole = this.container?.querySelector('#v4-player-role') as HTMLElement;
+    const v4PlayerTeam = this.container?.querySelector('#v4-player-team') as HTMLElement;
+    const v4PlayerCard = this.container?.querySelector('#v4-player-card') as HTMLElement;
+    const v4ScoreSection = this.container?.querySelector('#v4-score-section') as HTMLElement;
+    const v4Grade = this.container?.querySelector('#v4-grade') as HTMLElement;
+    const v4Score = this.container?.querySelector('#v4-score') as HTMLElement;
+
     if (!playerId || !statsDetails) {
       if (statsDetails) {
-        statsDetails.innerHTML = '<p class="stats-placeholder">Sélectionnez un joueur</p>';
+        statsDetails.innerHTML = '<p class="stats-placeholder">Select a player</p>';
       }
+      if (v4PlayerName) v4PlayerName.textContent = 'Select Player';
+      if (v4PlayerRole) v4PlayerRole.textContent = '-';
+      if (v4PlayerCard) v4PlayerCard.style.display = 'none';
+      if (v4ScoreSection) v4ScoreSection.style.display = 'none';
       return;
     }
 
     const player = players.find(p => p.id === playerId);
     if (!player) return;
 
-    // Récupérer les configs de métriques
+    // Update V4 header
+    if (v4PlayerName) v4PlayerName.textContent = player.name;
+    if (v4PlayerRole) v4PlayerRole.textContent = player.role;
+    if (v4PlayerTeam) v4PlayerTeam.textContent = player.team;
+    if (v4PlayerCard) v4PlayerCard.style.display = 'flex';
+    if (v4ScoreSection) v4ScoreSection.style.display = 'flex';
+
+    // Calculate average score for V4 header
     const allMetrics = this.core.listMetrics();
     const metricsMap = new Map(allMetrics.map(m => [m.id, m]));
+    
+    let totalScore = 0;
+    let count = 0;
+    const rolePlayers = players.filter(p => p.role === player.role);
+    const comparisonPool = rolePlayers.length >= 3 ? rolePlayers : players;
+    
+    for (const metricId of selectedMetrics) {
+      const metric = metricsMap.get(metricId) || defaultMetrics.find(m => m.id === metricId);
+      if (!metric) continue;
+      const value = player.stats[metricId];
+      if (value === undefined) continue;
+      const percentile = this.calculateStrictPercentile(value, metric, comparisonPool);
+      totalScore += percentile;
+      count++;
+    }
+    
+    const avgScore = count > 0 ? Math.round(totalScore / count) : 0;
+    const grade = this.core.normalize.getGrade(avgScore);
+    
+    if (v4Grade) {
+      v4Grade.textContent = grade;
+      v4Grade.className = `v4-grade-badge grade-${grade.toLowerCase()}`;
+    }
+    if (v4Score) v4Score.textContent = String(avgScore);
 
     const statsHtml = selectedMetrics.map(metricId => {
       const metric = metricsMap.get(metricId) || defaultMetrics.find(m => m.id === metricId);
