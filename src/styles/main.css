@@ -1,0 +1,292 @@
+/* ============================================
+   KONOHA - MAIN STYLES
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--kono-font-body);
+  background: var(--kono-bg-primary);
+  color: var(--kono-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT
+   -------------------------------------------------------------------------- */
+
+.konoha-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.konoha-navbar {
+  height: var(--kono-size-navbar);
+  background: var(--kono-glass-base);
+  backdrop-filter: var(--kono-backdrop-blur);
+  border-bottom: 1px solid var(--kono-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--kono-space-6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--kono-space-3);
+  font-family: var(--kono-font-display);
+  font-size: var(--kono-text-xl);
+  font-weight: var(--kono-weight-bold);
+  color: var(--kono-primary);
+}
+
+.brand-icon {
+  font-size: var(--kono-text-2xl);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--kono-space-4);
+}
+
+/* Main Content */
+.konoha-main {
+  flex: 1;
+  margin-top: var(--kono-size-navbar);
+  padding: var(--kono-space-6);
+}
+
+/* --------------------------------------------------------------------------
+   WELCOME SCREEN
+   -------------------------------------------------------------------------- */
+
+.welcome-screen {
+  min-height: calc(100vh - var(--kono-size-navbar));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--kono-space-12);
+  text-align: center;
+}
+
+.welcome-title {
+  font-family: var(--kono-font-display);
+  font-size: var(--kono-text-5xl);
+  font-weight: var(--kono-weight-bold);
+  margin-bottom: var(--kono-space-4);
+  background: var(--kono-gradient-cyan);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-subtitle {
+  font-size: var(--kono-text-xl);
+  color: var(--kono-text-secondary);
+  margin-bottom: var(--kono-space-12);
+  max-width: 600px;
+}
+
+.welcome-upload {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* --------------------------------------------------------------------------
+   FILE UPLOAD
+   -------------------------------------------------------------------------- */
+
+.file-upload-zone {
+  border: 2px dashed var(--kono-border-default);
+  border-radius: var(--kono-radius-lg);
+  padding: var(--kono-space-12);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--kono-transition-base);
+  background: var(--kono-glass-subtle);
+}
+
+.file-upload-zone:hover,
+.file-upload-zone.drag-over {
+  border-color: var(--kono-primary);
+  background: var(--kono-primary-muted);
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: var(--kono-space-4);
+}
+
+.upload-text {
+  color: var(--kono-text-primary);
+  margin-bottom: var(--kono-space-2);
+  font-size: var(--kono-text-lg);
+}
+
+.upload-hint {
+  color: var(--kono-text-muted);
+  font-size: var(--kono-text-sm);
+}
+
+.upload-status {
+  margin-top: var(--kono-space-4);
+}
+
+.upload-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kono-space-3);
+  color: var(--kono-text-secondary);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--kono-border-default);
+  border-top-color: var(--kono-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.upload-error {
+  color: var(--kono-danger);
+  padding: var(--kono-space-3);
+  background: var(--kono-danger-muted);
+  border-radius: var(--kono-radius-md);
+}
+
+.upload-success {
+  color: var(--kono-success);
+  padding: var(--kono-space-3);
+  background: var(--kono-success-muted);
+  border-radius: var(--kono-radius-md);
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS
+   -------------------------------------------------------------------------- */
+
+.kono-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kono-space-2);
+  padding: var(--kono-space-3) var(--kono-space-6);
+  font-family: var(--kono-font-body);
+  font-size: var(--kono-text-sm);
+  font-weight: var(--kono-weight-medium);
+  border: none;
+  border-radius: var(--kono-radius-md);
+  cursor: pointer;
+  transition: all var(--kono-transition-fast);
+}
+
+.kono-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kono-btn-primary {
+  background: var(--kono-primary);
+  color: var(--kono-text-inverse);
+}
+
+.kono-btn-primary:hover:not(:disabled) {
+  background: var(--kono-primary-hover);
+  box-shadow: var(--kono-glow-primary);
+}
+
+.kono-btn-secondary {
+  background: var(--kono-glass-base);
+  color: var(--kono-text-primary);
+  border: 1px solid var(--kono-border-default);
+}
+
+.kono-btn-secondary:hover:not(:disabled) {
+  background: var(--kono-glass-hover);
+  border-color: var(--kono-border-strong);
+}
+
+/* --------------------------------------------------------------------------
+   FORM ELEMENTS
+   -------------------------------------------------------------------------- */
+
+.kono-select {
+  width: 100%;
+  padding: var(--kono-space-3) var(--kono-space-4);
+  font-family: var(--kono-font-body);
+  font-size: var(--kono-text-sm);
+  color: var(--kono-text-primary);
+  background: var(--kono-bg-secondary);
+  border: 1px solid var(--kono-border-default);
+  border-radius: var(--kono-radius-md);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.kono-select:focus {
+  outline: none;
+  border-color: var(--kono-primary);
+  box-shadow: 0 0 0 2px var(--kono-primary-muted);
+}
+
+.kono-select option {
+  background: var(--kono-bg-secondary);
+  color: var(--kono-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   GRADES
+   -------------------------------------------------------------------------- */
+
+.grade-s { color: var(--kono-tier-s); }
+.grade-a { color: var(--kono-tier-a); }
+.grade-b { color: var(--kono-tier-b); }
+.grade-c { color: var(--kono-tier-c); }
+.grade-d { color: var(--kono-tier-d); }
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .konoha-main {
+    padding: var(--kono-space-4);
+  }
+  
+  .welcome-title {
+    font-size: var(--kono-text-3xl);
+  }
+  
+  .welcome-subtitle {
+    font-size: var(--kono-text-lg);
+  }
+}

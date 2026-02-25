@@ -1,0 +1,234 @@
+/* ============================================
+   KONOHA DESIGN TOKENS
+   ============================================ */
+
+:root {
+  /* --------------------------------------------------------------------------
+     CORE BACKGROUNDS - Fondations sombres
+     -------------------------------------------------------------------------- */
+  --kono-bg-primary: #0a0a0f;
+  --kono-bg-secondary: #12121a;
+  --kono-bg-tertiary: #1a1a25;
+  --kono-bg-elevated: #222230;
+  
+  /* Glassmorphism Backgrounds */
+  --kono-glass-base: rgba(26, 26, 37, 0.6);
+  --kono-glass-hover: rgba(255, 255, 255, 0.06);
+  --kono-glass-subtle: rgba(255, 255, 255, 0.03);
+  
+  /* --------------------------------------------------------------------------
+     SEMANTIC COLORS - Sémantique métier
+     -------------------------------------------------------------------------- */
+  --kono-primary: #4ECDC4;
+  --kono-primary-hover: #5DDDD4;
+  --kono-primary-muted: rgba(78, 205, 196, 0.15);
+  
+  --kono-secondary: #A855F7;
+  --kono-secondary-hover: #B76EF8;
+  --kono-secondary-muted: rgba(168, 85, 247, 0.15);
+  
+  --kono-success: #00E676;
+  --kono-success-muted: rgba(0, 230, 118, 0.15);
+  
+  --kono-warning: #FFD93D;
+  --kono-warning-muted: rgba(255, 217, 61, 0.15);
+  
+  --kono-danger: #FF6B6B;
+  --kono-danger-hover: #FF8585;
+  --kono-danger-muted: rgba(255, 107, 107, 0.15);
+  
+  --kono-info: #45B7D1;
+  
+  /* --------------------------------------------------------------------------
+     DATA COLORS - Visualisation métriques
+     -------------------------------------------------------------------------- */
+  --kono-data-combat: #FF6B6B;
+  --kono-data-vision: #4ECDC4;
+  --kono-data-farming: #FFD93D;
+  --kono-data-early: #A855F7;
+  --kono-data-economy: #00E676;
+  
+  /* --------------------------------------------------------------------------
+     TIER/GRADE COLORS - Système de notation S/A/B/C/D
+     -------------------------------------------------------------------------- */
+  --kono-tier-s: #00D9C0;
+  --kono-tier-a: #00E676;
+  --kono-tier-b: #FFD93D;
+  --kono-tier-c: #FF9F43;
+  --kono-tier-d: #FF6B6B;
+  
+  /* --------------------------------------------------------------------------
+     TEXT COLORS - Hiérarchie de lisibilité
+     -------------------------------------------------------------------------- */
+  --kono-text-primary: #FFFFFF;
+  --kono-text-secondary: rgba(255, 255, 255, 0.7);
+  --kono-text-muted: rgba(255, 255, 255, 0.5);
+  --kono-text-ghost: rgba(255, 255, 255, 0.3);
+  --kono-text-inverse: #0a0a0f;
+  
+  /* --------------------------------------------------------------------------
+     BORDER COLORS - Glassmorphism borders
+     -------------------------------------------------------------------------- */
+  --kono-border-subtle: rgba(255, 255, 255, 0.08);
+  --kono-border-default: rgba(255, 255, 255, 0.12);
+  --kono-border-strong: rgba(255, 255, 255, 0.2);
+  --kono-border-focus: rgba(78, 205, 196, 0.5);
+
+  /* --------------------------------------------------------------------------
+     FONT FAMILIES
+     -------------------------------------------------------------------------- */
+  --kono-font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --kono-font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --kono-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* --------------------------------------------------------------------------
+     TYPE SCALE - Major Third (1.25)
+     -------------------------------------------------------------------------- */
+  --kono-text-2xs: 0.625rem;
+  --kono-text-xs: 0.75rem;
+  --kono-text-sm: 0.875rem;
+  --kono-text-base: 1rem;
+  --kono-text-lg: 1.125rem;
+  --kono-text-xl: 1.25rem;
+  --kono-text-2xl: 1.5rem;
+  --kono-text-3xl: 1.875rem;
+  --kono-text-4xl: 2.25rem;
+  --kono-text-5xl: 3rem;
+  
+  /* --------------------------------------------------------------------------
+     FONT WEIGHTS
+     -------------------------------------------------------------------------- */
+  --kono-weight-normal: 400;
+  --kono-weight-medium: 500;
+  --kono-weight-semibold: 600;
+  --kono-weight-bold: 700;
+  --kono-weight-extrabold: 800;
+  
+  /* --------------------------------------------------------------------------
+     LINE HEIGHTS
+     -------------------------------------------------------------------------- */
+  --kono-leading-none: 1;
+  --kono-leading-tight: 1.25;
+  --kono-leading-snug: 1.375;
+  --kono-leading-normal: 1.5;
+  --kono-leading-relaxed: 1.625;
+  --kono-leading-loose: 2;
+  
+  /* --------------------------------------------------------------------------
+     LETTER SPACING
+     -------------------------------------------------------------------------- */
+  --kono-tracking-tight: -0.025em;
+  --kono-tracking-normal: 0;
+  --kono-tracking-wide: 0.025em;
+  --kono-tracking-wider: 0.05em;
+  --kono-tracking-widest: 0.1em;
+
+  /* --------------------------------------------------------------------------
+     SPACING SCALE - Base 4px (0.25rem)
+     -------------------------------------------------------------------------- */
+  --kono-space-0: 0;
+  --kono-space-1: 0.25rem;
+  --kono-space-2: 0.5rem;
+  --kono-space-3: 0.75rem;
+  --kono-space-4: 1rem;
+  --kono-space-5: 1.25rem;
+  --kono-space-6: 1.5rem;
+  --kono-space-8: 2rem;
+  --kono-space-10: 2.5rem;
+  --kono-space-12: 3rem;
+  --kono-space-16: 4rem;
+  --kono-space-20: 5rem;
+  --kono-space-24: 6rem;
+  
+  /* --------------------------------------------------------------------------
+     LAYOUT SIZES
+     -------------------------------------------------------------------------- */
+  --kono-size-sidebar: 320px;
+  --kono-size-context-panel: 280px;
+  --kono-size-navbar: 76px;
+  --kono-size-max-content: 1800px;
+  
+  /* --------------------------------------------------------------------------
+     CONTAINER SIZES - Pour exports PNG
+     -------------------------------------------------------------------------- */
+  --kono-export-solo-width: 1200px;
+  --kono-export-solo-height: 800px;
+  --kono-export-social-width: 1080px;
+  --kono-export-social-height: 1080px;
+
+  /* --------------------------------------------------------------------------
+     BORDER RADIUS
+     -------------------------------------------------------------------------- */
+  --kono-radius-none: 0;
+  --kono-radius-sm: 0.5rem;
+  --kono-radius-md: 0.75rem;
+  --kono-radius-lg: 1rem;
+  --kono-radius-xl: 1.5rem;
+  --kono-radius-2xl: 2rem;
+  --kono-radius-full: 9999px;
+  
+  /* --------------------------------------------------------------------------
+     BORDER WIDTHS
+     -------------------------------------------------------------------------- */
+  --kono-border-width-0: 0;
+  --kono-border-width-1: 1px;
+  --kono-border-width-2: 2px;
+  --kono-border-width-4: 4px;
+
+  /* --------------------------------------------------------------------------
+     SHADOWS - Système de profondeur
+     -------------------------------------------------------------------------- */
+  --kono-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --kono-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --kono-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --kono-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  
+  /* Glow Effects */
+  --kono-glow-primary: 0 0 40px rgba(78, 205, 196, 0.3);
+  --kono-glow-secondary: 0 0 40px rgba(168, 85, 247, 0.3);
+  --kono-glow-success: 0 0 20px rgba(0, 230, 118, 0.4);
+  --kono-glow-warning: 0 0 20px rgba(255, 217, 61, 0.4);
+  --kono-glow-danger: 0 0 20px rgba(255, 107, 107, 0.4);
+  
+  /* Glassmorphism */
+  --kono-backdrop-blur: blur(20px) saturate(180%);
+  --kono-backdrop-blur-sm: blur(10px) saturate(150%);
+  
+  /* --------------------------------------------------------------------------
+     GRADIENTS
+     -------------------------------------------------------------------------- */
+  --kono-gradient-primary: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 50%, #45B7D1 100%);
+  --kono-gradient-cyan: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+  --kono-gradient-magenta: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+  --kono-gradient-gold: linear-gradient(135deg, #FFD93D 0%, #FFA502 100%);
+  --kono-gradient-violet: linear-gradient(135deg, #A855F7 0%, #E040FB 100%);
+  
+  /* Orb Gradients (fond animé) */
+  --kono-orb-cyan: radial-gradient(circle, rgba(78, 205, 196, 0.4) 0%, transparent 70%);
+  --kono-orb-magenta: radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, transparent 70%);
+  --kono-orb-violet: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
+
+  /* --------------------------------------------------------------------------
+     TRANSITIONS
+     -------------------------------------------------------------------------- */
+  --kono-duration-instant: 0ms;
+  --kono-duration-fast: 150ms;
+  --kono-duration-base: 250ms;
+  --kono-duration-slow: 350ms;
+  --kono-duration-slower: 500ms;
+  
+  --kono-ease-linear: linear;
+  --kono-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --kono-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --kono-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --kono-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --kono-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* Transition presets */
+  --kono-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --kono-transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --kono-transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --kono-transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+
