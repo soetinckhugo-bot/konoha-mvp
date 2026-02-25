@@ -44,6 +44,7 @@ export const METRIC_DISPLAY_NAMES: Record<string, string> = {
   'fb_percent': 'First Blood Rate',
   'fb_victim': 'First Blood Victim',
   'solo_kills': 'Solo Kills',
+  'penta_kills': 'Penta Kills',
   'steals': 'Steals',
   'dmg_percent': 'Damage Share',
   'dpm': 'Damage Per Minute',
@@ -78,7 +79,7 @@ export const METRIC_DISPLAY_NAMES: Record<string, string> = {
 
 // Catégorisation pour le Percentile Analysis (3 colonnes)
 export const PERCENTILE_CATEGORIES = {
-  fight: ['win_rate', 'kda', 'kp_percent', 'ks_percent', 'death_share', 'fb_percent', 'fb_victim', 'solo_kills', 'steals', 'dmg_percent', 'dpm', 'dmg_percent_at_15', 'kills', 'deaths', 'assists', 'counter_pick_rate', 'games_played'],
+  fight: ['win_rate', 'kda', 'kp_percent', 'ks_percent', 'death_share', 'fb_percent', 'fb_victim', 'solo_kills', 'penta_kills', 'steals', 'dmg_percent', 'dpm', 'dmg_percent_at_15', 'kills', 'deaths', 'assists', 'counter_pick_rate', 'games_played'],
   vision: ['vspm', 'wpm', 'cwpm', 'wcpm', 'vision_share', 'vwpm'],
   resources: ['cspm', 'cs_share_at_15', 'csd_at_10', 'csd_at_15', 'gd_at_10', 'gd_at_15', 'xpd_at_10', 'xpd_at_15', 'gpm', 'egpm', 'gold_share']
 };
@@ -101,6 +102,7 @@ export const ALL_METRICS: RoleMetricDef[] = [
   { id: 'deaths', name: 'D', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
   { id: 'assists', name: 'A', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' },
   { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
+  { id: 'penta_kills', name: 'Penta Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' },
   // Farming
   { id: 'cspm', name: 'CSPM', category: 'farming', direction: 'higher-is-better', inverted: false, format: 'decimal' },
   { id: 'cs_share_at_15', name: 'CS%P15', category: 'farming', direction: 'higher-is-better', inverted: false, format: 'percentage' },
@@ -140,6 +142,7 @@ export const ROLE_METRICS: Record<string, RoleMetricDef[]> = {
     { id: 'gold_share', name: 'GOLD%', category: 'economy', direction: 'lower-is-better', inverted: true, format: 'percentage' },
     { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
     { id: 'solo_kills', name: 'Solo Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' },
+    { id: 'penta_kills', name: 'Penta Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' },
     { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'csd_at_15', name: 'CSD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'gd_at_15', name: 'GD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' }
@@ -159,7 +162,8 @@ export const ROLE_METRICS: Record<string, RoleMetricDef[]> = {
     { id: 'gd_at_15', name: 'GD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'csd_at_15', name: 'CSD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
-    { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' }
+    { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
+    { id: 'penta_kills', name: 'Penta Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' }
   ],
   
   MID: [
@@ -176,7 +180,8 @@ export const ROLE_METRICS: Record<string, RoleMetricDef[]> = {
     { id: 'csd_at_15', name: 'CSD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
-    { id: 'solo_kills', name: 'Solo Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' }
+    { id: 'solo_kills', name: 'Solo Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' },
+    { id: 'penta_kills', name: 'Penta Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' }
   ],
   
   ADC: [
@@ -195,7 +200,8 @@ export const ROLE_METRICS: Record<string, RoleMetricDef[]> = {
     { id: 'gd_at_15', name: 'GD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'csd_at_15', name: 'CSD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
-    { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' }
+    { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
+    { id: 'penta_kills', name: 'Penta Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' }
   ],
   
   SUPPORT: [
@@ -214,7 +220,8 @@ export const ROLE_METRICS: Record<string, RoleMetricDef[]> = {
     { id: 'vwpm', name: 'VWPM', category: 'vision', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'xpd_at_15', name: 'XPD@15', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
     { id: 'xpd_at_10', name: 'XPD@10', category: 'early', direction: 'higher-is-better', inverted: false, format: 'decimal' },
-    { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' }
+    { id: 'fb_victim', name: 'FB Victim', category: 'combat', direction: 'lower-is-better', inverted: true, format: 'integer' },
+    { id: 'penta_kills', name: 'Penta Kills', category: 'combat', direction: 'higher-is-better', inverted: false, format: 'integer' }
   ]
 };
 
@@ -257,6 +264,7 @@ function getIconForMetric(id: string): string {
     'fb_percent': '🔴',
     'fb_victim': '🩸',
     'solo_kills': '🥷',
+    'penta_kills': '🏆',
     'csd_at_15': '⏱️',
     'gd_at_15': '💵',
     'xpd_at_15': '📈',
@@ -292,6 +300,7 @@ export const ROLE_WEIGHTS_V4: Record<string, Record<string, number>> = {
     gold_share: 1.5,       // GOLD% = 1.5
     fb_victim: 1,          // FB Victim = 1
     solo_kills: 1.5,       // SoloKills = 1.5
+    penta_kills: 1,        // PentaKills = 1
     xpd_at_15: 1.5,        // XPD@15 = 1.5
     csd_at_15: 1.5,        // CSD@15 = 1.5
     gd_at_15: 1            // GD@15 = 1
@@ -311,7 +320,8 @@ export const ROLE_WEIGHTS_V4: Record<string, Record<string, number>> = {
     gd_at_15: 1.5,         // GD@15 = 1.5
     csd_at_15: 1,          // CSD@15 = 1
     xpd_at_15: 1,          // XPD@15 = 1 (PAS inversé!)
-    fb_victim: 1           // FB Victim = 1
+    fb_victim: 1,          // FB Victim = 1
+    penta_kills: 1         // PentaKills = 1
   },
   
   MID: {
@@ -328,7 +338,8 @@ export const ROLE_WEIGHTS_V4: Record<string, Record<string, number>> = {
     csd_at_15: 1,          // CSD@15 = 1
     xpd_at_15: 1.5,        // XPD@15 = 1.5
     fb_victim: 1.5,        // FB Victim = 1.5
-    solo_kills: 1.5        // SoloKills = 1.5
+    solo_kills: 1.5,       // SoloKills = 1.5
+    penta_kills: 1         // PentaKills = 1
   },
   
   ADC: {
@@ -366,7 +377,8 @@ export const ROLE_WEIGHTS_V4: Record<string, Record<string, number>> = {
     vwpm: 0.5,             // VWPM = 0.5
     xpd_at_15: 1,          // XPD@15 = 1
     xpd_at_10: 1,          // XPD@10 = 1
-    fb_victim: 1           // FB Victim = 1
+    fb_victim: 1,          // FB Victim = 1
+    penta_kills: 1         // PentaKills = 1
   }
 };
 

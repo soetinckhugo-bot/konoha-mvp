@@ -215,6 +215,11 @@ export class DataService {
       'earned gpm': 'egpm',
       'gold%': 'gold_share',
       'gold% ': 'gold_share',
+      
+      // === Combat - Penta Kills ===
+      'pentakills': 'penta_kills',
+      'penta kills': 'penta_kills',
+      'penta_kills': 'penta_kills',
       'gd10': 'gd_at_10',
       'gd@10': 'gd_at_10',
       'gd15': 'gd_at_15',
