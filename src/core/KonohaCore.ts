@@ -146,9 +146,9 @@ export class KonohaCore {
         const centiles = this.normalizationService.calculateCentiles(players);
         this.normalizationService.setCentiles(centiles);
         
-        // Sauvegarder dans le cache
-        this.storageService.set('cached_players', players);
-        this.storageService.set('cached_timestamp', Date.now());
+        // Sauvegarder dans le cache (utiliser les clés officielles)
+        this.storageService.savePlayers(players);
+        this.storageService.set('konoha_last_import', Date.now());
       },
 
       // Theming

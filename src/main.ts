@@ -34,8 +34,8 @@ const mountPlugin = async () => {
   // Setup file upload
   setupFileUpload();
   
-  // Try to load cached data
-  loadCachedData();
+  // Try to load cached data (await pour le auto-mount)
+  await loadCachedData();
   
   // Check if we have data (from cache or fresh)
   const players = core.api.getState('players');
@@ -51,28 +51,79 @@ const mountPlugin = async () => {
   }
 };
 
-function loadCachedData(): void {
+async function loadCachedData(): Promise<void> {
   try {
-    const cachedPlayers = core.api.data.load<Player[]>('cached_players');
+    // Utiliser l'API publique pour charger les données
+    const cachedPlayers = core.api.data.load('konoha_players') as Player[] | null;
     if (cachedPlayers && cachedPlayers.length > 0) {
       core.api.setState('players', cachedPlayers);
       
-      // Recalculate ranges and centiles
-      const ranges = core.api.normalize.calculateRanges?.(cachedPlayers);
-      if (ranges) {
-        // Apply ranges through data service
-      }
+      // Recalculate ranges and centiles via l'API publique
+      const ranges = core.api.normalize.calculateRanges(cachedPlayers);
+      core.api.normalize.calculateCentiles(cachedPlayers);
+      
+      core.api.setState('metricRanges', ranges);
       
       console.log(`✅ Loaded ${cachedPlayers.length} players from cache`);
+      
+      // Update header badges
+      updateHeaderBadges(cachedPlayers.length, true);
+      
+      // Auto-mount plugin if data exists
+      if (!isPluginMounted) {
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const appContainer = document.getElementById('app-container');
+        
+        if (welcomeScreen) welcomeScreen.style.display = 'none';
+        if (appContainer) appContainer.style.display = 'block';
+        
+        await radarPlugin.mount(core.api);
+        isPluginMounted = true;
+      }
     }
   } catch (err) {
     console.warn('Failed to load cached data:', err);
   }
 }
 
+function updateHeaderBadges(count: number, fromCache: boolean = false): void {
+  const countBadge = document.getElementById('players-count');
+  const cacheBadge = document.getElementById('cache-badge');
+  const cacheInfo = document.getElementById('cache-info');
+  
+  if (countBadge) {
+    countBadge.textContent = `${count} Players loaded`;
+  }
+  
+  if (fromCache && cacheBadge && cacheInfo) {
+    cacheBadge.style.display = 'flex';
+    const lastImport = localStorage.getItem('konoha_last_import');
+    if (lastImport) {
+      const date = new Date(parseInt(lastImport, 10));
+      const now = new Date();
+      const diffMinutes = Math.floor((now.getTime() - date.getTime()) / 60000);
+      cacheInfo.textContent = `${count} players (cache ${diffMinutes}m)`;
+    }
+  }
+}
+
 function setupFileUpload(): void {
   const uploadZone = document.getElementById('upload-zone') as HTMLElement;
   const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const importBtn = document.getElementById('import-btn');
+  
+  // Header import button
+  importBtn?.addEventListener('click', () => {
+    // If we're in the app, create a temporary file input
+    const tempInput = document.createElement('input');
+    tempInput.type = 'file';
+    tempInput.accept = '.csv';
+    tempInput.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) await handleFile(file);
+    };
+    tempInput.click();
+  });
   
   if (!uploadZone || !fileInput) return;
 
@@ -131,6 +182,9 @@ async function handleFile(file: File): Promise<void> {
     await core.api.importCSV(file);
     
     const players = core.api.getState('players');
+    
+    // Update header badges
+    updateHeaderBadges(players.length, false);
     
     if (uploadStatus) {
       uploadStatus.innerHTML = `

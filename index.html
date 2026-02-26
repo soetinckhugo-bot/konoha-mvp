@@ -11,24 +11,46 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/styles/tokens.css">
+  <link rel="stylesheet" href="/src/styles/radar-v4.css">
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
 </head>
 <body>
-  <div class="konoha-app">
-    <!-- Navbar -->
-    <nav class="konoha-navbar">
-      <div class="navbar-brand">
-        <span class="brand-icon">🎯</span>
-        <span>KONOHA</span>
+  <div class="konoha-app v4-theme">
+    <!-- Header V4 -->
+    <header class="v4-global-header">
+      <div class="v4-header-left">
+        <div class="v4-logo">
+          <span class="v4-logo-icon">🎯</span>
+          <span class="v4-logo-text">HUGO</span>
+          <span class="v4-logo-sub">RADAR</span>
+        </div>
       </div>
-      <div class="navbar-actions">
-        <button class="kono-btn kono-btn-secondary" id="import-btn" title="Importer CSV">
-          📁 Importer
+      <div class="v4-header-center">
+        <div class="v4-status-badges">
+          <span class="v4-badge" id="players-count-badge">
+            <span class="badge-dot"></span>
+            <span id="players-count">0 Players loaded</span>
+          </span>
+          <span class="v4-badge" id="cache-badge" style="display: none;">
+            <span class="badge-dot cache"></span>
+            <span id="cache-info">cache 00:00</span>
+          </span>
+        </div>
+      </div>
+      <div class="v4-header-right">
+        <button class="v4-header-btn v4-btn-import" id="import-btn">
+          <span>📁</span> Load Data
+        </button>
+        <button class="v4-header-btn v4-btn-export" id="global-export-btn">
+          <span>📤</span> Exporter
+        </button>
+        <button class="v4-header-btn v4-btn-clear" id="clear-cache-header-btn" title="Clear Cache">
+          <span>🗑️</span>
         </button>
       </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="konoha-main">

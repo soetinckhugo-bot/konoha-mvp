@@ -43,11 +43,12 @@ export class GradeCalculator {
    * Couleur pour un grade de stats
    */
   static getStatsGradeColor(grade: StatsGrade): string {
+    // V4 Colors from design-brief-sally.md
     const colors: Record<StatsGrade, string> = {
-      S: '#00D9C0',  // Elite - Cyan
-      A: '#4ADE80',  // Excellent - Green
+      S: '#3FE0D0',  // Elite - Teal
+      A: '#22C55E',  // Excellent - Green
       B: '#FACC15',  // Good - Yellow
-      C: '#FB923C',  // Average - Orange
+      C: '#F59E0B',  // Average - Orange
       D: '#EF4444'   // Weak - Red
     };
     return colors[grade];
@@ -88,9 +89,10 @@ export class GradeCalculator {
    * Couleur pour un grade de player
    */
   static getPlayerGradeColor(grade: PlayerGrade): string {
+    // V4 Colors from design-brief-sally.md
     const colors: Record<PlayerGrade, string> = {
-      ELITE: '#00D9C0',     // Cyan
-      EXCELLENT: '#4ADE80', // Green
+      ELITE: '#3FE0D0',     // Teal
+      EXCELLENT: '#22C55E', // Green
       GOOD: '#FACC15',      // Yellow
       WEAK: '#EF4444'       // Red
     };

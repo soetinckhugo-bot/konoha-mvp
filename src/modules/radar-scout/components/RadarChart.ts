@@ -9,13 +9,20 @@ import type { RadarConfig } from '../../../core/types';
 // Register Chart.js components
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
+export type RadarViewMode = 'percentiles' | 'values';
+
 export class RadarChart {
   private canvas: HTMLCanvasElement | null = null;
   private chart: Chart | null = null;
   private containerId: string;
+  private viewMode: RadarViewMode = 'percentiles';
 
   constructor(containerId: string) {
     this.containerId = containerId;
+  }
+
+  setViewMode(mode: RadarViewMode): void {
+    this.viewMode = mode;
   }
 
   render(config: RadarConfig): void {
@@ -39,6 +46,8 @@ export class RadarChart {
     const ctx = this.canvas.getContext('2d');
     if (!ctx) return;
 
+    const self = this;
+    
     this.chart = new Chart(ctx, {
       type: 'radar',
       data: {
@@ -56,17 +65,18 @@ export class RadarChart {
             min: 0,
             max: 100,
             grid: {
-              color: 'rgba(255, 255, 255, 0.08)',
+              color: 'rgba(148, 163, 184, 0.10)',  // V4: subtle grid
               circular: true
             },
             angleLines: {
-              color: 'rgba(255, 255, 255, 0.12)'
+              color: 'rgba(148, 163, 184, 0.08)'   // V4: even subtler axes
             },
             pointLabels: {
-              color: 'rgba(255, 255, 255, 0.7)',
+              color: 'rgba(226, 232, 240, 0.85)',  // V4: labels color
               font: {
                 family: 'Space Grotesk',
-                size: 12
+                size: 12,
+                weight: '500'
               }
             },
             ticks: {
@@ -83,22 +93,112 @@ export class RadarChart {
             }
           },
           tooltip: {
-            backgroundColor: 'rgba(26, 26, 37, 0.95)',
-            titleColor: '#fff',
-            bodyColor: 'rgba(255, 255, 255, 0.8)',
-            borderColor: 'rgba(255, 255, 255, 0.1)',
+            // V4 Dark Tooltip Style from design-brief-sally.md
+            backgroundColor: '#1B1D2B',
+            titleColor: '#E2E8F0',
+            bodyColor: 'rgba(226, 232, 240, 0.85)',
+            borderColor: 'rgba(148, 163, 184, 0.14)',
             borderWidth: 1,
+            cornerRadius: 12,
+            padding: 12,
+            titleFont: {
+              family: 'Space Grotesk',
+              size: 14,
+              weight: '700'
+            },
+            bodyFont: {
+              family: 'Inter',
+              size: 13,
+              weight: '600'
+            },
             callbacks: {
               label: (context) => {
                 const dataset = config.datasets[context.datasetIndex];
-                const rawValue = dataset.rawData[context.dataIndex];
                 const metric = config.metrics[context.dataIndex];
-                return `${context.dataset.label}: ${rawValue.toFixed(metric.decimals || 1)}`;
+                
+                if (self.viewMode === 'percentiles') {
+                  // Mode PERCENTILES: afficher le percentile + Grade
+                  const percentile = Math.round(context.raw as number);
+                  const tier = dataset.pointTiers?.[context.dataIndex] || 'C';
+                  return `${context.dataset.label}: ${percentile} (Grade ${tier})`;
+                } else {
+                  // Mode VALUES: afficher la valeur brute
+                  const rawValue = dataset.rawData[context.dataIndex];
+                  return `${context.dataset.label}: ${rawValue.toFixed(metric.decimals || 1)}`;
+                }
               }
             }
           }
         }
-      }
+      },
+      plugins: [{
+        id: 'datalabels',
+        afterDatasetsDraw(chart) {
+          // En mode VALUES, afficher les valeurs sur les points
+          if (self.viewMode !== 'values') return;
+          
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.font = 'bold 11px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          chart.data.datasets.forEach((_dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (!meta.hidden) {
+              meta.data.forEach((point: any, index: number) => {
+                const rawValue = config.datasets[datasetIndex].rawData[index];
+                const metric = config.metrics[index];
+                const label = rawValue.toFixed(metric.decimals || 1);
+                
+                // Position du point
+                const x = point.x;
+                const y = point.y;
+                
+                // Décalage légèrement vers l'extérieur
+                const angle = Math.atan2(y - chart.chartArea.top - (chart.chartArea.bottom - chart.chartArea.top) / 2, 
+                                         x - chart.chartArea.left - (chart.chartArea.right - chart.chartArea.left) / 2);
+                const offset = 15;
+                const labelX = x + Math.cos(angle) * offset;
+                const labelY = y + Math.sin(angle) * offset;
+                
+                // V4 Value Bubble Style from design-brief-sally.md
+                const textWidth = ctx.measureText(label).width;
+                const bubbleWidth = Math.max(34, textWidth + 16);
+                const bubbleHeight = 22;
+                
+                // Cyan bubble background
+                ctx.fillStyle = 'rgba(5, 170, 206, 0.85)';
+                ctx.beginPath();
+                ctx.roundRect(
+                  labelX - bubbleWidth/2, 
+                  labelY - bubbleHeight/2, 
+                  bubbleWidth, 
+                  bubbleHeight, 
+                  999
+                );
+                ctx.fill();
+                
+                // Shadow effect
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetY = 10;
+                
+                // Dark text on cyan bubble
+                ctx.fillStyle = '#0B1020';
+                ctx.font = 'bold 12px "Inter", sans-serif';
+                ctx.fillText(label, labelX, labelY);
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+              });
+            }
+          });
+          ctx.restore();
+        }
+      }]
     });
   }
 
@@ -126,13 +226,15 @@ export class RadarChart {
   }
 
   private getTierColor(tier: string): string {
+    // V4 Tier Colors from design-brief-sally.md
     const colors: Record<string, string> = {
-      'S': '#00D9C0', // Elite - Cyan
-      'A': '#4ADE80', // Excellent - Green
+      'S': '#3FE0D0', // Elite - Teal
+      'A': '#22C55E', // Excellent - Green
       'B': '#FACC15', // Good - Yellow
-      'C': '#FB923C'  // Weak - Orange
+      'C': '#F59E0B', // Average - Orange
+      'D': '#EF4444'  // Weak - Red
     };
-    return colors[tier] || '#FB923C';
+    return colors[tier] || '#64748B';
   }
 
   destroy(): void {

@@ -66,14 +66,15 @@ export class RadarDataService {
 
     const datasets: RadarDataset[] = [];
 
-    // Dataset principal (joueur sélectionné)
-    datasets.push(this.createPlayerDataset(player, metrics, 'var(--kono-primary)', getNormalizedValue));
+    // Dataset principal (joueur sélectionné) - V4 Teal/Cyan
+    datasets.push(this.createPlayerDataset(player, metrics, '#3FE0D0', getNormalizedValue));
 
     // Dataset secondaire selon le mode
     if (mode === 'compare' && comparedPlayerId) {
       const compared = players.find(p => p.id === comparedPlayerId);
       if (compared) {
-        datasets.push(this.createPlayerDataset(compared, metrics, 'var(--kono-danger)', getNormalizedValue));
+        // V4: Comparison player = Coral/Red
+        datasets.push(this.createPlayerDataset(compared, metrics, '#FF6B6B', getNormalizedValue));
       }
     } else if (mode === 'benchmark') {
       const avgDataset = this.createAverageDataset(players, player.role, metrics, getNormalizedValue);
@@ -115,9 +116,9 @@ export class RadarDataService {
       playerId: player.id,
       data,
       rawData: metrics.map(m => player.stats[m.id] || 0),
-      backgroundColor: color + '33',  // 20% opacity
+      backgroundColor: color + '2E',  // ~18% opacity (V4 spec)
       borderColor: color,
-      borderWidth: 2,
+      borderWidth: 3,  // V4: thicker stroke
       pointTiers
     };
   }
@@ -161,10 +162,10 @@ export class RadarDataService {
       playerId: 'average',
       data: avgData,
       rawData: avgRawData,
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      borderColor: 'rgba(255, 255, 255, 0.5)',
-      borderWidth: 2,
-      borderDash: [5, 5]
+      backgroundColor: 'rgba(250, 204, 21, 0.10)',  // V4: Gold fill
+      borderColor: '#FACC15',  // V4: Gold/Yellow stroke
+      borderWidth: 2.5,
+      borderDash: [4, 4]  // V4: dashed pattern
     } as RadarDataset;
   }
 
