@@ -648,7 +648,14 @@ export class RadarScoutModule {
         return '<p class="v4-no-data">No metrics in this category</p>';
       }
 
-      return relevantMetrics.map(id => {
+      const header = `
+        <div class="v4-category-header">
+          <span>STAT</span>
+          <span>PERCENTILE</span>
+        </div>
+      `;
+
+      const rows = relevantMetrics.map(id => {
         const metric = ALL_METRICS.find(m => m.id === id);
         if (!metric) return '';
 
@@ -661,19 +668,23 @@ export class RadarScoutModule {
         const color = GradeCalculator.getGradeColor(grade);
 
         const displayValue = this.centileViewMode === 'percentiles' 
-          ? `${Math.round(percentile)}%`
+          ? `${Math.round(percentile)}`
           : value.toFixed(metric.format === 'percentage' ? 1 : 2);
 
         return `
           <div class="v4-centile-row">
             <span class="v4-centile-name">${METRIC_DISPLAY_NAMES[id] || metric.name}</span>
-            <div class="v4-centile-bar-container">
-              <div class="v4-centile-bar" style="width: ${percentile}%; background: ${color}"></div>
+            <div class="v4-centile-right">
+              <div class="v4-centile-bar-wrap">
+                <div class="v4-centile-bar" style="width: ${percentile}%; background: ${color}"></div>
+              </div>
+              <span class="v4-centile-value" style="color: ${color}">${displayValue}</span>
             </div>
-            <span class="v4-centile-value" style="color: ${color}">${displayValue}</span>
           </div>
         `;
       }).join('');
+
+      return header + rows;
     };
 
     fightContainer.innerHTML = renderCategory(PERCENTILE_CATEGORIES.fight);
