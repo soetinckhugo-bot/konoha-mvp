@@ -326,7 +326,7 @@
 .v4-center {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
   min-width: 0;
 }
 
@@ -463,14 +463,14 @@
 /* ============================================
    SIDEBAR LEFT
    ============================================ */
-/* Percentile panel - inside center column */
+/* Percentile panel - inside center column with spacing from radar */
 .v4-percentile-panel {
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  margin-top: 0;
+  margin-top: 16px;
 }
 
 .v4-select-wrapper {
@@ -1034,20 +1034,20 @@
   background: var(--v4-text-muted);
 }
 
-/* Leaderboard - V4 Height for 10 players */
+/* Leaderboard - V4 Height for 10 players with spacing */
 .v4-leaderboard-card {
   position: relative;
   height: auto;
-  min-height: 420px;
+  min-height: 520px;
   display: flex;
   flex-direction: column;
 }
 
 .v4-leaderboard-card .v4-card-body {
-  padding: 8px;
+  padding: 10px;
   flex: 1;
   overflow-y: auto;
-  min-height: 380px;
+  min-height: 460px;
 }
 
 .v4-leaderboard-card .v4-card-body::-webkit-scrollbar {
@@ -1073,14 +1073,16 @@
   flex-direction: column;
 }
 
-/* Row - V4 spacing with gap between players */
+/* Row - V4 spacing with visible gap between players */
 .v4-lb-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 8px;
-  margin-bottom: 4px;
-  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 150ms ease;
   cursor: pointer;
 }
@@ -1090,43 +1092,47 @@
 }
 
 .v4-lb-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Rank - Exact V4 */
+/* Rank - V4 Style with top 3 colors */
 .v4-lb-rank {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   font-family: 'Space Grotesk', sans-serif;
   flex-shrink: 0;
 }
 
 .v4-lb-rank.gold {
-  background: #FFD700;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   color: #000;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
 }
 
 .v4-lb-rank.silver {
-  background: #C0C0C0;
+  background: linear-gradient(135deg, #E8E8E8 0%, #A0A0A0 100%);
   color: #000;
+  box-shadow: 0 0 8px rgba(192, 192, 192, 0.4);
 }
 
 .v4-lb-rank.bronze {
-  background: #CD7F32;
+  background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
   color: #FFF;
+  box-shadow: 0 0 8px rgba(205, 127, 50, 0.4);
 }
 
 .v4-lb-rank.default {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--v4-text-muted);
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 /* Info - Name + Team */
