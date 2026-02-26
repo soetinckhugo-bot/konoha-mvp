@@ -1208,26 +1208,48 @@
   line-height: 1;
 }
 
-/* Grade - Circle style for leaderboard */
+/* Grade - Circle style for leaderboard (Player Tiers: ELITE/EXCELLENT/GOOD/WEAK) */
 .v4-lb-grade {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
   flex-shrink: 0;
-  box-shadow: 0 0 8px currentColor;
+  text-transform: uppercase;
 }
 
-.v4-lb-grade.s { background: var(--tier-s); color: #000; box-shadow: 0 0 10px var(--tier-s); }
-.v4-lb-grade.a { background: var(--tier-a); color: #000; box-shadow: 0 0 10px var(--tier-a); }
-.v4-lb-grade.b { background: var(--tier-b); color: #000; box-shadow: 0 0 10px var(--tier-b); }
-.v4-lb-grade.c { background: var(--tier-c); color: #000; box-shadow: 0 0 10px var(--tier-c); }
-.v4-lb-grade.d { background: var(--tier-d); color: #000; box-shadow: 0 0 10px var(--tier-d); }
+/* ELITE (75-100) - Teal */
+.v4-lb-grade.elite { 
+  background: #3FE0D0; 
+  color: #000; 
+  box-shadow: 0 0 12px rgba(63, 224, 208, 0.6); 
+}
+
+/* EXCELLENT (60-75) - Green */
+.v4-lb-grade.excellent { 
+  background: #22C55E; 
+  color: #000; 
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.6); 
+}
+
+/* GOOD (50-60) - Yellow/Gold */
+.v4-lb-grade.good { 
+  background: #FACC15; 
+  color: #000; 
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.6); 
+}
+
+/* WEAK (<50) - Red */
+.v4-lb-grade.weak { 
+  background: #EF4444; 
+  color: #FFF; 
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); 
+}
 
 /* Tier Lists - V4 */
 .v4-tier-list {

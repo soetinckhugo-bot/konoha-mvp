@@ -746,12 +746,13 @@ export class RadarScoutModule {
       countBadge.textContent = String(rolePlayers.length);
     }
 
-    // Render top 12 - V4 Exact Style
+    // Render top 12 - V4 with Player Tiers (ELITE/EXCELLENT/GOOD/WEAK)
     container.innerHTML = playerScores.slice(0, 12).map((item, index) => {
       const rank = index + 1;
       const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'default';
-      const grade = GradeCalculator.getGrade(item.score);
+      const grade = GradeCalculator.getPlayerGrade(item.score);
       const gradeClass = grade.toLowerCase();
+      const gradeLabel = grade.charAt(0); // E, X, G, W -> Show first letter or full?
 
       return `
         <div class="v4-lb-row" data-player-id="${item.player.id}">
@@ -764,7 +765,7 @@ export class RadarScoutModule {
             <span class="v4-lb-score">${Math.round(item.score)}</span>
             <span class="v4-lb-label">score</span>
           </div>
-          <div class="v4-lb-grade ${gradeClass}">${grade}</div>
+          <div class="v4-lb-grade ${gradeClass}">${gradeLabel}</div>
         </div>
       `;
     }).join('');
