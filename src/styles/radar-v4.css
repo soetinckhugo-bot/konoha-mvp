@@ -1208,26 +1208,26 @@
   line-height: 1;
 }
 
-/* Grade - Pill style (not circle) */
+/* Grade - Circle style for leaderboard */
 .v4-lb-grade {
-  min-width: 24px;
-  height: 18px;
-  border-radius: 9px;
-  font-size: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 11px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
-  padding: 0 8px;
   flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
 }
 
-.v4-lb-grade.s { background: var(--tier-s); color: #000; }
-.v4-lb-grade.a { background: var(--tier-a); color: #000; }
-.v4-lb-grade.b { background: var(--tier-b); color: #000; }
-.v4-lb-grade.c { background: var(--tier-c); color: #000; }
-.v4-lb-grade.d { background: var(--tier-d); color: #000; }
+.v4-lb-grade.s { background: var(--tier-s); color: #000; box-shadow: 0 0 10px var(--tier-s); }
+.v4-lb-grade.a { background: var(--tier-a); color: #000; box-shadow: 0 0 10px var(--tier-a); }
+.v4-lb-grade.b { background: var(--tier-b); color: #000; box-shadow: 0 0 10px var(--tier-b); }
+.v4-lb-grade.c { background: var(--tier-c); color: #000; box-shadow: 0 0 10px var(--tier-c); }
+.v4-lb-grade.d { background: var(--tier-d); color: #000; box-shadow: 0 0 10px var(--tier-d); }
 
 /* Tier Lists - V4 */
 .v4-tier-list {
