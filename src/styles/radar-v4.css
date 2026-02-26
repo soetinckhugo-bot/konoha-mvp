@@ -280,7 +280,7 @@
 .v4-layout {
   background: var(--v4-bg);
   min-height: calc(100vh - 64px);
-  padding: var(--space-4);
+  padding: 20px;
   position: relative;
 }
 
@@ -304,8 +304,8 @@
 
 .v4-container {
   display: grid;
-  grid-template-columns: 280px 1fr 280px;
-  gap: 24px;
+  grid-template-columns: 260px 1fr 280px;
+  gap: 20px;
   max-width: 1600px;
   margin: 0 auto;
   position: relative;
@@ -690,11 +690,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-4);
+  padding: 12px 16px;
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-soft);
+  margin-bottom: 16px;
 }
 
 .v4-player-badge {
@@ -989,7 +990,6 @@
   width: 280px;
   min-width: 280px;
   max-width: 280px;
-  height: calc(100vh - 88px);
 }
 
 .v4-sidebar-right::-webkit-scrollbar {
@@ -1275,7 +1275,7 @@
 .v4-tier-circle.a { background: var(--tier-a); color: #000; box-shadow: 0 0 10px var(--tier-a); }
 .v4-tier-circle.b { background: var(--tier-b); color: #000; box-shadow: 0 0 10px var(--tier-b); }
 .v4-tier-circle.c { background: var(--tier-c); color: #000; box-shadow: 0 0 10px var(--tier-c); }
-.v4-tier-circle.d { background: var(--tier-d); color: #FFF; box-shadow: 0 0 10px var(--tier-d); }
+.v4-tier-circle.d { background: var(--tier-d); color: #000; box-shadow: 0 0 10px var(--tier-d); }
 
 .v4-tier-name {
   font-size: 7px;
