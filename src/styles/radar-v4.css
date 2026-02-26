@@ -287,18 +287,12 @@
 .v4-layout-wrapper {
   display: grid;
   grid-template-columns: 220px 1fr 240px;
-  grid-template-rows: min-content auto;
-  gap: 8px;
-  row-gap: 8px;
+  gap: 12px;
   max-width: 1600px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
   align-items: start;
-}
-
-.v4-top-row {
-  display: contents; /* Les enfants directs participent au grid parent */
 }
 
 /* Gradient overlay for role theming */
@@ -319,36 +313,30 @@
   z-index: 0;
 }
 
-/* Left sidebar - row 1 only */
+/* Left sidebar */
 .v4-sidebar-left {
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 220px;
   min-width: 220px;
-  grid-column: 1;
-  grid-row: 1;
 }
 
-/* Center column - row 1 */
+/* Center column */
 .v4-center {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 8px;
   min-width: 0;
-  grid-column: 2;
-  grid-row: 1;
 }
 
-/* Right sidebar - row 1 */
+/* Right sidebar */
 .v4-sidebar-right {
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 240px;
   min-width: 240px;
-  grid-column: 3;
-  grid-row: 1;
 }
 
 /* ============================================
@@ -459,15 +447,14 @@
 /* ============================================
    SIDEBAR LEFT
    ============================================ */
-/* Percentile panel - row 2, spans center + right columns */
+/* Percentile panel - inside center column */
 .v4-percentile-panel {
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  grid-column: 2 / span 2; /* Colonne 2 et 3 */
-  grid-row: 2;
+  margin-top: 0;
 }
 
 .v4-select-wrapper {
