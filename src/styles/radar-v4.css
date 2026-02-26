@@ -789,12 +789,14 @@
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-lg);
-  height: 440px;
+  height: 400px;
+  min-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .v4-radar-chart {
@@ -1018,20 +1020,20 @@
   background: var(--v4-text-muted);
 }
 
-/* Leaderboard - V4 Compact Design */
+/* Leaderboard - V4 Fixed Height */
 .v4-leaderboard-card {
   position: relative;
-  flex: 1;
+  height: 280px;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  max-height: 320px;
 }
 
 .v4-leaderboard-card .v4-card-body {
   padding: 12px 8px;
   flex: 1;
   overflow-y: auto;
+  min-height: 200px;
 }
 
 .v4-leaderboard-card .v4-card-body::-webkit-scrollbar {
