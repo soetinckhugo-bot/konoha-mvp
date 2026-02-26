@@ -285,8 +285,9 @@
 }
 
 .v4-layout-wrapper {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 220px 1fr 240px;
+  grid-template-rows: auto auto;
   gap: 12px;
   max-width: 1600px;
   margin: 0 auto;
@@ -295,10 +296,7 @@
 }
 
 .v4-top-row {
-  display: grid;
-  grid-template-columns: 220px 1fr 240px;
-  gap: 12px;
-  align-items: start;
+  display: contents; /* Les enfants directs participent au grid parent */
 }
 
 /* Gradient overlay for role theming */
@@ -319,19 +317,36 @@
   z-index: 0;
 }
 
-/* Left sidebar internal layout */
+/* Left sidebar - row 1 only */
 .v4-sidebar-left {
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 220px;
   min-width: 220px;
+  grid-column: 1;
+  grid-row: 1;
 }
 
-.v4-sidebar-left-inner {
+/* Center column - row 1 */
+.v4-center {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Right sidebar - row 1 */
+.v4-sidebar-right {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 240px;
+  min-width: 240px;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 /* ============================================
@@ -442,14 +457,15 @@
 /* ============================================
    SIDEBAR LEFT
    ============================================ */
-/* ============================================
-   CENTER - RADAR SECTION
-   ============================================ */
-.v4-center {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 0;
+/* Percentile panel - row 2, spans center + right columns */
+.v4-percentile-panel {
+  background: var(--v4-bg-card);
+  border: 1px solid var(--v4-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  grid-column: 2 / span 2; /* Colonne 2 et 3 */
+  grid-row: 2;
 }
 
 .v4-select-wrapper {
@@ -817,14 +833,6 @@
 /* ============================================
    PERCENTILE ANALYSIS - V4
    ============================================ */
-.v4-percentile-panel {
-  background: var(--v4-bg-card);
-  border: 1px solid var(--v4-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
 .v4-percentile-header {
   display: flex;
   align-items: center;
@@ -1001,19 +1009,8 @@
 }
 
 /* ============================================
-   RIGHT SIDEBAR
+   RIGHT SIDEBAR SCROLLBAR
    ============================================ */
-/* ============================================
-   RIGHT SIDEBAR
-   ============================================ */
-.v4-sidebar-right {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 240px;
-  min-width: 240px;
-}
-
 .v4-sidebar-right::-webkit-scrollbar {
   width: 6px;
 }
