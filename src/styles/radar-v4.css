@@ -326,7 +326,7 @@
 .v4-center {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -403,6 +403,22 @@
 
 .v4-info-icon:hover {
   color: var(--v4-accent);
+}
+
+/* Player count badge in leaderboard header */
+.v4-player-count-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: var(--v4-accent);
+  border-radius: 12px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
 }
 
 .v4-card-body {
@@ -789,14 +805,12 @@
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-lg);
-  height: 400px;
-  min-height: 400px;
+  height: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 .v4-radar-chart {
@@ -1020,20 +1034,20 @@
   background: var(--v4-text-muted);
 }
 
-/* Leaderboard - V4 Fixed Height */
+/* Leaderboard - V4 Height for 10 players */
 .v4-leaderboard-card {
   position: relative;
-  height: 280px;
-  min-height: 280px;
+  height: auto;
+  min-height: 420px;
   display: flex;
   flex-direction: column;
 }
 
 .v4-leaderboard-card .v4-card-body {
-  padding: 12px 8px;
+  padding: 8px;
   flex: 1;
   overflow-y: auto;
-  min-height: 200px;
+  min-height: 380px;
 }
 
 .v4-leaderboard-card .v4-card-body::-webkit-scrollbar {
@@ -1059,15 +1073,20 @@
   flex-direction: column;
 }
 
-/* Row - Exact V4 spacing */
+/* Row - V4 spacing with gap between players */
 .v4-lb-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 6px;
-  border-radius: 6px;
+  gap: 10px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  border-radius: 8px;
   transition: all 150ms ease;
   cursor: pointer;
+}
+
+.v4-lb-row:last-child {
+  margin-bottom: 0;
 }
 
 .v4-lb-row:hover {

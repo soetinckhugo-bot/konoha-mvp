@@ -225,7 +225,7 @@ export class RadarScoutModule {
             <div class="v4-card-header">
               <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></span>
               <span class="v4-header-title">Leaderboard</span>
-              <span class="v4-info-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+              <span id="leaderboard-count" class="v4-player-count-badge">0</span>
             </div>
             <div class="v4-card-body v4-card-body-scroll">
               <div id="leaderboard-container" class="v4-leaderboard-list"></div>
@@ -739,6 +739,12 @@ export class RadarScoutModule {
 
     // Sort by score descending
     playerScores.sort((a, b) => b.score - a.score);
+
+    // Update player count badge
+    const countBadge = this.container?.querySelector('#leaderboard-count');
+    if (countBadge) {
+      countBadge.textContent = String(rolePlayers.length);
+    }
 
     // Render top 12 - V4 Exact Style
     container.innerHTML = playerScores.slice(0, 12).map((item, index) => {
