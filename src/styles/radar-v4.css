@@ -740,7 +740,8 @@
 .v4-radar-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 16px;
   padding: 10px 14px;
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
@@ -748,6 +749,10 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   margin-bottom: 12px;
   transition: all 200ms ease;
+}
+
+.v4-radar-header > *:last-child {
+  margin-left: auto;
 }
 
 .v4-radar-header:hover {
@@ -792,9 +797,18 @@
 }
 
 .v4-stat-badge span {
-  color: var(--v4-text);
   font-weight: 700;
 }
+
+/* Rank badge with tier color */
+.v4-stat-badge.rank-s { border-color: #3FE0D0; color: #3FE0D0; }
+.v4-stat-badge.rank-s span { color: #3FE0D0; }
+.v4-stat-badge.rank-a { border-color: #22C55E; color: #22C55E; }
+.v4-stat-badge.rank-a span { color: #22C55E; }
+.v4-stat-badge.rank-b { border-color: #FACC15; color: #FACC15; }
+.v4-stat-badge.rank-b span { color: #FACC15; }
+.v4-stat-badge.rank-c { border-color: #EF4444; color: #EF4444; }
+.v4-stat-badge.rank-c span { color: #EF4444; }
 
 .v4-player-name {
   font-size: 18px;
@@ -888,6 +902,87 @@
   font-size: 48px;
   margin-bottom: var(--space-4);
   opacity: 0.5;
+}
+
+/* Percentile Content Wrapper */
+.v4-percentile-content {
+  position: relative;
+}
+
+/* Table View */
+.v4-percentile-table {
+  padding: 16px;
+}
+
+.v4-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--v4-border);
+  margin-bottom: 16px;
+}
+
+.v4-table-player {
+  text-align: center;
+}
+
+.v4-table-player span:first-child {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--v4-text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.v4-table-player span:last-child {
+  display: block;
+  font-size: 12px;
+  color: var(--v4-text-muted);
+  font-family: 'Inter', sans-serif;
+}
+
+.v4-table-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.v4-table-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  transition: background 150ms ease;
+}
+
+.v4-table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.v4-table-metric {
+  font-size: 13px;
+  color: var(--v4-text-secondary);
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.v4-table-metric::before {
+  content: '↳';
+  color: var(--v4-accent);
+  font-size: 11px;
+}
+
+.v4-table-value {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 /* ============================================
@@ -1211,43 +1306,7 @@
   font-weight: 600;
 }
 
-/* Rank Grade - colored letter showing tier */
-.v4-lb-rank-grade {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 800;
-  font-family: 'Inter', sans-serif;
-  flex-shrink: 0;
-}
 
-.v4-lb-rank-grade.grade-s {
-  background: rgba(63, 224, 208, 0.2);
-  color: #3FE0D0;
-  border: 1px solid rgba(63, 224, 208, 0.4);
-}
-
-.v4-lb-rank-grade.grade-a {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22C55E;
-  border: 1px solid rgba(34, 197, 94, 0.4);
-}
-
-.v4-lb-rank-grade.grade-b {
-  background: rgba(250, 204, 21, 0.2);
-  color: #FACC15;
-  border: 1px solid rgba(250, 204, 21, 0.4);
-}
-
-.v4-lb-rank-grade.grade-c {
-  background: rgba(239, 68, 68, 0.2);
-  color: #EF4444;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-}
 
 /* Info - Name + Team */
 .v4-lb-info {
@@ -1291,10 +1350,10 @@
 
 /* Grade - Circle style for leaderboard (Player Tiers: S/A/B/C) */
 .v4-lb-grade {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -1304,31 +1363,31 @@
 }
 
 /* S (100-75) - Elite - Cyan/Teal */
-.v4-lb-grade.s { 
+.v4-lb-grade.grade-s { 
   background: #3FE0D0; 
   color: #000; 
-  box-shadow: 0 0 12px rgba(63, 224, 208, 0.6); 
+  box-shadow: 0 0 10px rgba(63, 224, 208, 0.5); 
 }
 
 /* A (75-60) - Excellent - Green */
-.v4-lb-grade.a { 
+.v4-lb-grade.grade-a { 
   background: #22C55E; 
   color: #000; 
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.6); 
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); 
 }
 
 /* B (60-50) - Good - Yellow/Gold */
-.v4-lb-grade.b { 
+.v4-lb-grade.grade-b { 
   background: #FACC15; 
   color: #000; 
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.6); 
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); 
 }
 
 /* C (<50) - Weak - Red */
-.v4-lb-grade.c { 
+.v4-lb-grade.grade-c { 
   background: #EF4444; 
   color: #FFF; 
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); 
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); 
 }
 
 /* Tier Lists - V4 */

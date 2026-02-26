@@ -197,26 +197,40 @@ export class RadarScoutModule {
               </div>
               <div class="v4-percentile-actions">
                 <button class="v4-action-btn" id="export-centiles-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>EXPORT PNG</button>
-                <button class="v4-action-btn active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>By Categories</button>
+                <button class="v4-action-btn active" data-view="categories"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>By Categories</button>
+                <button class="v4-action-btn" data-view="table"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Table</button>
               </div>
             </div>
-            <div class="v4-percentile-categories">
-              <div class="v4-category">
-                <h4>Fight</h4>
-                <div id="centiles-fight" class="v4-category-list">
-                  <p class="v4-no-data">Import data to see percentile analysis</p>
+            <div class="v4-percentile-content">
+              <div class="v4-percentile-categories" id="view-categories">
+                <div class="v4-category">
+                  <h4>Fight</h4>
+                  <div id="centiles-fight" class="v4-category-list">
+                    <p class="v4-no-data">Import data to see percentile analysis</p>
+                  </div>
+                </div>
+                <div class="v4-category">
+                  <h4>Vision</h4>
+                  <div id="centiles-vision" class="v4-category-list">
+                    <p class="v4-no-data">Import data to see percentile analysis</p>
+                  </div>
+                </div>
+                <div class="v4-category">
+                  <h4>Resources</h4>
+                  <div id="centiles-resources" class="v4-category-list">
+                    <p class="v4-no-data">Import data to see percentile analysis</p>
+                  </div>
                 </div>
               </div>
-              <div class="v4-category">
-                <h4>Vision</h4>
-                <div id="centiles-vision" class="v4-category-list">
-                  <p class="v4-no-data">Import data to see percentile analysis</p>
+              <div class="v4-percentile-table" id="view-table" style="display: none;">
+                <div class="v4-table-header">
+                  <div class="v4-table-player">
+                    <span id="table-player-name">Select a player</span>
+                    <span id="table-player-team"></span>
+                  </div>
                 </div>
-              </div>
-              <div class="v4-category">
-                <h4>Resources</h4>
-                <div id="centiles-resources" class="v4-category-list">
-                  <p class="v4-no-data">Import data to see percentile analysis</p>
+                <div class="v4-table-body" id="table-metrics-list">
+                  <p class="v4-no-data">Import data to see table view</p>
                 </div>
               </div>
             </div>
@@ -412,6 +426,31 @@ export class RadarScoutModule {
     // Export centiles button
     const exportCentilesBtn = this.container.querySelector('#export-centiles-btn');
     exportCentilesBtn?.addEventListener('click', () => this.handleExportCentiles());
+
+    // View toggle buttons (Categories/Table)
+    const viewBtns = this.container.querySelectorAll('.v4-action-btn[data-view]');
+    viewBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.getAttribute('data-view');
+        
+        // Update button states
+        viewBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Switch views
+        const categoriesView = this.container?.querySelector('#view-categories') as HTMLElement;
+        const tableView = this.container?.querySelector('#view-table') as HTMLElement;
+        
+        if (view === 'categories') {
+          if (categoriesView) categoriesView.style.display = 'grid';
+          if (tableView) tableView.style.display = 'none';
+        } else if (view === 'table') {
+          if (categoriesView) categoriesView.style.display = 'none';
+          if (tableView) tableView.style.display = 'block';
+          this.updateTableView();
+        }
+      });
+    });
 
     // Global export button (header)
     const globalExportBtn = document.getElementById('global-export-btn');
@@ -620,9 +659,16 @@ export class RadarScoutModule {
     const playerRank = playerScoresList.findIndex(p => p.player.id === playerId) + 1;
     const playerAvgScore = playerScoresList.find(p => p.player.id === playerId)?.avgScore || 0;
     
+    // Determine player tier for color coding
+    let playerTierClass = 'rank-c';
+    if (playerAvgScore >= 75) playerTierClass = 'rank-s';
+    else if (playerAvgScore >= 60) playerTierClass = 'rank-a';
+    else if (playerAvgScore >= 50) playerTierClass = 'rank-b';
+    
     // Update rank and avg display
     if (playerRankEl && playerRankBadge) {
       playerRankEl.textContent = String(playerRank);
+      playerRankBadge.className = `v4-stat-badge ${playerTierClass}`;
       playerRankBadge.style.display = 'inline-flex';
     }
     if (playerAvgEl && playerAvgBadge) {
@@ -759,6 +805,64 @@ export class RadarScoutModule {
     resourcesContainer.innerHTML = renderCategory(PERCENTILE_CATEGORIES.resources);
   }
 
+  private updateTableView(): void {
+    const playerId = this.core.getState('selectedPlayerId');
+    const players: Player[] = this.core.getState('players');
+    const selectedMetrics: string[] = this.core.getState('selectedMetrics') || [];
+
+    const playerNameEl = this.container?.querySelector('#table-player-name');
+    const playerTeamEl = this.container?.querySelector('#table-player-team');
+    const tableBody = this.container?.querySelector('#table-metrics-list');
+
+    if (!playerNameEl || !playerTeamEl || !tableBody) return;
+
+    if (!playerId || players.length === 0) {
+      playerNameEl.textContent = 'Select a player';
+      playerTeamEl.textContent = '';
+      tableBody.innerHTML = '<p class="v4-no-data">Import data to see table view</p>';
+      return;
+    }
+
+    const player = players.find((p: Player) => p.id === playerId);
+    if (!player) {
+      tableBody.innerHTML = '<p class="v4-no-data">Player not found</p>';
+      return;
+    }
+
+    playerNameEl.textContent = player.name;
+    playerTeamEl.textContent = player.team || '';
+
+    const rolePlayers = this.currentRole === 'ALL' 
+      ? players 
+      : players.filter(p => p.role === this.currentRole);
+
+    const rows = selectedMetrics.map(id => {
+      const metric = ALL_METRICS.find(m => m.id === id);
+      if (!metric) return '';
+
+      const value = player.stats[id];
+      if (value === undefined) return '';
+
+      const isInverted = metric.direction === 'lower-is-better';
+      const percentile = this.calculatePercentileForRole(value, id, rolePlayers, isInverted);
+      const grade = GradeCalculator.getGrade(percentile);
+      const color = GradeCalculator.getGradeColor(grade);
+
+      const displayValue = this.centileViewMode === 'percentiles' 
+        ? `${Math.round(percentile)}`
+        : value.toFixed(metric.format === 'percentage' ? 1 : 2);
+
+      return `
+        <div class="v4-table-row">
+          <span class="v4-table-metric">${METRIC_DISPLAY_NAMES[id] || metric.name}</span>
+          <span class="v4-table-value" style="color: ${color}">${displayValue}</span>
+        </div>
+      `;
+    }).join('');
+
+    tableBody.innerHTML = rows || '<p class="v4-no-data">No metrics selected</p>';
+  }
+
   private updateLeaderboard(): void {
     const container = this.container?.querySelector('#leaderboard-container');
     if (!container) return;
@@ -837,8 +941,8 @@ export class RadarScoutModule {
             <div class="v4-lb-name">${item.player.name}</div>
             <div class="v4-lb-team">${item.player.team || 'No Team'}</div>
           </div>
-          <div class="v4-lb-rank-grade ${gradeColorClass}">${grade}</div>
           <div class="v4-lb-score">${Math.round(item.score)}</div>
+          <div class="v4-lb-grade ${gradeColorClass}">${grade}</div>
         </div>
       `;
     }).join('');
