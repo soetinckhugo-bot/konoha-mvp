@@ -14,11 +14,13 @@ export class RadarScoutModule {
   private container: HTMLElement | null = null;
   private unsubscribers: (() => void)[] = [];
   private radarChart: RadarChart | null = null;
+  private overlayRadarChart: RadarChart | null = null;
   private dataService: RadarDataService;
   private currentMode: 'solo' | 'compare' | 'benchmark' = 'solo';
   private currentRole: string = 'MID';
   private comparedPlayerId: string | null = null;
   private centileViewMode: 'percentiles' | 'values' = 'percentiles';
+  private lastRadarConfig: any = null;
 
   constructor(core: CoreAPI) {
     this.core = core;
@@ -773,13 +775,17 @@ export class RadarScoutModule {
 
     config.datasets.forEach(ds => {
       ds.pointTiers = ds.data.map((percentile: number) => {
+        // Use new Stats Tiers thresholds
         if (percentile >= 90) return 'S';
-        if (percentile >= 80) return 'A';
-        if (percentile >= 65) return 'B';
-        if (percentile >= 50) return 'C';
+        if (percentile >= 75) return 'A';
+        if (percentile >= 55) return 'B';
+        if (percentile >= 35) return 'C';
         return 'D';
       });
     });
+
+    // Store config for overlay
+    this.lastRadarConfig = config;
 
     if (emptyState) emptyState.style.display = 'none';
     if (chartContainer) chartContainer.style.display = 'block';
@@ -798,19 +804,21 @@ export class RadarScoutModule {
     // Clear previous chart
     overlayChart.innerHTML = '';
     
-    // Create a new canvas for the overlay chart
-    const canvas = document.createElement('canvas');
-    overlayChart.appendChild(canvas);
+    // Check if we have a stored config
+    if (!this.lastRadarConfig) {
+      overlayChart.innerHTML = '<p style="color: var(--v4-text-muted); text-align: center; margin-top: 40vh;">Select a player first</p>';
+      return;
+    }
     
-    // Get current chart config and render in overlay
-    // This is a simplified version - ideally we'd share the config
-    const playerId = this.core.getState('selectedPlayerId');
-    if (!playerId) return;
+    // Destroy previous overlay chart if exists
+    this.overlayRadarChart?.destroy();
     
-    // We need to get the current config and render it
-    // This requires access to the current config - we'll reuse the existing one
-    // For now, just show a placeholder
-    overlayChart.innerHTML = '<p style="color: var(--v4-text-muted); text-align: center;">Expanded Radar View</p>';
+    // Create a new RadarChart instance for the overlay
+    this.overlayRadarChart = new RadarChart('radar-overlay-chart');
+    
+    // Render with the stored config
+    this.overlayRadarChart.setViewMode(this.centileViewMode);
+    this.overlayRadarChart.render(this.lastRadarConfig);
   }
 
   private updateComparisonLegend(player1: Player, players: Player[]): void {
@@ -1206,6 +1214,7 @@ export class RadarScoutModule {
     this.unsubscribers.forEach(unsub => unsub());
     this.unsubscribers = [];
     this.radarChart?.destroy();
+    this.overlayRadarChart?.destroy();
     this.container?.remove();
     this.container = null;
   }

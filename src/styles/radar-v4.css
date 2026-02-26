@@ -916,32 +916,40 @@
 /* Radar Overlay */
 .v4-radar-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .v4-radar-overlay-backdrop {
   position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
 }
 
 .v4-radar-overlay-content {
   position: relative;
-  width: 90vw;
-  height: 90vh;
+  width: min(95vw, 1200px);
+  height: min(90vh, 900px);
+  max-height: 90vh;
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
+  flex-direction: column;
+  padding: 30px;
+  margin: auto;
 }
 
 .v4-radar-overlay-close {
