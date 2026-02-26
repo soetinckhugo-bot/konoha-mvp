@@ -232,70 +232,70 @@ export class RadarScoutModule {
             </div>
           </div>
 
-          <!-- Player Tiers -->
+          <!-- Player Tiers - V4 Horizontal Style -->
           <div class="v4-card v4-tiers-card">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">📊</span>
+              <span class="v4-header-icon">🎖️</span>
               <span class="v4-header-title">PLAYER TIERS</span>
             </div>
             <div class="v4-card-body">
-              <div class="v4-tier-list">
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small s">S</div>
-                  <span class="v4-tier-label">ELITE</span>
-                  <span class="v4-tier-range">100-75</span>
+              <div class="v4-tiers-horizontal">
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle s">S</div>
+                  <span class="v4-tier-name">ELITE</span>
+                  <span class="v4-tier-val">100-75</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small a">A</div>
-                  <span class="v4-tier-label">EXCELLENT</span>
-                  <span class="v4-tier-range">75-60</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle a">A</div>
+                  <span class="v4-tier-name">EXCELLENT</span>
+                  <span class="v4-tier-val">75-60</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small b">B</div>
-                  <span class="v4-tier-label">GOOD</span>
-                  <span class="v4-tier-range">60-50</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle b">B</div>
+                  <span class="v4-tier-name">GOOD</span>
+                  <span class="v4-tier-val">60-50</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small c">C</div>
-                  <span class="v4-tier-label">WEAK</span>
-                  <span class="v4-tier-range">&lt;50</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle c">C</div>
+                  <span class="v4-tier-name">WEAK</span>
+                  <span class="v4-tier-val">&lt;50</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Stats Tiers -->
+          <!-- Stats Tiers - V4 Horizontal Style -->
           <div class="v4-card v4-tiers-card">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">📈</span>
+              <span class="v4-header-icon">📊</span>
               <span class="v4-header-title">STATS TIERS</span>
             </div>
             <div class="v4-card-body">
-              <div class="v4-tier-list compact">
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small s">S</div>
-                  <span class="v4-tier-label">ELITE</span>
-                  <span class="v4-tier-range">100-90</span>
+              <div class="v4-tiers-horizontal">
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle s">S</div>
+                  <span class="v4-tier-name">ELITE</span>
+                  <span class="v4-tier-val">100-90</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small a">A</div>
-                  <span class="v4-tier-label">EXCELLENT</span>
-                  <span class="v4-tier-range">90-80</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle a">A</div>
+                  <span class="v4-tier-name">EXCELLENT</span>
+                  <span class="v4-tier-val">90-80</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small b">B</div>
-                  <span class="v4-tier-label">GOOD</span>
-                  <span class="v4-tier-range">80-65</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle b">B</div>
+                  <span class="v4-tier-name">GOOD</span>
+                  <span class="v4-tier-val">80-65</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small c">C</div>
-                  <span class="v4-tier-label">AVERAGE</span>
-                  <span class="v4-tier-range">65-50</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle c">C</div>
+                  <span class="v4-tier-name">AVERAGE</span>
+                  <span class="v4-tier-val">65-50</span>
                 </div>
-                <div class="v4-tier-row">
-                  <div class="v4-tier-badge-small d">D</div>
-                  <span class="v4-tier-label">WEAK</span>
-                  <span class="v4-tier-range">&lt;50</span>
+                <div class="v4-tier-item">
+                  <div class="v4-tier-circle d">D</div>
+                  <span class="v4-tier-name">WEAK</span>
+                  <span class="v4-tier-val">&lt;50</span>
                 </div>
               </div>
             </div>
@@ -720,25 +720,25 @@ export class RadarScoutModule {
     // Sort by score descending
     playerScores.sort((a, b) => b.score - a.score);
 
-    // Render top 10 - V4 Style
-    container.innerHTML = playerScores.slice(0, 10).map((item, index) => {
+    // Render top 12 - V4 Exact Style
+    container.innerHTML = playerScores.slice(0, 12).map((item, index) => {
       const rank = index + 1;
-      const isTop3 = rank <= 3;
       const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'default';
       const grade = GradeCalculator.getGrade(item.score);
       const gradeClass = grade.toLowerCase();
 
       return `
-        <div class="v4-leaderboard-item ${isTop3 ? 'top3' : ''}" data-player-id="${item.player.id}">
-          <div class="v4-rank ${rankClass}">${rank}</div>
-          <div class="v4-player-info">
-            <div class="v4-player-name-small">${item.player.name}</div>
-            <div class="v4-player-team">${item.player.team || 'No Team'}</div>
+        <div class="v4-lb-row" data-player-id="${item.player.id}">
+          <div class="v4-lb-rank ${rankClass}">${rank}</div>
+          <div class="v4-lb-info">
+            <div class="v4-lb-name">${item.player.name}</div>
+            <div class="v4-lb-team">${item.player.team || 'No Team'}</div>
           </div>
-          <div class="v4-score-section">
-            <span class="v4-score-value">${Math.round(item.score)}</span>
-            <span class="v4-grade-badge ${gradeClass}">${grade}</span>
+          <div class="v4-lb-score-wrap">
+            <span class="v4-lb-score">${Math.round(item.score)}</span>
+            <span class="v4-lb-label">score</span>
           </div>
+          <div class="v4-lb-grade ${gradeClass}">${grade}</div>
         </div>
       `;
     }).join('');

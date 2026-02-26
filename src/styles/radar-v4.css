@@ -994,10 +994,10 @@
   background: var(--v4-text-muted);
 }
 
-/* Leaderboard - V4 Premium Redesign */
+/* Leaderboard - V4 EXACT Design */
 .v4-leaderboard-card .v4-card-body {
-  padding: 8px;
-  max-height: 280px;
+  padding: 12px 8px;
+  max-height: 320px;
   overflow-y: auto;
 }
 
@@ -1006,139 +1006,140 @@
 }
 
 .v4-leaderboard-card .v4-card-body::-webkit-scrollbar-thumb {
-  background: var(--v4-border);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
 }
 
 .v4-leaderboard-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.v4-leaderboard-item {
+/* Row - Exact V4 spacing */
+.v4-lb-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  transition: all var(--dur-normal) var(--ease-out);
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: all 150ms ease;
   cursor: pointer;
-  border: 1px solid transparent;
 }
 
-.v4-leaderboard-item:hover {
+.v4-lb-row:hover {
   background: rgba(255, 255, 255, 0.03);
-  border-color: var(--v4-accent);
-  box-shadow: 0 0 15px var(--role-glow, transparent);
 }
 
-/* Top 3 special styling */
-.v4-leaderboard-item.top3 {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.v4-rank {
+/* Rank - Exact V4 */
+.v4-lb-rank {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   font-family: 'Space Grotesk', sans-serif;
   flex-shrink: 0;
 }
 
-.v4-rank.gold {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  color: #1A1400;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.2);
-  font-size: 13px;
-}
-
-.v4-rank.silver {
-  background: linear-gradient(135deg, #E8E8E8, #B8B8B8);
+.v4-lb-rank.gold {
+  background: #FFD700;
   color: #000;
-  box-shadow: 0 0 12px rgba(192, 192, 192, 0.4);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
 }
 
-.v4-rank.bronze {
-  background: linear-gradient(135deg, #CD7F32, #A0522D);
+.v4-lb-rank.silver {
+  background: #C0C0C0;
+  color: #000;
+}
+
+.v4-lb-rank.bronze {
+  background: #CD7F32;
   color: #FFF;
-  box-shadow: 0 0 12px rgba(205, 127, 50, 0.4);
 }
 
-.v4-rank.default {
-  background: transparent;
+.v4-lb-rank.default {
+  background: rgba(255, 255, 255, 0.1);
   color: var(--v4-text-muted);
-  font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
 }
 
-.v4-player-info {
+/* Info - Name + Team */
+.v4-lb-info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
-.v4-player-name-small {
+.v4-lb-name {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--v4-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Inter', sans-serif;
-  letter-spacing: 0.2px;
+  line-height: 1.3;
 }
 
-.v4-player-team {
-  font-size: 10px;
+.v4-lb-team {
+  font-size: 9px;
   color: var(--v4-text-muted);
   font-family: 'Inter', sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
-/* Score section - Grade à droite du score */
-.v4-score-section {
+/* Score with label */
+.v4-lb-score-wrap {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  min-width: 28px;
 }
 
-.v4-score-value {
-  font-size: 15px;
+.v4-lb-score {
+  font-size: 16px;
   font-weight: 700;
   color: var(--v4-text);
   font-family: 'Space Grotesk', sans-serif;
-  min-width: 24px;
-  text-align: right;
+  line-height: 1;
 }
 
-.v4-grade-badge {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  font-size: 11px;
+.v4-lb-label {
+  font-size: 8px;
+  color: var(--v4-text-muted);
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+  line-height: 1;
+}
+
+/* Grade - Pill style (not circle) */
+.v4-lb-grade {
+  min-width: 24px;
+  height: 18px;
+  border-radius: 9px;
+  font-size: 10px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 0 8px currentColor;
+  padding: 0 8px;
+  flex-shrink: 0;
 }
 
-.v4-grade-badge.s { background: var(--tier-s); color: #000; }
-.v4-grade-badge.a { background: var(--tier-a); color: #000; }
-.v4-grade-badge.b { background: var(--tier-b); color: #000; }
-.v4-grade-badge.c { background: var(--tier-c); color: #000; }
-.v4-grade-badge.d { background: var(--tier-d); color: #FFF; }
+.v4-lb-grade.s { background: var(--tier-s); color: #000; }
+.v4-lb-grade.a { background: var(--tier-a); color: #000; }
+.v4-lb-grade.b { background: var(--tier-b); color: #000; }
+.v4-lb-grade.c { background: var(--tier-c); color: #000; }
+.v4-lb-grade.d { background: var(--tier-d); color: #FFF; }
 
 /* Tier Lists - V4 */
 .v4-tier-list {
@@ -1197,6 +1198,58 @@
   color: var(--v4-text-muted);
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
+}
+
+/* Tiers Horizontal - V4 Exact */
+.v4-tiers-horizontal {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.v4-tier-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.v4-tier-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.v4-tier-circle.s { background: var(--tier-s); color: #000; }
+.v4-tier-circle.a { background: var(--tier-a); color: #000; }
+.v4-tier-circle.b { background: var(--tier-b); color: #000; }
+.v4-tier-circle.c { background: var(--tier-c); color: #000; }
+.v4-tier-circle.d { background: var(--tier-d); color: #FFF; }
+
+.v4-tier-name {
+  font-size: 7px;
+  font-weight: 700;
+  color: var(--v4-text);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+}
+
+.v4-tier-val {
+  font-size: 7px;
+  color: var(--v4-text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  text-align: center;
 }
 
 /* ============================================
