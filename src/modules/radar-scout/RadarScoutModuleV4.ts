@@ -147,7 +147,7 @@ export class RadarScoutModule {
           </div>
         </div>
 
-        <!-- CENTER - RADAR + PERCENTILE ANALYSIS -->
+        <!-- CENTER - RADAR ONLY -->
         <div class="v4-center">
           <!-- Radar Header -->
           <div class="v4-radar-header">
@@ -157,10 +157,10 @@ export class RadarScoutModule {
             </div>
             <div class="v4-view-toggle">
               <button class="v4-toggle-btn active" data-view="percentile">
-                <span>📊</span> PERCENTILES
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;vertical-align:middle"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>PERCENTILES
               </button>
               <button class="v4-toggle-btn" data-view="values">
-                <span>📈</span> VALUES
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;vertical-align:middle"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>VALUES
               </button>
             </div>
           </div>
@@ -177,43 +177,8 @@ export class RadarScoutModule {
           <div class="v4-radar-container" id="radar-export-container">
             <div id="radar-chart-container" class="v4-radar-chart"></div>
             <div id="radar-empty" class="v4-radar-empty">
-              <div class="empty-icon">📊</div>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.3"><polygon points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               <p>Select a player to analyze</p>
-            </div>
-          </div>
-
-          <!-- Percentile Analysis -->
-          <div id="centiles-panel" class="v4-percentile-panel">
-            <div class="v4-percentile-header">
-              <div class="v4-percentile-title">
-                <span class="v4-percentile-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
-                <span>Percentile Analysis</span>
-                <span class="v4-percentile-subtitle">Player position vs league</span>
-              </div>
-              <div class="v4-percentile-actions">
-                <button class="v4-action-btn" id="export-centiles-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>EXPORT PNG</button>
-                <button class="v4-action-btn active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>By Categories</button>
-              </div>
-            </div>
-            <div class="v4-percentile-categories">
-              <div class="v4-category">
-                <h4>Fight</h4>
-                <div id="centiles-fight" class="v4-category-list">
-                  <p class="v4-no-data">Import data to see percentile analysis</p>
-                </div>
-              </div>
-              <div class="v4-category">
-                <h4>Vision</h4>
-                <div id="centiles-vision" class="v4-category-list">
-                  <p class="v4-no-data">Import data to see percentile analysis</p>
-                </div>
-              </div>
-              <div class="v4-category">
-                <h4>Resources</h4>
-                <div id="centiles-resources" class="v4-category-list">
-                  <p class="v4-no-data">Import data to see percentile analysis</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -302,6 +267,41 @@ export class RadarScoutModule {
           </div>
 
           <!-- About card removed to prevent overflow -->
+        </div>
+      </div>
+
+      <!-- PERCENTILE ANALYSIS - FULL WIDTH BELOW -->
+      <div id="centiles-panel" class="v4-percentile-panel v4-full-width">
+        <div class="v4-percentile-header">
+          <div class="v4-percentile-title">
+            <svg class="v4-percentile-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Percentile Analysis</span>
+            <span class="v4-percentile-subtitle">Player position vs league</span>
+          </div>
+          <div class="v4-percentile-actions">
+            <button class="v4-action-btn" id="export-centiles-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>EXPORT PNG</button>
+            <button class="v4-action-btn active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>By Categories</button>
+          </div>
+        </div>
+        <div class="v4-percentile-categories">
+          <div class="v4-category">
+            <h4>Fight</h4>
+            <div id="centiles-fight" class="v4-category-list">
+              <p class="v4-no-data">Import data to see percentile analysis</p>
+            </div>
+          </div>
+          <div class="v4-category">
+            <h4>Vision</h4>
+            <div id="centiles-vision" class="v4-category-list">
+              <p class="v4-no-data">Import data to see percentile analysis</p>
+            </div>
+          </div>
+          <div class="v4-category">
+            <h4>Resources</h4>
+            <div id="centiles-resources" class="v4-category-list">
+              <p class="v4-no-data">Import data to see percentile analysis</p>
+            </div>
+          </div>
         </div>
       </div>
     `;

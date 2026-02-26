@@ -313,6 +313,15 @@
   align-items: start;
 }
 
+.v4-container {
+  grid-template-rows: auto auto;
+}
+
+.v4-full-width {
+  grid-column: 2 / -1;
+  margin-top: 16px;
+}
+
 /* ============================================
    CARDS - GLASSMORPHISM V4
    ============================================ */
@@ -805,6 +814,11 @@
   margin-top: 16px;
 }
 
+.v4-percentile-panel.v4-full-width {
+  grid-column: 2 / span 2;
+  margin-top: 16px;
+}
+
 .v4-percentile-header {
   display: flex;
   align-items: center;
@@ -1233,7 +1247,7 @@
   font-weight: 600;
 }
 
-/* Tiers Horizontal - V4 Compact */
+/* Tiers Horizontal - V4 Ultra Compact */
 .v4-tiers-card {
   margin-bottom: 0;
 }
@@ -1241,17 +1255,17 @@
 .v4-tiers-horizontal {
   display: flex;
   justify-content: space-between;
-  gap: 4px;
+  gap: 2px;
 }
 
 .v4-tier-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   flex: 1;
-  padding: 6px 2px;
-  border-radius: 6px;
+  padding: 4px 2px;
+  border-radius: 4px;
   transition: all 150ms ease;
 }
 
@@ -1260,13 +1274,13 @@
 }
 
 .v4-tier-circle {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   font-family: 'Inter', sans-serif;
 }
@@ -1278,17 +1292,17 @@
 .v4-tier-circle.d { background: var(--tier-d); color: #000; box-shadow: 0 0 10px var(--tier-d); }
 
 .v4-tier-name {
-  font-size: 6px;
+  font-size: 5px;
   font-weight: 700;
   color: var(--v4-text);
   text-transform: uppercase;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
   font-family: 'Inter', sans-serif;
   text-align: center;
 }
 
 .v4-tier-val {
-  font-size: 6px;
+  font-size: 5px;
   color: var(--v4-text-muted);
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
