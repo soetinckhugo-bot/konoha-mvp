@@ -720,23 +720,24 @@ export class RadarScoutModule {
     // Sort by score descending
     playerScores.sort((a, b) => b.score - a.score);
 
-    // Render top 10
+    // Render top 10 - V4 Style
     container.innerHTML = playerScores.slice(0, 10).map((item, index) => {
       const rank = index + 1;
+      const isTop3 = rank <= 3;
       const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'default';
       const grade = GradeCalculator.getGrade(item.score);
-      const gradeColor = GradeCalculator.getGradeColor(grade);
+      const gradeClass = grade.toLowerCase();
 
       return `
-        <div class="v4-leaderboard-item" data-player-id="${item.player.id}">
+        <div class="v4-leaderboard-item ${isTop3 ? 'top3' : ''}" data-player-id="${item.player.id}">
           <div class="v4-rank ${rankClass}">${rank}</div>
           <div class="v4-player-info">
             <div class="v4-player-name-small">${item.player.name}</div>
             <div class="v4-player-team">${item.player.team || 'No Team'}</div>
           </div>
-          <div class="v4-score">
+          <div class="v4-score-section">
             <span class="v4-score-value">${Math.round(item.score)}</span>
-            <span class="v4-score-badge" style="background: ${gradeColor}">${grade}</span>
+            <span class="v4-grade-badge ${gradeClass}">${grade}</span>
           </div>
         </div>
       `;

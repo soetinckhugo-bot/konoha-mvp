@@ -994,10 +994,10 @@
   background: var(--v4-text-muted);
 }
 
-/* Leaderboard - V4 Premium */
+/* Leaderboard - V4 Premium Redesign */
 .v4-leaderboard-card .v4-card-body {
-  padding: 0;
-  max-height: 240px;
+  padding: 8px;
+  max-height: 280px;
   overflow-y: auto;
 }
 
@@ -1013,112 +1013,132 @@
 .v4-leaderboard-list {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .v4-leaderboard-item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--v4-border);
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
   transition: all var(--dur-normal) var(--ease-out);
   cursor: pointer;
-}
-
-.v4-leaderboard-item:last-child {
-  border-bottom: none;
+  border: 1px solid transparent;
 }
 
 .v4-leaderboard-item:hover {
-  background: var(--v4-bg-hover);
+  background: rgba(255, 255, 255, 0.03);
   border-color: var(--v4-accent);
-  box-shadow: 0 0 0 1px var(--role-glow, transparent);
+  box-shadow: 0 0 15px var(--role-glow, transparent);
+}
+
+/* Top 3 special styling */
+.v4-leaderboard-item.top3 {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .v4-rank {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   font-family: 'Space Grotesk', sans-serif;
+  flex-shrink: 0;
 }
 
 .v4-rank.gold {
-  background: linear-gradient(135deg, #FFB101, #FF8C00);
+  background: linear-gradient(135deg, #FFD700, #FFA500);
   color: #1A1400;
-  box-shadow: 0 0 10px rgba(255, 177, 1, 0.4);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.2);
+  font-size: 13px;
 }
 
 .v4-rank.silver {
-  background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+  background: linear-gradient(135deg, #E8E8E8, #B8B8B8);
   color: #000;
+  box-shadow: 0 0 12px rgba(192, 192, 192, 0.4);
 }
 
 .v4-rank.bronze {
-  background: linear-gradient(135deg, #CD7F32, #B87333);
+  background: linear-gradient(135deg, #CD7F32, #A0522D);
   color: #FFF;
+  box-shadow: 0 0 12px rgba(205, 127, 50, 0.4);
 }
 
 .v4-rank.default {
-  background: var(--v4-bg-hover);
+  background: transparent;
   color: var(--v4-text-muted);
+  font-weight: 600;
+  font-size: 11px;
 }
 
 .v4-player-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .v4-player-name-small {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--v4-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Inter', sans-serif;
+  letter-spacing: 0.2px;
 }
 
 .v4-player-team {
   font-size: 10px;
   color: var(--v4-text-muted);
   font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.v4-score {
+/* Score section - Grade à droite du score */
+.v4-score-section {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .v4-score-value {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--v4-text);
   font-family: 'Space Grotesk', sans-serif;
+  min-width: 24px;
+  text-align: right;
 }
 
-.v4-score-badge {
-  width: 18px;
-  height: 18px;
+.v4-grade-badge {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
+  box-shadow: 0 0 8px currentColor;
 }
 
-.v4-score-badge.s { background: var(--tier-s); color: #000; box-shadow: 0 0 6px var(--tier-s); }
-.v4-score-badge.a { background: var(--tier-a); color: #000; box-shadow: 0 0 6px var(--tier-a); }
-.v4-score-badge.b { background: var(--tier-b); color: #000; box-shadow: 0 0 6px var(--tier-b); }
-.v4-score-badge.c { background: var(--tier-c); color: #000; box-shadow: 0 0 6px var(--tier-c); }
-.v4-score-badge.d { background: var(--tier-d); color: #FFF; box-shadow: 0 0 6px var(--tier-d); }
+.v4-grade-badge.s { background: var(--tier-s); color: #000; }
+.v4-grade-badge.a { background: var(--tier-a); color: #000; }
+.v4-grade-badge.b { background: var(--tier-b); color: #000; }
+.v4-grade-badge.c { background: var(--tier-c); color: #000; }
+.v4-grade-badge.d { background: var(--tier-d); color: #FFF; }
 
 /* Tier Lists - V4 */
 .v4-tier-list {
