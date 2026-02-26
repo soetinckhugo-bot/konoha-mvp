@@ -154,6 +154,11 @@ export class RadarScoutModule {
             <div class="v4-player-badge">
               <span id="selected-player-name" class="v4-player-name">Select a player</span>
               <span id="selected-player-role" class="v4-role-tag">MID</span>
+              <span id="selected-player-team" class="v4-team-tag" style="display:none"></span>
+            </div>
+            <div class="v4-player-stats">
+              <span id="player-rank-badge" class="v4-stat-badge" style="display:none">Rank <span id="player-rank">-</span></span>
+              <span id="player-avg-badge" class="v4-stat-badge" style="display:none">Avg <span id="player-avg">-</span></span>
             </div>
             <div class="v4-view-toggle">
               <button class="v4-toggle-btn active" data-view="percentile">
@@ -566,10 +571,63 @@ export class RadarScoutModule {
     // Update player info display
     const playerNameEl = this.container?.querySelector('#selected-player-name');
     const playerRoleEl = this.container?.querySelector('#selected-player-role');
+    const playerTeamEl = this.container?.querySelector('#selected-player-team') as HTMLElement;
+    const playerRankBadge = this.container?.querySelector('#player-rank-badge') as HTMLElement;
+    const playerRankEl = this.container?.querySelector('#player-rank');
+    const playerAvgBadge = this.container?.querySelector('#player-avg-badge') as HTMLElement;
+    const playerAvgEl = this.container?.querySelector('#player-avg');
+    
     if (playerNameEl) playerNameEl.textContent = player.name;
     if (playerRoleEl) {
       playerRoleEl.textContent = player.role;
       playerRoleEl.setAttribute('data-role', player.role);
+    }
+    if (playerTeamEl) {
+      if (player.team) {
+        playerTeamEl.textContent = player.team;
+        playerTeamEl.style.display = 'inline-flex';
+      } else {
+        playerTeamEl.style.display = 'none';
+      }
+    }
+
+    // Calculate rank and average score for this player
+    const allRolePlayers = this.currentRole === 'ALL' 
+      ? players 
+      : players.filter(p => p.role === this.currentRole);
+    
+    // Calculate scores for all players to find rank
+    const playerScoresList = allRolePlayers.map(p => {
+      let totalScore = 0;
+      let count = 0;
+      selectedMetrics.forEach(metricId => {
+        const value = p.stats[metricId];
+        if (value !== undefined) {
+          const metric = ALL_METRICS.find(m => m.id === metricId);
+          const isInverted = metric?.direction === 'lower-is-better';
+          const percentile = this.calculatePercentileForRole(value, metricId, allRolePlayers, isInverted);
+          totalScore += percentile;
+          count++;
+        }
+      });
+      return { player: p, avgScore: count > 0 ? totalScore / count : 0 };
+    });
+    
+    // Sort by score descending
+    playerScoresList.sort((a, b) => b.avgScore - a.avgScore);
+    
+    // Find rank of selected player
+    const playerRank = playerScoresList.findIndex(p => p.player.id === playerId) + 1;
+    const playerAvgScore = playerScoresList.find(p => p.player.id === playerId)?.avgScore || 0;
+    
+    // Update rank and avg display
+    if (playerRankEl && playerRankBadge) {
+      playerRankEl.textContent = String(playerRank);
+      playerRankBadge.style.display = 'inline-flex';
+    }
+    if (playerAvgEl && playerAvgBadge) {
+      playerAvgEl.textContent = Math.round(playerAvgScore).toString();
+      playerAvgBadge.style.display = 'inline-flex';
     }
 
     const metrics: MetricConfig[] = selectedMetrics
@@ -746,13 +804,13 @@ export class RadarScoutModule {
       countBadge.textContent = String(rolePlayers.length);
     }
 
-    // Render top 12 - V4 with Player Tiers (ELITE/EXCELLENT/GOOD/WEAK)
+    // Render top 12 - V4 with Stats Tiers (S/A/B/C/D)
     container.innerHTML = playerScores.slice(0, 12).map((item, index) => {
       const rank = index + 1;
       const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'default';
-      const grade = GradeCalculator.getPlayerGrade(item.score);
+      // Use STATS TIERS (S/A/B/C/D) not Player Tiers
+      const grade = GradeCalculator.getStatsGrade(item.score);
       const gradeClass = grade.toLowerCase();
-      const gradeLabel = grade.charAt(0); // E, X, G, W -> Show first letter or full?
 
       return `
         <div class="v4-lb-row" data-player-id="${item.player.id}">
@@ -765,7 +823,7 @@ export class RadarScoutModule {
             <span class="v4-lb-score">${Math.round(item.score)}</span>
             <span class="v4-lb-label">score</span>
           </div>
-          <div class="v4-lb-grade ${gradeClass}">${gradeLabel}</div>
+          <div class="v4-lb-grade ${gradeClass}">${grade}</div>
         </div>
       `;
     }).join('');
