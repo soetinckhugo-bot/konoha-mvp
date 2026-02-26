@@ -1661,6 +1661,7 @@
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
+  margin-bottom: 8px;
 }
 
 .v4-compare-panel .v4-label {

@@ -474,10 +474,10 @@ export const CORE_API_VERSION = '1.0.0';
  */
 export const STATS_GRADE_THRESHOLDS = {
   S: 90,   // Elite: 100-90
-  A: 80,   // Excellent: 90-80
-  B: 65,   // Good: 80-65
-  C: 50,   // Average: 65-50
-  D: 0     // Weak: <50
+  A: 75,   // Excellent: 90-75 (+5)
+  B: 55,   // Good: 75-55 (-10, more exclusive)
+  C: 35,   // Average: 55-35
+  D: 0     // Weak: <35
 } as const;
 
 /** 

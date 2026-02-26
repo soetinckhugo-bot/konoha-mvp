@@ -299,17 +299,17 @@ export class RadarScoutModule {
                 <div class="v4-tier-item">
                   <div class="v4-tier-circle a">A</div>
                   <span class="v4-tier-name">EXCELLENT</span>
-                  <span class="v4-tier-val">90-80</span>
+                  <span class="v4-tier-val">90-75</span>
                 </div>
                 <div class="v4-tier-item">
                   <div class="v4-tier-circle b">B</div>
                   <span class="v4-tier-name">GOOD</span>
-                  <span class="v4-tier-val">80-65</span>
+                  <span class="v4-tier-val">75-55</span>
                 </div>
                 <div class="v4-tier-item">
                   <div class="v4-tier-circle c">C</div>
                   <span class="v4-tier-name">AVERAGE</span>
-                  <span class="v4-tier-val">65-50</span>
+                  <span class="v4-tier-val">55-35</span>
                 </div>
                 <div class="v4-tier-item">
                   <div class="v4-tier-circle d">D</div>
