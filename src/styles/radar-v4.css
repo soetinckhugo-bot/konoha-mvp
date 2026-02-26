@@ -287,13 +287,14 @@
 .v4-layout-wrapper {
   display: grid;
   grid-template-columns: 220px 1fr 240px;
-  grid-template-rows: auto auto;
+  grid-template-rows: min-content auto;
   gap: 8px;
   row-gap: 8px;
   max-width: 1600px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  align-items: start;
 }
 
 .v4-top-row {
