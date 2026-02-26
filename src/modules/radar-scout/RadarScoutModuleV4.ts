@@ -370,6 +370,7 @@ export class RadarScoutModule {
     this.updatePlayerSelects();
     this.renderRoleMetrics('MID');
     this.updateView();
+    this.updateLeaderboard(); // Initialize leaderboard on first render
     this.updateCacheTimestamp();
   }
 
@@ -523,6 +524,9 @@ export class RadarScoutModule {
     const unsubPlayer = this.core.subscribe('selectedPlayerId', () => {
       this.updateView();
       this.updateCentilesPanel();
+      this.updateTableView();
+      // Also update leaderboard to refresh rankings
+      this.updateLeaderboard();
     });
     this.unsubscribers.push(unsubPlayer);
 
