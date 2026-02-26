@@ -804,13 +804,28 @@ export class RadarScoutModule {
       countBadge.textContent = String(rolePlayers.length);
     }
 
-    // Render top 12 - V4 with Stats Tiers (S/A/B/C/D)
+    // Render top 12 - V4 with Player Tiers (S/A/B/C) mapped to Player Tiers thresholds
     container.innerHTML = playerScores.slice(0, 12).map((item, index) => {
       const rank = index + 1;
       const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'default';
-      // Use STATS TIERS (S/A/B/C/D) not Player Tiers
-      const grade = GradeCalculator.getStatsGrade(item.score);
-      const gradeClass = grade.toLowerCase();
+      
+      // Use PLAYER TIERS thresholds (S/A/B/C) - matching the Player Tiers card
+      // S (Elite): 100-75, A (Excellent): 75-60, B (Good): 60-50, C (Weak): <50
+      let grade: string;
+      let gradeClass: string;
+      if (item.score >= 75) {
+        grade = 'S';
+        gradeClass = 's';
+      } else if (item.score >= 60) {
+        grade = 'A';
+        gradeClass = 'a';
+      } else if (item.score >= 50) {
+        grade = 'B';
+        gradeClass = 'b';
+      } else {
+        grade = 'C';
+        gradeClass = 'c';
+      }
 
       return `
         <div class="v4-lb-row" data-player-id="${item.player.id}">
