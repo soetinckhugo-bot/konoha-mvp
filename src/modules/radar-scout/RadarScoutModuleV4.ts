@@ -30,11 +30,12 @@ export class RadarScoutModule {
     this.container.className = 'radar-scout-module v4-layout';
     this.container.setAttribute('data-role', this.currentRole);
     
-    // Layout V4 Exact - 3 colonnes
+    // Layout V4 Exact - 3 colonnes + percentile full width
     this.container.innerHTML = `
-      <div class="v4-container">
-        <!-- LEFT SIDEBAR -->
-        <div class="v4-sidebar-left">
+      <div class="v4-layout-wrapper">
+        <div class="v4-top-row">
+          <!-- LEFT SIDEBAR -->
+          <div class="v4-sidebar-left">
           <!-- Player Selection -->
           <div class="v4-card">
             <div class="v4-card-header">
@@ -123,7 +124,7 @@ export class RadarScoutModule {
           <!-- Metrics for Selected Role -->
           <div class="v4-card v4-metrics-card">
             <div class="v4-card-header">
-              <span class="v4-header-icon" id="role-metrics-header-icon">⚡</span>
+              <span class="v4-header-icon" id="role-metrics-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
               <span class="v4-header-title" id="role-metrics-title">METRICS MID</span>
             </div>
             <div class="v4-card-body">
@@ -267,11 +268,11 @@ export class RadarScoutModule {
           </div>
 
           <!-- About card removed to prevent overflow -->
-        </div>
-      </div>
+          </div><!-- /v4-sidebar-right -->
+        </div><!-- /v4-top-row -->
 
-      <!-- PERCENTILE ANALYSIS - FULL WIDTH BELOW -->
-      <div id="centiles-panel" class="v4-percentile-panel v4-full-width">
+        <!-- PERCENTILE ANALYSIS - FULL WIDTH BELOW -->
+        <div id="centiles-panel" class="v4-percentile-panel">
         <div class="v4-percentile-header">
           <div class="v4-percentile-title">
             <svg class="v4-percentile-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -304,6 +305,8 @@ export class RadarScoutModule {
           </div>
         </div>
       </div>
+        </div><!-- /v4-percentile-panel -->
+      </div><!-- /v4-layout-wrapper -->
     `;
 
     const mountPoint = document.getElementById('module-container');
@@ -461,19 +464,28 @@ export class RadarScoutModule {
 
     const metrics = getMetricsForRole(role);
     const roleIcons: Record<string, string> = {
-      'ALL': '✱', 'TOP': '🛡️', 'JUNGLE': '🌲', 'JGL': '🌲',
-      'MID': '⚡', 'ADC': '🎯', 'SUPPORT': '💚', 'SUP': '💚'
+      'ALL': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>',
+      'TOP': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      'JUNGLE': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-8m0-12v8m0 0l4-4m-4 4l-4-4"/></svg>',
+      'JGL': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-8m0-12v8m0 0l4-4m-4 4l-4-4"/></svg>',
+      'MID': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      'ADC': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+      'SUPPORT': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+      'SUP': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
     };
 
     titleEl.textContent = `METRICS ${role === 'JUNGLE' ? 'JGL' : role}`;
-    iconEl.textContent = roleIcons[role] || '⚡';
+    iconEl.innerHTML = roleIcons[role] || roleIcons['MID'];
 
+    const arrowUpSvg = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    const arrowDownSvg = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>';
+    
     container.innerHTML = metrics.map(m => {
       const isInverted = m.direction === 'lower-is-better';
       return `
         <button class="v4-metric-pill" data-metric="${m.id}" title="${m.name}">
           <span class="pill-name">${m.name}</span>
-          <span class="pill-arrow ${isInverted ? 'down' : 'up'}">${isInverted ? '↓' : '↑'}</span>
+          <span class="pill-arrow ${isInverted ? 'down' : 'up'}">${isInverted ? arrowDownSvg : arrowUpSvg}</span>
         </button>
       `;
     }).join('');
@@ -520,7 +532,7 @@ export class RadarScoutModule {
       return `
         <button class="v4-active-pill" data-metric="${id}">
           <span>${metric.name}</span>
-          <span class="pill-remove">×</span>
+          <span class="pill-remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
         </button>
       `;
     }).join('');
