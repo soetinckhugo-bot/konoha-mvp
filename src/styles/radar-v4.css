@@ -1180,6 +1180,7 @@
   height: 100%;
   border-radius: 3px;
   transition: width 0.4s var(--ease-out);
+  box-shadow: 0 0 8px currentColor;
 }
 
 .v4-centile-value {
@@ -1436,7 +1437,7 @@
 .v4-tier-badge-small.a { background: var(--tier-a); color: #000; }
 .v4-tier-badge-small.b { background: var(--tier-b); color: #000; }
 .v4-tier-badge-small.c { background: var(--tier-c); color: #000; }
-.v4-tier-badge-small.d { background: var(--tier-d); color: #FFF; }
+.v4-tier-badge-small.d { background: var(--tier-d); color: #000; }
 
 .v4-tier-label {
   flex: 1;
@@ -1497,7 +1498,7 @@
 .v4-tier-circle.a { background: var(--tier-a); color: #000; box-shadow: 0 0 12px var(--tier-a), 0 0 20px rgba(34, 197, 94, 0.4); }
 .v4-tier-circle.b { background: var(--tier-b); color: #000; box-shadow: 0 0 12px var(--tier-b), 0 0 20px rgba(250, 204, 21, 0.4); }
 .v4-tier-circle.c { background: var(--tier-c); color: #000; box-shadow: 0 0 12px var(--tier-c), 0 0 20px rgba(245, 158, 11, 0.4); }
-.v4-tier-circle.d { background: var(--tier-d); color: #FFF; box-shadow: 0 0 12px var(--tier-d), 0 0 20px rgba(239, 68, 68, 0.4); }
+.v4-tier-circle.d { background: var(--tier-d); color: #000; box-shadow: 0 0 12px var(--tier-d), 0 0 20px rgba(239, 68, 68, 0.4); }
 
 .v4-tier-name {
   font-size: 6px;
@@ -1662,6 +1663,65 @@
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
   margin-bottom: 8px;
+}
+
+/* Comparison Legend - Player Cards */
+.v4-comparison-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.v4-legend-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--v4-bg-card);
+  border: 1px solid var(--v4-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.v4-legend-card:hover {
+  border-color: var(--v4-accent);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.v4-legend-card.hidden {
+  opacity: 0.4;
+  filter: grayscale(0.8);
+}
+
+.v4-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.v4-legend-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.v4-legend-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--v4-text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.v4-legend-team {
+  font-size: 10px;
+  color: var(--v4-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Inter', sans-serif;
 }
 
 .v4-compare-panel .v4-label {

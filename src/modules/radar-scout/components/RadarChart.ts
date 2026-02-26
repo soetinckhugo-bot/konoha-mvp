@@ -95,11 +95,7 @@ export class RadarChart {
         },
         plugins: {
           legend: {
-            display: config.datasets.length > 1,
-            labels: {
-              color: 'rgba(255, 255, 255, 0.7)',
-              font: { family: 'Space Grotesk', size: 14 }
-            }
+            display: false, // Custom legend in HTML instead
           },
           tooltip: {
             // V4 Dark Tooltip Style from design-brief-sally.md

@@ -178,6 +178,24 @@ export class RadarScoutModule {
             </select>
           </div>
 
+          <!-- Comparison Legend - Custom player cards -->
+          <div id="comparison-legend" class="v4-comparison-legend" style="display: none;">
+            <div class="v4-legend-card" data-dataset="0">
+              <div class="v4-legend-color" style="background: #3FE0D0;"></div>
+              <div class="v4-legend-info">
+                <span class="v4-legend-name" id="legend-player1-name">Player 1</span>
+                <span class="v4-legend-team" id="legend-player1-team">Team</span>
+              </div>
+            </div>
+            <div class="v4-legend-card" data-dataset="1">
+              <div class="v4-legend-color" style="background: #FF6B6B;"></div>
+              <div class="v4-legend-info">
+                <span class="v4-legend-name" id="legend-player2-name">Player 2</span>
+                <span class="v4-legend-team" id="legend-player2-team">Team</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Radar Chart -->
           <div class="v4-radar-container" id="radar-export-container">
             <div id="radar-chart-container" class="v4-radar-chart"></div>
@@ -731,6 +749,36 @@ export class RadarScoutModule {
     
     this.radarChart?.setViewMode(this.centileViewMode);
     this.radarChart?.render(config);
+    
+    // Update comparison legend
+    this.updateComparisonLegend(player, players);
+  }
+
+  private updateComparisonLegend(player1: Player, players: Player[]): void {
+    if (this.currentMode !== 'compare' || !this.comparedPlayerId) return;
+    
+    const player2 = players.find(p => p.id === this.comparedPlayerId);
+    if (!player2) return;
+    
+    const legend1Name = this.container?.querySelector('#legend-player1-name');
+    const legend1Team = this.container?.querySelector('#legend-player1-team');
+    const legend2Name = this.container?.querySelector('#legend-player2-name');
+    const legend2Team = this.container?.querySelector('#legend-player2-team');
+    
+    if (legend1Name) legend1Name.textContent = player1.name;
+    if (legend1Team) legend1Team.textContent = player1.team || 'No Team';
+    if (legend2Name) legend2Name.textContent = player2.name;
+    if (legend2Team) legend2Team.textContent = player2.team || 'No Team';
+    
+    // Add click handlers to toggle datasets
+    const legendCards = this.container?.querySelectorAll('.v4-legend-card');
+    legendCards?.forEach((card) => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('hidden');
+        // Toggle dataset visibility in chart
+        // This would need Chart.js dataset visibility API
+      });
+    });
   }
 
   private updateCentilesPanel(): void {
@@ -1059,8 +1107,10 @@ export class RadarScoutModule {
   private showComparePlayerSelect(): void {
     const panel = this.container?.querySelector('#compare-player-panel') as HTMLElement;
     const select = this.container?.querySelector('#compare-player-select') as HTMLSelectElement;
+    const legend = this.container?.querySelector('#comparison-legend') as HTMLElement;
     
     if (panel) panel.style.display = 'block';
+    if (legend) legend.style.display = 'flex';
     
     if (select) {
       // Populate with players (excluding currently selected)
@@ -1085,7 +1135,9 @@ export class RadarScoutModule {
 
   private hideComparePlayerSelect(): void {
     const panel = this.container?.querySelector('#compare-player-panel') as HTMLElement;
+    const legend = this.container?.querySelector('#comparison-legend') as HTMLElement;
     if (panel) panel.style.display = 'none';
+    if (legend) legend.style.display = 'none';
     this.comparedPlayerId = null;
     this.updateView();
   }
