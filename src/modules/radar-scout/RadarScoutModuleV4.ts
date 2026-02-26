@@ -38,7 +38,7 @@ export class RadarScoutModule {
           <!-- Player Selection -->
           <div class="v4-card">
             <div class="v4-card-header">
-              <span class="v4-header-icon">👤</span>
+              <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
               <span class="v4-header-title">Player Selection</span>
             </div>
             <div class="v4-card-body">
@@ -54,27 +54,27 @@ export class RadarScoutModule {
           <!-- Analysis Mode -->
           <div class="v4-card">
             <div class="v4-card-header">
-              <span class="v4-header-icon">📊</span>
+              <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
               <span class="v4-header-title">Analysis Mode</span>
             </div>
             <div class="v4-card-body">
               <div class="v4-mode-list">
                 <button class="v4-mode-item active" data-mode="solo">
-                  <span class="v4-mode-icon">🔷</span>
+                  <span class="v4-mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
                   <div class="v4-mode-text">
                     <span class="v4-mode-name">Individual</span>
                     <span class="v4-mode-desc">Solo Analysis</span>
                   </div>
                 </button>
                 <button class="v4-mode-item" data-mode="compare">
-                  <span class="v4-mode-icon">⚔️</span>
+                  <span class="v4-mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg></span>
                   <div class="v4-mode-text">
                     <span class="v4-mode-name">Comparison</span>
                     <span class="v4-mode-desc">1 vs 1</span>
                   </div>
                 </button>
                 <button class="v4-mode-item" data-mode="benchmark">
-                  <span class="v4-mode-icon">📈</span>
+                  <span class="v4-mode-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
                   <div class="v4-mode-text">
                     <span class="v4-mode-name">Benchmark</span>
                     <span class="v4-mode-desc">vs Average</span>
@@ -87,7 +87,7 @@ export class RadarScoutModule {
           <!-- Roles -->
           <div class="v4-card">
             <div class="v4-card-header">
-              <span class="v4-header-icon">🎭</span>
+              <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12a10 10 0 1 1 20 0 10 10 0 0 1-20 0Z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span>
               <span class="v4-header-title">Roles</span>
             </div>
             <div class="v4-card-body">
@@ -186,13 +186,13 @@ export class RadarScoutModule {
           <div id="centiles-panel" class="v4-percentile-panel">
             <div class="v4-percentile-header">
               <div class="v4-percentile-title">
-                <span class="v4-percentile-icon">📊</span>
+                <span class="v4-percentile-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
                 <span>Percentile Analysis</span>
                 <span class="v4-percentile-subtitle">Player position vs league</span>
               </div>
               <div class="v4-percentile-actions">
-                <button class="v4-action-btn" id="export-centiles-btn">📤 EXPORT PNG</button>
-                <button class="v4-action-btn active">📊 By Categories</button>
+                <button class="v4-action-btn" id="export-centiles-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>EXPORT PNG</button>
+                <button class="v4-action-btn active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>By Categories</button>
               </div>
             </div>
             <div class="v4-percentile-categories">
@@ -223,9 +223,9 @@ export class RadarScoutModule {
           <!-- Leaderboard -->
           <div class="v4-card v4-leaderboard-card">
             <div class="v4-card-header">
-              <span class="v4-header-icon">👑</span>
+              <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></span>
               <span class="v4-header-title">Leaderboard</span>
-              <span class="v4-info-icon">ⓘ</span>
+              <span class="v4-info-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
             </div>
             <div class="v4-card-body v4-card-body-scroll">
               <div id="leaderboard-container" class="v4-leaderboard-list"></div>
@@ -235,7 +235,7 @@ export class RadarScoutModule {
           <!-- Player Tiers - V4 Horizontal Style -->
           <div class="v4-card v4-tiers-card">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">🎖️</span>
+              <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></span>
               <span class="v4-header-title">PLAYER TIERS</span>
             </div>
             <div class="v4-card-body">

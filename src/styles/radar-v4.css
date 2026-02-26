@@ -304,12 +304,13 @@
 
 .v4-container {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 260px;
-  gap: var(--space-6);
+  grid-template-columns: 260px minmax(0, 1fr) 280px;
+  gap: 20px;
   max-width: 1600px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  align-items: start;
 }
 
 /* ============================================
@@ -344,8 +345,13 @@
 }
 
 .v4-header-icon {
-  font-size: 14px;
+  width: 16px;
+  height: 16px;
+  color: var(--v4-accent);
   filter: drop-shadow(0 0 4px var(--role-glow, transparent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .v4-header-title {
@@ -359,10 +365,14 @@
 }
 
 .v4-info-icon {
-  font-size: 14px;
+  width: 14px;
+  height: 14px;
   color: var(--v4-text-muted);
   cursor: help;
   transition: color var(--dur-fast) var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .v4-info-icon:hover {
@@ -494,8 +504,14 @@
 }
 
 .v4-mode-icon {
-  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--v4-accent);
   filter: drop-shadow(0 0 4px var(--role-glow, transparent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .v4-mode-text {
@@ -667,7 +683,7 @@
 .v4-center {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 0;
 }
 
 .v4-radar-header {
@@ -745,12 +761,13 @@
   background: var(--v4-bg-card);
   border: 1px solid var(--v4-border);
   border-radius: var(--radius-lg);
-  height: 450px;
+  height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  margin-bottom: 16px;
 }
 
 .v4-radar-chart {
@@ -784,6 +801,7 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card);
+  margin-top: 16px;
 }
 
 .v4-percentile-header {
@@ -806,8 +824,13 @@
 }
 
 .v4-percentile-icon {
-  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--v4-accent);
   filter: drop-shadow(0 0 4px var(--role-glow, transparent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .v4-percentile-subtitle {
@@ -962,13 +985,10 @@
 .v4-sidebar-right {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  width: 260px;
-  min-width: 260px;
-  max-width: 260px;
-  max-height: calc(100vh - 88px);
-  overflow-y: auto;
-  padding-right: var(--space-1);
+  gap: 12px;
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
 }
 
 .v4-sidebar-right::-webkit-scrollbar {
@@ -989,26 +1009,25 @@
   background: var(--v4-text-muted);
 }
 
-/* Leaderboard - V4 EXACT Design with Role Glow */
+/* Leaderboard - V4 EXACT Design */
 .v4-leaderboard-card {
   position: relative;
-}
-
-.v4-leaderboard-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(180deg, var(--v4-accent) 0%, transparent 60%);
-  opacity: 0.15;
-  z-index: -1;
-  pointer-events: none;
+  margin-bottom: 0;
 }
 
 .v4-leaderboard-card .v4-card-body {
   padding: 12px 8px;
-  max-height: none;
-  overflow-y: visible;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.v4-leaderboard-card .v4-card-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.v4-leaderboard-card .v4-card-body::-webkit-scrollbar-thumb {
+  background: var(--v4-border);
+  border-radius: 2px;
 }
 
 .v4-leaderboard-card .v4-card-body::-webkit-scrollbar {
