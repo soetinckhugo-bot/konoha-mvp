@@ -93,27 +93,27 @@ export class RadarScoutModule {
             <div class="v4-card-body">
               <div class="v4-roles-grid">
                 <button class="v4-role-btn" data-role="ALL">
-                  <span class="v4-role-icon">✱</span>
+                  <span class="v4-role-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg></span>
                   <span class="v4-role-label">ALL</span>
                 </button>
                 <button class="v4-role-btn" data-role="TOP">
-                  <span class="v4-role-icon">🛡️</span>
+                  <span class="v4-role-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                   <span class="v4-role-label">TOP</span>
                 </button>
                 <button class="v4-role-btn" data-role="JUNGLE">
-                  <span class="v4-role-icon">🌲</span>
+                  <span class="v4-role-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-8m0-12v8m0 0l4-4m-4 4l-4-4"/></svg></span>
                   <span class="v4-role-label">JGL</span>
                 </button>
                 <button class="v4-role-btn active" data-role="MID">
-                  <span class="v4-role-icon">⚡</span>
+                  <span class="v4-role-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
                   <span class="v4-role-label">MID</span>
                 </button>
                 <button class="v4-role-btn" data-role="ADC">
-                  <span class="v4-role-icon">🎯</span>
+                  <span class="v4-role-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
                   <span class="v4-role-label">ADC</span>
                 </button>
                 <button class="v4-role-btn" data-role="SUPPORT">
-                  <span class="v4-role-icon">💚</span>
+                  <span class="v4-role-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
                   <span class="v4-role-label">SUP</span>
                 </button>
               </div>
@@ -267,7 +267,7 @@ export class RadarScoutModule {
           <!-- Stats Tiers - V4 Horizontal Style -->
           <div class="v4-card v4-tiers-card">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">📊</span>
+              <span class="v4-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
               <span class="v4-header-title">STATS TIERS</span>
             </div>
             <div class="v4-card-body">
