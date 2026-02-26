@@ -65,22 +65,31 @@ export class RadarChart {
             min: 0,
             max: 100,
             grid: {
-              color: 'rgba(148, 163, 184, 0.10)',  // V4: subtle grid
-              circular: true
+              color: 'rgba(148, 163, 184, 0.08)',  // V4: very subtle grid
+              circular: true,
+              lineWidth: 1
             },
             angleLines: {
-              color: 'rgba(148, 163, 184, 0.08)'   // V4: even subtler axes
+              display: false  // V4: No radial lines for cleaner look
             },
             pointLabels: {
               color: 'rgba(226, 232, 240, 0.85)',  // V4: labels color
               font: {
                 family: 'Space Grotesk',
-                size: 12,
+                size: 11,
                 weight: '500'
               }
             },
             ticks: {
-              display: false
+              display: true,
+              stepSize: 25,
+              color: 'rgba(148, 163, 184, 0.5)',
+              font: {
+                family: 'Space Grotesk',
+                size: 9
+              },
+              backdropColor: 'transparent',
+              z: 10
             }
           }
         },

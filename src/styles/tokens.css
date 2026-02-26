@@ -44,27 +44,27 @@
   --kono-info: #3B82F6;
   
   /* --------------------------------------------------------------------------
-     ROLE COLORS - V4 Exact (from design-brief-sally.md)
+     ROLE COLORS - V4 Vivid (Enhanced)
      -------------------------------------------------------------------------- */
-  --kono-role-top: #D84748;
-  --kono-role-top-hover: #FF7677;
-  --kono-role-top-glow: rgba(216, 71, 72, 0.35);
+  --kono-role-top: #FF4444;
+  --kono-role-top-hover: #FF6666;
+  --kono-role-top-glow: rgba(255, 68, 68, 0.50);
   
-  --kono-role-jungle: #04BD67;
-  --kono-role-jungle-hover: #09E677;
-  --kono-role-jungle-glow: rgba(4, 189, 103, 0.35);
+  --kono-role-jungle: #00E676;
+  --kono-role-jungle-hover: #00FF7F;
+  --kono-role-jungle-glow: rgba(0, 230, 118, 0.50);
   
-  --kono-role-mid: #05AACE;
-  --kono-role-mid-hover: #00D4FF;
-  --kono-role-mid-glow: rgba(5, 170, 206, 0.35);
+  --kono-role-mid: #00D4FF;
+  --kono-role-mid-hover: #33DDFF;
+  --kono-role-mid-glow: rgba(0, 212, 255, 0.50);
   
-  --kono-role-adc: #CFB31C;
-  --kono-role-adc-hover: #FFDA56;
-  --kono-role-adc-glow: rgba(207, 179, 28, 0.35);
+  --kono-role-adc: #FFD700;
+  --kono-role-adc-hover: #FFE44D;
+  --kono-role-adc-glow: rgba(255, 215, 0, 0.50);
   
-  --kono-role-support: #C148D7;
-  --kono-role-support-hover: #E076FB;
-  --kono-role-support-glow: rgba(193, 72, 215, 0.35);
+  --kono-role-support: #E040FB;
+  --kono-role-support-hover: #F066FF;
+  --kono-role-support-glow: rgba(224, 64, 251, 0.50);
   
   /* --------------------------------------------------------------------------
      DATA COLORS - Visualisation métriques

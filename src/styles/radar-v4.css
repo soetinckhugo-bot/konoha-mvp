@@ -33,10 +33,10 @@
   --glass-bg: rgba(17, 24, 39, 0.95);
   --glass-border: rgba(148, 163, 184, 0.14);
   
-  /* Shadows - Premium Depth */
-  --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.60);
-  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --shadow-glow: 0 0 24px;
+  /* Shadows - Premium Depth (Enhanced) */
+  --shadow-card: 0 25px 50px rgba(0, 0, 0, 0.70), 0 10px 20px rgba(0, 0, 0, 0.50);
+  --shadow-soft: 0 15px 35px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 30px;
   
   /* Motion */
   --dur-fast: 150ms;
@@ -60,19 +60,19 @@
   --radius-lg: 18px;
   --radius-pill: 999px;
   
-  /* Role Colors - V4 Exact */
-  --role-top: #D84748;
-  --role-jungle: #04BD67;
-  --role-mid: #05AACE;
-  --role-adc: #CFB31C;
-  --role-support: #C148D7;
+  /* Role Colors - V4 Vivid (Enhanced) */
+  --role-top: #FF4444;
+  --role-jungle: #00E676;
+  --role-mid: #00D4FF;
+  --role-adc: #FFD700;
+  --role-support: #E040FB;
   
-  /* Role Hover Colors */
-  --role-top-hover: #FF7677;
-  --role-jungle-hover: #09E677;
-  --role-mid-hover: #00D4FF;
-  --role-adc-hover: #FFDA56;
-  --role-support-hover: #E076FB;
+  /* Role Hover Colors - Brighter */
+  --role-top-hover: #FF6666;
+  --role-jungle-hover: #00FF7F;
+  --role-mid-hover: #33DDFF;
+  --role-adc-hover: #FFE44D;
+  --role-support-hover: #F066FF;
   
   /* Tier Colors - V4 */
   --tier-s: #3FE0D0;
@@ -88,33 +88,33 @@
 .v4-layout[data-role="TOP"] {
   --v4-accent: var(--role-top);
   --v4-accent-hover: var(--role-top-hover);
-  --role-glow: rgba(216, 71, 72, 0.35);
+  --role-glow: rgba(255, 68, 68, 0.50);
 }
 
 .v4-layout[data-role="JUNGLE"],
 .v4-layout[data-role="JGL"] {
   --v4-accent: var(--role-jungle);
   --v4-accent-hover: var(--role-jungle-hover);
-  --role-glow: rgba(4, 189, 103, 0.35);
+  --role-glow: rgba(0, 230, 118, 0.50);
 }
 
 .v4-layout[data-role="MID"] {
   --v4-accent: var(--role-mid);
   --v4-accent-hover: var(--role-mid-hover);
-  --role-glow: rgba(5, 170, 206, 0.35);
+  --role-glow: rgba(0, 212, 255, 0.50);
 }
 
 .v4-layout[data-role="ADC"] {
   --v4-accent: var(--role-adc);
   --v4-accent-hover: var(--role-adc-hover);
-  --role-glow: rgba(207, 179, 28, 0.35);
+  --role-glow: rgba(255, 215, 0, 0.50);
 }
 
 .v4-layout[data-role="SUPPORT"],
 .v4-layout[data-role="SUP"] {
   --v4-accent: var(--role-support);
   --v4-accent-hover: var(--role-support-hover);
-  --role-glow: rgba(193, 72, 215, 0.35);
+  --role-glow: rgba(224, 64, 251, 0.50);
 }
 
 .v4-layout[data-role="ALL"] {
@@ -325,16 +325,17 @@
 }
 
 .v4-card:hover {
-  border-color: var(--v4-border-visible);
-  box-shadow: var(--shadow-card), 0 0 20px var(--role-glow, transparent);
+  border-color: var(--v4-accent);
+  box-shadow: var(--shadow-card), 0 0 30px var(--role-glow, transparent);
+  transform: translateY(-2px);
 }
 
 .v4-card-header {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: rgba(255, 255, 255, 0.02);
+  padding: 14px var(--space-4);
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--v4-border);
 }
 
@@ -369,7 +370,7 @@
 }
 
 .v4-card-body {
-  padding: var(--space-3);
+  padding: var(--space-4);
 }
 
 .v4-card-body-scroll {
@@ -487,9 +488,9 @@
 }
 
 .v4-mode-item.active {
-  background: var(--role-glow, rgba(5, 170, 206, 0.1));
+  background: var(--role-glow, rgba(5, 170, 206, 0.15));
   border-color: var(--v4-accent);
-  box-shadow: 0 0 14px var(--role-glow, transparent);
+  box-shadow: 0 0 20px var(--role-glow, transparent), inset 0 0 20px var(--role-glow, transparent);
 }
 
 .v4-mode-icon {
@@ -548,7 +549,8 @@
   background: var(--v4-accent);
   border-color: var(--v4-accent);
   color: #000;
-  box-shadow: 0 4px 14px var(--role-glow, transparent);
+  box-shadow: 0 0 20px var(--role-glow, transparent), 0 4px 14px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .v4-role-icon {
@@ -1129,18 +1131,21 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-2);
+  padding: 10px var(--space-3);
   border-radius: var(--radius-sm);
   transition: all var(--dur-normal) var(--ease-out);
+  border: 1px solid transparent;
 }
 
 .v4-tier-row:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--v4-accent);
+  box-shadow: 0 0 15px var(--role-glow, transparent);
 }
 
 .v4-tier-badge-small {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1148,7 +1153,7 @@
   font-size: 11px;
   font-weight: 800;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px currentColor, 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .v4-tier-badge-small.s { background: var(--tier-s); color: #000; }
