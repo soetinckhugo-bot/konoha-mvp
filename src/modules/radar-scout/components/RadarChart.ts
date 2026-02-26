@@ -113,12 +113,12 @@ export class RadarChart {
             titleFont: {
               family: 'Space Grotesk',
               size: 14,
-              weight: '700'
+              weight: 700
             },
             bodyFont: {
               family: 'Inter',
               size: 13,
-              weight: '600'
+              weight: 600
             },
             callbacks: {
               label: (context) => {
