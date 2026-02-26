@@ -827,6 +827,9 @@ export class RadarScoutModule {
         gradeClass = 'c';
       }
 
+      // Grade color for rank badge
+      const gradeColorClass = `grade-${gradeClass}`;
+      
       return `
         <div class="v4-lb-row" data-player-id="${item.player.id}">
           <div class="v4-lb-rank ${rankClass}">${rank}</div>
@@ -834,11 +837,8 @@ export class RadarScoutModule {
             <div class="v4-lb-name">${item.player.name}</div>
             <div class="v4-lb-team">${item.player.team || 'No Team'}</div>
           </div>
-          <div class="v4-lb-score-wrap">
-            <span class="v4-lb-score">${Math.round(item.score)}</span>
-            <span class="v4-lb-label">score</span>
-          </div>
-          <div class="v4-lb-grade ${gradeClass}">${grade}</div>
+          <div class="v4-lb-rank-grade ${gradeColorClass}">${grade}</div>
+          <div class="v4-lb-score">${Math.round(item.score)}</div>
         </div>
       `;
     }).join('');
