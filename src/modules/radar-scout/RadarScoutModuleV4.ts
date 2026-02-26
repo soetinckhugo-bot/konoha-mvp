@@ -157,7 +157,7 @@ export class RadarScoutModule {
               <span id="selected-player-team" class="v4-team-tag" style="display:none"></span>
             </div>
             <div class="v4-player-stats">
-              <span id="player-rank-badge" class="v4-stat-badge" style="display:none">Rank <span id="player-rank">-</span></span>
+              <span id="player-rank-badge" class="v4-stat-badge" style="display:none">Tier <span id="player-rank">-</span></span>
               <span id="player-avg-badge" class="v4-stat-badge" style="display:none">Avg <span id="player-avg">-</span></span>
             </div>
             <div class="v4-view-toggle">
@@ -405,6 +405,7 @@ export class RadarScoutModule {
       
       this.updateView();
       this.updateCentilesPanel();
+      this.updateTableView();
     });
 
     // Radar view toggle
@@ -655,8 +656,7 @@ export class RadarScoutModule {
     // Sort by score descending
     playerScoresList.sort((a, b) => b.avgScore - a.avgScore);
     
-    // Find rank of selected player
-    const playerRank = playerScoresList.findIndex(p => p.player.id === playerId) + 1;
+    // Find selected player score
     const playerAvgScore = playerScoresList.find(p => p.player.id === playerId)?.avgScore || 0;
     
     // Determine player tier for color coding
@@ -665,10 +665,15 @@ export class RadarScoutModule {
     else if (playerAvgScore >= 60) playerTierClass = 'rank-a';
     else if (playerAvgScore >= 50) playerTierClass = 'rank-b';
     
-    // Update rank and avg display
+    // Update tier and avg display - show PLAYER TIER (S/A/B/C) not rank number
+    let playerTierLabel = 'C';
+    if (playerAvgScore >= 75) playerTierLabel = 'S';
+    else if (playerAvgScore >= 60) playerTierLabel = 'A';
+    else if (playerAvgScore >= 50) playerTierLabel = 'B';
+    
     if (playerRankEl && playerRankBadge) {
-      playerRankEl.textContent = String(playerRank);
-      playerRankBadge.className = `v4-stat-badge ${playerTierClass}`;
+      playerRankEl.textContent = playerTierLabel;
+      playerRankBadge.className = `v4-stat-badge tier-badge ${playerTierClass}`;
       playerRankBadge.style.display = 'inline-flex';
     }
     if (playerAvgEl && playerAvgBadge) {

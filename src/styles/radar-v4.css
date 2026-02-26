@@ -800,15 +800,21 @@
   font-weight: 700;
 }
 
-/* Rank badge with tier color */
+/* Tier badge with color - bigger for S/A/B/C display */
+.v4-stat-badge.tier-badge {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 12px;
+}
+
 .v4-stat-badge.rank-s { border-color: #3FE0D0; color: #3FE0D0; }
-.v4-stat-badge.rank-s span { color: #3FE0D0; }
+.v4-stat-badge.rank-s span { color: #3FE0D0; font-size: 14px; }
 .v4-stat-badge.rank-a { border-color: #22C55E; color: #22C55E; }
-.v4-stat-badge.rank-a span { color: #22C55E; }
+.v4-stat-badge.rank-a span { color: #22C55E; font-size: 14px; }
 .v4-stat-badge.rank-b { border-color: #FACC15; color: #FACC15; }
-.v4-stat-badge.rank-b span { color: #FACC15; }
+.v4-stat-badge.rank-b span { color: #FACC15; font-size: 14px; }
 .v4-stat-badge.rank-c { border-color: #EF4444; color: #EF4444; }
-.v4-stat-badge.rank-c span { color: #EF4444; }
+.v4-stat-badge.rank-c span { color: #EF4444; font-size: 14px; }
 
 .v4-player-name {
   font-size: 18px;
