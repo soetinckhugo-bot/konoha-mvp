@@ -888,6 +888,90 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 30px var(--role-glow, transparent);
 }
 
+/* Expand Button */
+.v4-radar-expand-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--v4-border);
+  border-radius: 8px;
+  color: var(--v4-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms ease;
+  z-index: 10;
+}
+
+.v4-radar-expand-btn:hover {
+  background: var(--v4-accent);
+  border-color: var(--v4-accent);
+  color: #000;
+}
+
+/* Radar Overlay */
+.v4-radar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v4-radar-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.v4-radar-overlay-content {
+  position: relative;
+  width: 90vw;
+  height: 90vh;
+  background: var(--v4-bg-card);
+  border: 1px solid var(--v4-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.v4-radar-overlay-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--v4-border);
+  border-radius: 50%;
+  color: var(--v4-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms ease;
+}
+
+.v4-radar-overlay-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--v4-accent);
+  color: var(--v4-accent);
+}
+
+.v4-radar-overlay-chart {
+  width: 100%;
+  height: 100%;
+}
+
 .v4-radar-chart {
   width: 100%;
   height: 100%;

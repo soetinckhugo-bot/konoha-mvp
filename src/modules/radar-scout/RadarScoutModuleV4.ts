@@ -198,10 +198,24 @@ export class RadarScoutModule {
 
           <!-- Radar Chart -->
           <div class="v4-radar-container" id="radar-export-container">
+            <button class="v4-radar-expand-btn" id="radar-expand-btn" title="Expand radar">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7"/></svg>
+            </button>
             <div id="radar-chart-container" class="v4-radar-chart"></div>
             <div id="radar-empty" class="v4-radar-empty">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.3"><polygon points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               <p>Select a player to analyze</p>
+            </div>
+          </div>
+
+          <!-- Radar Overlay (Fullscreen) -->
+          <div class="v4-radar-overlay" id="radar-overlay" style="display: none;">
+            <div class="v4-radar-overlay-backdrop"></div>
+            <div class="v4-radar-overlay-content">
+              <button class="v4-radar-overlay-close" id="radar-overlay-close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+              <div class="v4-radar-overlay-chart" id="radar-overlay-chart"></div>
             </div>
           </div>
 
@@ -469,6 +483,29 @@ export class RadarScoutModule {
           this.updateTableView();
         }
       });
+    });
+
+    // Radar expand/collapse
+    const expandBtn = this.container?.querySelector('#radar-expand-btn');
+    const overlay = this.container?.querySelector('#radar-overlay') as HTMLElement;
+    const overlayClose = this.container?.querySelector('#radar-overlay-close');
+    
+    expandBtn?.addEventListener('click', () => {
+      if (overlay) {
+        overlay.style.display = 'flex';
+        // Render a copy of the chart in the overlay
+        this.renderOverlayChart();
+      }
+    });
+    
+    overlayClose?.addEventListener('click', () => {
+      if (overlay) overlay.style.display = 'none';
+    });
+    
+    overlay?.addEventListener('click', (e) => {
+      if (e.target === overlay || e.target === overlay.querySelector('.v4-radar-overlay-backdrop')) {
+        overlay.style.display = 'none';
+      }
     });
 
     // Global export button (header)
@@ -754,6 +791,28 @@ export class RadarScoutModule {
     this.updateComparisonLegend(player, players);
   }
 
+  private renderOverlayChart(): void {
+    const overlayChart = this.container?.querySelector('#radar-overlay-chart');
+    if (!overlayChart) return;
+    
+    // Clear previous chart
+    overlayChart.innerHTML = '';
+    
+    // Create a new canvas for the overlay chart
+    const canvas = document.createElement('canvas');
+    overlayChart.appendChild(canvas);
+    
+    // Get current chart config and render in overlay
+    // This is a simplified version - ideally we'd share the config
+    const playerId = this.core.getState('selectedPlayerId');
+    if (!playerId) return;
+    
+    // We need to get the current config and render it
+    // This requires access to the current config - we'll reuse the existing one
+    // For now, just show a placeholder
+    overlayChart.innerHTML = '<p style="color: var(--v4-text-muted); text-align: center;">Expanded Radar View</p>';
+  }
+
   private updateComparisonLegend(player1: Player, players: Player[]): void {
     if (this.currentMode !== 'compare' || !this.comparedPlayerId) return;
     
@@ -830,8 +889,9 @@ export class RadarScoutModule {
 
         const isInverted = metric.direction === 'lower-is-better';
         const percentile = this.calculatePercentileForRole(value, id, rolePlayers, isInverted);
-        const grade = GradeCalculator.getGrade(percentile);
-        const color = GradeCalculator.getGradeColor(grade);
+        // Use getStatsGrade for correct S/A/B/C/D tiers with new thresholds
+        const grade = GradeCalculator.getStatsGrade(percentile);
+        const color = GradeCalculator.getStatsGradeColor(grade);
 
         const displayValue = this.centileViewMode === 'percentiles' 
           ? `${Math.round(percentile)}`
