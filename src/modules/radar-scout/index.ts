@@ -5,8 +5,22 @@
 export { ModuleCoordinator } from './core/ModuleCoordinator';
 export type { BMADModule, Player } from './core/types';
 
+// Config
+export { 
+  ALL_METRICS, 
+  ROLE_METRICS, 
+  ROLE_WEIGHTS, 
+  METRIC_RANGES,
+  getMetricsForRole, 
+  getWeightsForRole,
+  normalizeMetric,
+  formatMetricValue
+} from './config/metrics.config';
+export type { MetricConfig } from './config/metrics.config';
+
 // Services
 export { PercentileService, percentileService } from './services/PercentileService';
+export type { PercentileResult, PlayerAnalysis } from './services/PercentileService';
 
 // Modules BMAD
 export { PlayerSelectModule } from './modules/PlayerSelectModule';

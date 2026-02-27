@@ -1,7 +1,8 @@
-// RadarChartModule.ts - BMAD Pattern
+// RadarChartModule.ts - Radar Chart avec toutes les métriques
 // @ts-nocheck
 import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import type { BMADModule } from '../core/types';
+import { normalizeMetric, formatMetricValue, ALL_METRICS } from '../config/metrics.config';
 
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -22,6 +23,7 @@ export class RadarChartModule implements BMADModule {
         <div class="v4-player-badge">
           <span id="radar-chart-player-name" class="v4-player-name">Sélectionnez un joueur</span>
           <span id="radar-chart-role-tag" class="v4-role-tag" style="display:none;"></span>
+          <span id="radar-chart-grade" class="v4-grade-badge" style="display:none;"></span>
         </div>
         <div class="v4-view-toggle">
           <button class="v4-toggle-btn" id="radar-toggle-values">Valeurs</button>
@@ -31,6 +33,17 @@ export class RadarChartModule implements BMADModule {
       <div class="v4-radar-container">
         <canvas id="radar-chart-canvas"></canvas>
       </div>
+      <style>
+        .v4-grade-badge {
+          padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: 800;
+          margin-left: 8px;
+        }
+        .grade-S { background: #3FE0D0; color: #000; }
+        .grade-A { background: #22C55E; color: #000; }
+        .grade-B { background: #FACC15; color: #000; }
+        .grade-C { background: #F59E0B; color: #000; }
+        .grade-D { background: #EF4444; color: #fff; }
+      </style>
     `;
 
     this.canvas = container.querySelector('#radar-chart-canvas') as HTMLCanvasElement;
@@ -61,18 +74,30 @@ export class RadarChartModule implements BMADModule {
   private updateHeader(state: any): void {
     const player = state.selectedPlayer;
     const nameEl = this.container?.querySelector('#radar-chart-player-name');
-    const roleEl = this.container?.querySelector('#radar-chart-role-tag');
+    const roleEl = this.container?.querySelector('#radar-chart-role-tag') as HTMLElement;
+    const gradeEl = this.container?.querySelector('#radar-chart-grade') as HTMLElement;
 
     if (player) {
       if (nameEl) nameEl.textContent = player.name;
       if (roleEl) {
         roleEl.textContent = player.role;
         roleEl.className = `v4-role-tag role-${player.role.toLowerCase()}`;
-        roleEl.setAttribute('style', 'display:inline-block;');
+        roleEl.style.display = 'inline-block';
       }
+      // Grade sera mis à jour via l'analyse si disponible
     } else {
       if (nameEl) nameEl.textContent = 'Sélectionnez un joueur';
-      if (roleEl) roleEl.setAttribute('style', 'display:none;');
+      if (roleEl) roleEl.style.display = 'none';
+      if (gradeEl) gradeEl.style.display = 'none';
+    }
+  }
+
+  public updateGrade(grade: string): void {
+    const gradeEl = this.container?.querySelector('#radar-chart-grade') as HTMLElement;
+    if (gradeEl && grade) {
+      gradeEl.textContent = grade;
+      gradeEl.className = `v4-grade-badge grade-${grade}`;
+      gradeEl.style.display = 'inline-block';
     }
   }
 
@@ -86,10 +111,18 @@ export class RadarChartModule implements BMADModule {
 
     const stats = player.stats || {};
     const metrics = state.selectedMetrics || [];
-    const labels = metrics.map(m => this.getMetricLabel(m));
-    const data = metrics.map(m => {
+    
+    // Limiter à 8 métriques max pour la lisibilité du radar
+    const displayMetrics = metrics.slice(0, 8);
+    
+    const labels = displayMetrics.map(m => {
+      const config = ALL_METRICS.find(metric => metric.id === m);
+      return config?.label || m.toUpperCase();
+    });
+    
+    const data = displayMetrics.map(m => {
       const val = stats[m] || 0;
-      return this.showPercentile ? this.normalizeValue(val, m) : val;
+      return this.showPercentile ? normalizeMetric(val, m) : val;
     });
 
     const accentColor = this.getRoleColor(player.role);
@@ -122,7 +155,7 @@ export class RadarChartModule implements BMADModule {
             angleLines: { color: 'rgba(148,163,184,0.1)' },
             pointLabels: {
               color: '#94a3b8',
-              font: { size: 12, family: 'Inter', weight: '600' }
+              font: { size: 11, family: 'Inter', weight: '600' }
             }
           }
         },
@@ -137,35 +170,21 @@ export class RadarChartModule implements BMADModule {
             padding: 12,
             callbacks: {
               label: (ctx: any) => {
-                const metric = metrics[ctx.dataIndex];
-                const rawValue = stats[metric] || 0;
-                const percentile = this.normalizeValue(rawValue, metric);
-                return this.showPercentile 
-                  ? `${ctx.label}: ${percentile.toFixed(0)}% (raw: ${rawValue.toFixed(1)})`
-                  : `${ctx.label}: ${rawValue.toFixed(1)}`;
+                const metricId = displayMetrics[ctx.dataIndex];
+                const rawValue = stats[metricId] || 0;
+                const normalized = normalizeMetric(rawValue, metricId);
+                const config = ALL_METRICS.find(m => m.id === metricId);
+                
+                if (this.showPercentile) {
+                  return `${ctx.label}: ${normalized.toFixed(0)}% (raw: ${formatMetricValue(rawValue, metricId)})`;
+                }
+                return `${ctx.label}: ${formatMetricValue(rawValue, metricId)}`;
               }
             }
           }
         }
       }
     });
-  }
-
-  private normalizeValue(value: number, metric: string): number {
-    const ranges: Record<string, [number, number]> = {
-      kda: [0, 10], kp: [0, 100], cspm: [5, 10],
-      visionScore: [20, 100], dpm: [300, 800], gd15: [-500, 1500]
-    };
-    const [min, max] = ranges[metric] || [0, 100];
-    return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
-  }
-
-  private getMetricLabel(metric: string): string {
-    const labels: Record<string, string> = {
-      kda: 'KDA', kp: 'KP%', cspm: 'CSPM', visionScore: 'VISION',
-      dpm: 'DPM', gd15: 'GD@15'
-    };
-    return labels[metric] || metric.toUpperCase();
   }
 
   private getRoleColor(role: string): string {
