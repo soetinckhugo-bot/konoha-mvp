@@ -8,6 +8,7 @@ export class MetricsSelectorModule implements BMADModule {
   private container: HTMLElement | null = null;
   private coordinator: any = null;
   private currentRole = 'TOP';
+  private isUpdating = false; // 🔒 Protection boucle infinie
 
   render(container: HTMLElement, coordinator: any): void {
     this.container = container;
@@ -96,13 +97,27 @@ export class MetricsSelectorModule implements BMADModule {
   }
 
   update(state: any): void {
-    // Re-render si le rôle change
+    // 🔒 Éviter boucle infinie
+    if (this.isUpdating) return;
+    
     const playerRole = state.selectedPlayer?.role;
+    
+    // Si le rôle change, re-render avec les métriques par défaut
     if (playerRole && playerRole !== this.currentRole) {
+      this.isUpdating = true;
+      
       // Mettre à jour avec les métriques par défaut du nouveau rôle
       const roleMetrics = getMetricsForRole(playerRole);
-      const defaultMetrics = roleMetrics.slice(0, 6).map(m => m.id);
-      this.coordinator.setState('selectedMetrics', defaultMetrics);
+      const defaultMetrics = roleMetrics.map(m => m.id); // Toutes les métriques du rôle
+      
+      // Utiliser requestAnimationFrame pour éviter la boucle synchrone
+      requestAnimationFrame(() => {
+        this.coordinator.setState('selectedMetrics', defaultMetrics);
+        this.renderMetrics();
+        this.isUpdating = false;
+      });
+    } else {
+      // Juste mettre à jour l'UI sans changer l'état
       this.renderMetrics();
     }
   }

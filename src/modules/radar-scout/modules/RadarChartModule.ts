@@ -84,20 +84,10 @@ export class RadarChartModule implements BMADModule {
         roleEl.className = `v4-role-tag role-${player.role.toLowerCase()}`;
         roleEl.style.display = 'inline-block';
       }
-      // Grade sera mis à jour via l'analyse si disponible
     } else {
       if (nameEl) nameEl.textContent = 'Sélectionnez un joueur';
       if (roleEl) roleEl.style.display = 'none';
       if (gradeEl) gradeEl.style.display = 'none';
-    }
-  }
-
-  public updateGrade(grade: string): void {
-    const gradeEl = this.container?.querySelector('#radar-chart-grade') as HTMLElement;
-    if (gradeEl && grade) {
-      gradeEl.textContent = grade;
-      gradeEl.className = `v4-grade-badge grade-${grade}`;
-      gradeEl.style.display = 'inline-block';
     }
   }
 
@@ -112,15 +102,13 @@ export class RadarChartModule implements BMADModule {
     const stats = player.stats || {};
     const metrics = state.selectedMetrics || [];
     
-    // Limiter à 8 métriques max pour la lisibilité du radar
-    const displayMetrics = metrics.slice(0, 8);
-    
-    const labels = displayMetrics.map(m => {
+    // 🔥 PAS DE LIMITE - Toutes les métriques sélectionnées sont affichées
+    const labels = metrics.map(m => {
       const config = ALL_METRICS.find(metric => metric.id === m);
       return config?.label || m.toUpperCase();
     });
     
-    const data = displayMetrics.map(m => {
+    const data = metrics.map(m => {
       const val = stats[m] || 0;
       return this.showPercentile ? normalizeMetric(val, m) : val;
     });
@@ -155,7 +143,7 @@ export class RadarChartModule implements BMADModule {
             angleLines: { color: 'rgba(148,163,184,0.1)' },
             pointLabels: {
               color: '#94a3b8',
-              font: { size: 11, family: 'Inter', weight: '600' }
+              font: { size: 10, family: 'Inter', weight: '600' }
             }
           }
         },
@@ -170,7 +158,7 @@ export class RadarChartModule implements BMADModule {
             padding: 12,
             callbacks: {
               label: (ctx: any) => {
-                const metricId = displayMetrics[ctx.dataIndex];
+                const metricId = metrics[ctx.dataIndex];
                 const rawValue = stats[metricId] || 0;
                 const normalized = normalizeMetric(rawValue, metricId);
                 const config = ALL_METRICS.find(m => m.id === metricId);
