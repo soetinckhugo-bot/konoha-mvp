@@ -7,6 +7,7 @@ import { RoleFilterModule } from './modules/RoleFilterModule';
 import { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 import { RadarChartModule } from './modules/RadarChartModule';
 import { LeaderboardModule } from './modules/LeaderboardModule';
+import { PercentilePanelModule } from './modules/PercentilePanelModule';
 
 export default class RadarScoutPlugin {
   id = 'radar-scout';
@@ -28,7 +29,7 @@ export default class RadarScoutPlugin {
     // Initialiser le coordinator
     this.coordinator = new ModuleCoordinator(api);
 
-    // Rendre le layout V4
+    // Rendre le layout V4 avec le nouveau panel de centiles
     this.renderLayout(container);
 
     // Enregistrer les modules BMAD
@@ -36,6 +37,7 @@ export default class RadarScoutPlugin {
     this.coordinator.register(new ModeSelectorModule(), 'mode-selector-container');
     this.coordinator.register(new RoleFilterModule(), 'role-filter-container');
     this.coordinator.register(new MetricsSelectorModule(), 'metrics-selector-container');
+    this.coordinator.register(new PercentilePanelModule(), 'percentile-panel-container');
     this.coordinator.register(new RadarChartModule(), 'radar-chart-container');
     this.coordinator.register(new LeaderboardModule(), 'leaderboard-container');
 
@@ -104,8 +106,14 @@ export default class RadarScoutPlugin {
           </div>
         </aside>
         
-        <!-- Center - Radar -->
-        <div class="v4-center" id="radar-chart-container"></div>
+        <!-- Center Column -->
+        <div class="v4-center-col">
+          <!-- Radar Chart -->
+          <div class="v4-card" id="radar-chart-container" style="flex:1;"></div>
+          
+          <!-- Percentile Panel (under radar) -->
+          <div class="v4-card" id="percentile-panel-container" style="margin-top:8px;"></div>
+        </div>
         
         <!-- Right Sidebar - Leaderboard -->
         <aside class="v4-sidebar-right">
@@ -114,6 +122,26 @@ export default class RadarScoutPlugin {
       </div>
       
       <style>
+        /* Layout 3 colonnes */
+        .v4-layout-wrapper { 
+          display: grid; 
+          grid-template-columns: 220px 1fr 240px; 
+          gap: 12px; 
+          padding: 12px 16px;
+          max-width: 1600px;
+          margin: 0 auto;
+        }
+        .v4-center-col {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+        }
+        .v4-sidebar-left, .v4-sidebar-right {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        
         /* Styles complémentaires pour le leaderboard */
         .v4-leaderboard-empty {
           text-align: center;
@@ -180,6 +208,13 @@ export default class RadarScoutPlugin {
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-5px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 1100px) {
+          .v4-layout-wrapper { grid-template-columns: 200px 1fr 200px; }
+        }
+        @media (max-width: 900px) {
+          .v4-layout-wrapper { grid-template-columns: 1fr; }
+          .v4-sidebar-left, .v4-sidebar-right { order: 2; }
         }
       </style>
     `;
