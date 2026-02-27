@@ -39,8 +39,8 @@ describe('CentilesPanelModule BMAD', () => {
         children.push(child);
         return child;
       },
-      querySelector: (selector: string) => null,
-      querySelectorAll: (selector: string) => [],
+      querySelector: (_selector: string) => null,
+      querySelectorAll: (_selector: string) => [],
       _children: children,
     };
 

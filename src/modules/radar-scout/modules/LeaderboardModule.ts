@@ -5,7 +5,7 @@
  * Pattern : Module BMAD avec injection de dépendances
  */
 
-import { IBaseModule, IModuleContext, Player } from '../../../core/types/bmad';
+import type { BMADModule as IBaseModule, RenderContext as IModuleContext, Player } from '../../../core/types/bmad';
 import { PlayerFilterService, RankedPlayer } from '../services/PlayerFilterService';
 import { GradeService } from '../services/GradeService';
 

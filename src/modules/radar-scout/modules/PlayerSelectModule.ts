@@ -9,7 +9,7 @@
  * module.render(context); // Monte le dropdown
  */
 
-import { IBaseModule, IModuleContext, Player } from '../../../core/types/bmad';
+import type { BMADModule as IBaseModule, RenderContext as IModuleContext, Player } from '../../../core/types/bmad';
 import { PlayerFilterService } from '../services/PlayerFilterService';
 
 export interface PlayerSelectConfig {

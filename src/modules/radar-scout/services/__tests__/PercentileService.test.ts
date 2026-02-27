@@ -110,7 +110,10 @@ const createMockPlayers = (): Player[] => [
     name: 'Fly',
     role: 'MID',
     team: 'KDF',
+    gamesPlayed: 10,
     stats: { kda: 0.5, kp: 30, cspm: 4.5, dpm: 300, visionScore: 40 },
+    _source: 'csv' as const,
+    _importedAt: Date.now(),
   },
 ];
 

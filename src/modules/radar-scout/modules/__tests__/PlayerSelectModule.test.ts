@@ -11,9 +11,9 @@ import { PlayerFilterService } from '../../services/PlayerFilterService';
 
 // Mock players
 const mockPlayers = [
-  { id: 'p1', name: 'Faker', team: 'T1', role: 'MID', stats: { kda: 4.5 } },
-  { id: 'p2', name: 'Chovy', team: 'GEN', role: 'MID', stats: { kda: 5.2 } },
-  { id: 'p3', name: 'Zeus', team: 'T1', role: 'TOP', stats: { kda: 3.8 } },
+  { id: 'p1', name: 'Faker', team: 'T1', role: 'MID', gamesPlayed: 10, stats: { kda: 4.5 }, _source: 'csv' as const, _importedAt: Date.now() },
+  { id: 'p2', name: 'Chovy', team: 'GEN', role: 'MID', gamesPlayed: 10, stats: { kda: 5.2 }, _source: 'csv' as const, _importedAt: Date.now() },
+  { id: 'p3', name: 'Zeus', team: 'T1', role: 'TOP', gamesPlayed: 10, stats: { kda: 3.8 }, _source: 'csv' as const, _importedAt: Date.now() },
 ];
 
 describe('PlayerSelectModule BMAD', () => {

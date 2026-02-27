@@ -26,7 +26,7 @@ export class ExportService {
 
     // Utilise html2canvas ou équivalent
     // Pour l'instant, on crée une implémentation basique
-    const canvas = await this.domToCanvas(element, backgroundColor);
+    const canvas = await this.domToCanvas(_element, backgroundColor);
     
     return new Promise((resolve, reject) => {
       canvas.toBlob(
@@ -105,7 +105,7 @@ export class ExportService {
     backgroundColor: string
   ): Promise<HTMLCanvasElement> {
     // Mock rect - in real app would use element.getBoundingClientRect()
-    const _rect = { width: 400, height: 400 };
+    const rect = { width: 400, height: 400 };
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
     
@@ -122,7 +122,7 @@ export class ExportService {
     ctx.scale(2, 2);
     
     // Simple rendering - dans une vraie app, utiliser html2canvas
-    await this.renderElement(ctx, element, 0, 0);
+    await this.renderElement(ctx, _element, 0, 0);
     
     return canvas;
   }

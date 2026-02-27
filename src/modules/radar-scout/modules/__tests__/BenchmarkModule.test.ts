@@ -43,7 +43,7 @@ describe('BenchmarkModule BMAD', () => {
         children.push(child);
         return child;
       },
-      querySelector: (selector: string) => null,
+      querySelector: (_selector: string) => null,
       _children: children,
     };
 

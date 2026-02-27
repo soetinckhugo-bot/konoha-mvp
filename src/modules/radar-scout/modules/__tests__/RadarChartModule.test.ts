@@ -2,7 +2,7 @@
  * RadarChartModule Tests - Version simplifiée
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { RadarChartModule } from '../RadarChartModule';
 import { PercentileService } from '../../services/PercentileService';
 import { GradeService } from '../../services/GradeService';
