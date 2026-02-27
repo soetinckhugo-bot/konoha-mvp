@@ -1,4 +1,4 @@
-// RadarScoutPlugin.ts - Point d'entrée BMAD v2.0 avec Design System
+// RadarScoutPlugin.ts - Point d'entrée BMAD v2.0
 // @ts-nocheck
 import { ModuleCoordinator } from './core/ModuleCoordinator';
 import { Icons } from './design/Icons';
@@ -8,6 +8,7 @@ import { RoleFilterModule } from './modules/RoleFilterModule';
 import { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 import { RadarChartModule } from './modules/RadarChartModule';
 import { LeaderboardModule } from './modules/LeaderboardModule';
+import { PlayerTiersModule } from './modules/PlayerTiersModule';
 import { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
 import { ExportModule } from './modules/ExportModule';
 
@@ -40,6 +41,7 @@ export default class RadarScoutPlugin {
     this.coordinator.register(new PlayerAnalysisModule(), 'player-analysis-container');
     this.coordinator.register(new RadarChartModule(), 'radar-chart-container');
     this.coordinator.register(new LeaderboardModule(), 'leaderboard-container');
+    this.coordinator.register(new PlayerTiersModule(), 'player-tiers-container');
 
     const players = api.getState('players') || [];
     this.coordinator.setState('players', players);
@@ -77,7 +79,7 @@ export default class RadarScoutPlugin {
           </div>
           
           <!-- Mode Selection -->
-          <div class="v4-card" style="margin-top:8px;">
+          <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.gamepad}</span>
               <span class="v4-header-title">Mode</span>
@@ -86,7 +88,7 @@ export default class RadarScoutPlugin {
           </div>
           
           <!-- Role Filter -->
-          <div class="v4-card" style="margin-top:8px;">
+          <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.target}</span>
               <span class="v4-header-title">Rôle</span>
@@ -95,7 +97,7 @@ export default class RadarScoutPlugin {
           </div>
           
           <!-- Metrics -->
-          <div class="v4-card" style="margin-top:8px;">
+          <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.chart}</span>
               <span class="v4-header-title">Métriques</span>
@@ -104,7 +106,7 @@ export default class RadarScoutPlugin {
           </div>
           
           <!-- Export -->
-          <div class="v4-card" style="margin-top:8px;">
+          <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.save}</span>
               <span class="v4-header-title">Export</span>
@@ -116,30 +118,25 @@ export default class RadarScoutPlugin {
         <!-- Center Column -->
         <div class="v4-center-col">
           <div class="v4-card" id="radar-chart-container" style="flex:1; min-height:400px;"></div>
-          <div id="player-analysis-container" style="margin-top:8px;"></div>
+          <div id="player-analysis-container" style="margin-top:12px;"></div>
         </div>
         
-        <!-- Right Sidebar - Leaderboard -->
+        <!-- Right Sidebar - Leaderboard + Tiers -->
         <aside class="v4-sidebar-right">
-          <div class="v4-card" id="leaderboard-container" style="height:100%;">
-            <div class="v4-card-header compact" id="leaderboard-header">
-              <span class="header-icon">${Icons.trophy}</span>
-              <span class="v4-header-title">Classement</span>
-              <span class="v4-player-count-badge" id="leaderboard-count">0</span>
-            </div>
-            <div class="v4-card-body v4-card-body-scroll" id="leaderboard-list"></div>
-          </div>
+          <div class="v4-card" id="leaderboard-container"></div>
+          <div id="player-tiers-container"></div>
         </aside>
       </div>
       
       <style>
         .v4-layout-wrapper { 
           display: grid; 
-          grid-template-columns: 240px 1fr 260px; 
+          grid-template-columns: 240px 1fr 280px; 
           gap: 16px; 
           padding: 16px;
           max-width: 1600px;
           margin: 0 auto;
+          align-items: start;
         }
         .v4-center-col {
           display: flex;
@@ -149,7 +146,7 @@ export default class RadarScoutPlugin {
         .v4-sidebar-left, .v4-sidebar-right {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 0;
         }
         .v4-card {
           background: var(--v4-bg-card);
@@ -190,44 +187,11 @@ export default class RadarScoutPlugin {
         .v4-card-body {
           padding: 12px;
         }
-        .v4-card-body-scroll {
-          max-height: 400px;
-          overflow-y: auto;
-        }
-        .v4-player-count-badge {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 24px;
-          height: 24px;
-          padding: 0 8px;
-          background: var(--v4-accent);
-          border-radius: 12px;
-          color: #000;
-          font-size: 12px;
-          font-weight: 700;
-        }
         
-        /* Scrollbar */
-        .v4-card-body-scroll::-webkit-scrollbar {
-          width: 6px;
+        @media (max-width: 1200px) {
+          .v4-layout-wrapper { grid-template-columns: 220px 1fr 260px; }
         }
-        .v4-card-body-scroll::-webkit-scrollbar-track {
-          background: var(--v4-bg);
-          border-radius: 3px;
-        }
-        .v4-card-body-scroll::-webkit-scrollbar-thumb {
-          background: var(--v4-border);
-          border-radius: 3px;
-        }
-        .v4-card-body-scroll::-webkit-scrollbar-thumb:hover {
-          background: var(--v4-text-muted);
-        }
-        
-        @media (max-width: 1100px) {
-          .v4-layout-wrapper { grid-template-columns: 200px 1fr 200px; }
-        }
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
           .v4-layout-wrapper { grid-template-columns: 1fr; }
           .v4-sidebar-left, .v4-sidebar-right { order: 2; }
         }

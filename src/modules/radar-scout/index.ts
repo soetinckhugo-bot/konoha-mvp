@@ -32,6 +32,7 @@ export { RoleFilterModule } from './modules/RoleFilterModule';
 export { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 export { RadarChartModule } from './modules/RadarChartModule';
 export { LeaderboardModule } from './modules/LeaderboardModule';
+export { PlayerTiersModule } from './modules/PlayerTiersModule';
 export { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
 export { ExportModule } from './modules/ExportModule';
 
