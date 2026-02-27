@@ -35,6 +35,7 @@ export { LeaderboardModule } from './modules/LeaderboardModule';
 export { PlayerTiersModule } from './modules/PlayerTiersModule';
 export { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
 export { ExportModule } from './modules/ExportModule';
+export { LexiqueModule } from './modules/LexiqueModule';
 
 // Plugin Entry Point
 export { default } from './RadarScoutPlugin';

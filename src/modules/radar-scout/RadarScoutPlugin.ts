@@ -11,6 +11,7 @@ import { LeaderboardModule } from './modules/LeaderboardModule';
 import { PlayerTiersModule } from './modules/PlayerTiersModule';
 import { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
 import { ExportModule } from './modules/ExportModule';
+import { LexiqueModule } from './modules/LexiqueModule';
 
 export default class RadarScoutPlugin {
   id = 'radar-scout';
@@ -42,6 +43,9 @@ export default class RadarScoutPlugin {
     this.coordinator.register(new RadarChartModule(), 'radar-chart-container');
     this.coordinator.register(new LeaderboardModule(), 'leaderboard-container');
     this.coordinator.register(new PlayerTiersModule(), 'player-tiers-container');
+    
+    // Lexique (fab button fixe)
+    this.coordinator.register(new LexiqueModule(), 'lexique-container');
 
     const players = api.getState('players') || [];
     this.coordinator.setState('players', players);
@@ -69,7 +73,6 @@ export default class RadarScoutPlugin {
       <div class="v4-layout v4-layout-wrapper" data-role="ALL">
         <!-- Left Sidebar -->
         <aside class="v4-sidebar-left">
-          <!-- Player Selection -->
           <div class="v4-card">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.user}</span>
@@ -78,7 +81,6 @@ export default class RadarScoutPlugin {
             <div class="v4-card-body" id="player-select-container"></div>
           </div>
           
-          <!-- Mode Selection -->
           <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.gamepad}</span>
@@ -87,7 +89,6 @@ export default class RadarScoutPlugin {
             <div class="v4-card-body" id="mode-selector-container"></div>
           </div>
           
-          <!-- Role Filter -->
           <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.target}</span>
@@ -96,7 +97,6 @@ export default class RadarScoutPlugin {
             <div class="v4-card-body" id="role-filter-container"></div>
           </div>
           
-          <!-- Metrics -->
           <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.chart}</span>
@@ -105,7 +105,6 @@ export default class RadarScoutPlugin {
             <div class="v4-card-body" id="metrics-selector-container"></div>
           </div>
           
-          <!-- Export -->
           <div class="v4-card" style="margin-top:12px;">
             <div class="v4-card-header compact">
               <span class="header-icon">${Icons.save}</span>
@@ -121,12 +120,15 @@ export default class RadarScoutPlugin {
           <div id="player-analysis-container" style="margin-top:12px;"></div>
         </div>
         
-        <!-- Right Sidebar - Leaderboard + Tiers -->
+        <!-- Right Sidebar -->
         <aside class="v4-sidebar-right">
           <div class="v4-card" id="leaderboard-container"></div>
           <div id="player-tiers-container"></div>
         </aside>
       </div>
+      
+      <!-- Lexique (fab button) -->
+      <div id="lexique-container"></div>
       
       <style>
         .v4-layout-wrapper { 
