@@ -1,13 +1,13 @@
-// MetricsSelectorModule.ts - Sélection des métriques par rôle avec dots colorés
+// MetricsSelectorModule.ts - Design exact comme les screenshots
 // @ts-nocheck
 import type { BMADModule } from '../core/types';
-import { getMetricsForRole, ALL_METRICS, MetricConfig } from '../config/metrics.config';
+import { getMetricsForRole, ALL_METRICS } from '../config/metrics.config';
 
 export class MetricsSelectorModule implements BMADModule {
   readonly id = 'metrics-selector';
   private container: HTMLElement | null = null;
   private coordinator: any = null;
-  private currentRole = 'TOP';
+  private currentRole = 'ALL';
   private isUpdating = false;
 
   render(container: HTMLElement, coordinator: any): void {
@@ -15,13 +15,11 @@ export class MetricsSelectorModule implements BMADModule {
     this.coordinator = coordinator;
 
     this.renderMetrics();
-    
-    container.addEventListener('click', (e) => this.handlePillClick(e));
   }
 
   private renderMetrics(): void {
     const state = this.coordinator.getState();
-    const selectedRole = state.selectedPlayer?.role || 'TOP';
+    const selectedRole = state.currentRole || 'ALL';
     this.currentRole = selectedRole;
     
     const roleMetrics = getMetricsForRole(selectedRole);
@@ -30,107 +28,100 @@ export class MetricsSelectorModule implements BMADModule {
     this.container!.innerHTML = `
       <div class="metrics-section">
         <div class="metrics-header">
-          <span class="role-badge">${selectedRole}</span>
-          <span class="metrics-count">${selectedMetrics.length} sélectionnées</span>
+          <span class="metrics-icon">☰</span>
+          <span class="metrics-title">${selectedRole === 'ALL' ? 'ALL METRICS' : `METRICS ${selectedRole}`}</span>
         </div>
-        <p class="metrics-hint">Métriques optimisées pour ce rôle</p>
-        <div class="metrics-pills">
+        <div class="metrics-grid">
           ${roleMetrics.map(m => this.renderMetricPill(m, selectedMetrics.includes(m.id))).join('')}
         </div>
       </div>
       <style>
-        .metrics-section { animation: fadeIn 0.3s ease; }
+        .metrics-section {
+          animation: fadeIn 0.3s ease;
+        }
         .metrics-header {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          margin-bottom: 8px;
+          gap: 10px;
+          margin-bottom: 12px;
         }
-        .role-badge { 
-          padding: 4px 10px; 
-          border-radius: 6px;
-          font-size: 11px; 
-          font-weight: 800; 
-          text-transform: uppercase;
-          background: var(--v4-accent);
-          color: #000;
-        }
-        .metrics-count {
-          font-size: 11px;
+        .metrics-icon {
+          font-size: 16px;
           color: var(--v4-text-muted);
         }
-        .metrics-hint { 
-          font-size: 11px; 
-          color: var(--v4-text-muted); 
-          margin: 0 0 12px 0;
+        .metrics-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--v4-text);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
-        .metrics-pills { 
-          display: flex; 
-          flex-wrap: wrap; 
-          gap: 8px; 
-        }
-        .metric-pill { 
-          display: flex; 
-          align-items: center; 
+        .metrics-grid {
+          display: flex;
+          flex-wrap: wrap;
           gap: 8px;
-          padding: 8px 12px; 
-          background: var(--v4-bg-input); 
-          border: 1px solid var(--v4-border); 
-          border-radius: 20px;
-          color: var(--v4-text); 
-          font-size: 12px; 
-          font-weight: 500;
-          cursor: pointer; 
-          transition: all 0.2s ease; 
         }
-        .metric-pill:hover { 
-          border-color: var(--v4-border-visible); 
+        .metric-pill {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 8px 14px;
+          background: rgba(78, 205, 196, 0.15);
+          border: 1px solid rgba(78, 205, 196, 0.3);
+          border-radius: 20px;
+          color: #4ECDC4;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .metric-pill:hover {
+          background: rgba(78, 205, 196, 0.25);
           transform: translateY(-1px);
         }
-        .metric-pill.active { 
-          background: var(--role-glow, rgba(5, 170, 206, 0.15)); 
-          border-color: var(--v4-accent); 
-          box-shadow: 0 0 12px var(--role-glow, transparent);
+        .metric-pill.inverted {
+          background: rgba(239, 68, 68, 0.15);
+          border-color: rgba(239, 68, 68, 0.3);
+          color: #FF6B6B;
         }
-        .metric-pill.inverted { 
-          border-style: dashed;
+        .metric-pill.inverted:hover {
+          background: rgba(239, 68, 68, 0.25);
+        }
+        .metric-pill.selected {
+          background: var(--v4-accent);
+          border-color: var(--v4-accent);
+          color: #000;
+        }
+        .metric-arrow {
+          font-size: 10px;
           opacity: 0.8;
         }
-        .category-dot { 
-          width: 8px; 
-          height: 8px; 
-          border-radius: 50%; 
-        }
-        .cat-combat { background: #FF6B6B; }
-        .cat-farming { background: #FFD93D; }
-        .cat-vision { background: #4ECDC4; }
-        .cat-early { background: #A855F7; }
-        .cat-economy { background: #22C55E; }
-        @keyframes fadeIn { 
-          from { opacity: 0; transform: translateY(-5px); } 
-          to { opacity: 1; transform: translateY(0); } 
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-5px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       </style>
     `;
+
+    // Click handlers
+    this.container!.querySelectorAll('.metric-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => this.handlePillClick(e));
+    });
   }
 
-  private renderMetricPill(metric: MetricConfig, isSelected: boolean): string {
-    const categoryClasses: Record<string, string> = {
-      combat: 'cat-combat',
-      farming: 'cat-farming',
-      vision: 'cat-vision',
-      early: 'cat-early',
-      economy: 'cat-economy'
-    };
+  private renderMetricPill(metric: any, isSelected: boolean): string {
+    const arrow = metric.inverted ? '↓' : '↑';
+    const invertedClass = metric.inverted ? 'inverted' : '';
+    const selectedClass = isSelected ? 'selected' : '';
 
     return `
       <button 
-        class="metric-pill ${isSelected ? 'active' : ''} ${metric.inverted ? 'inverted' : ''}" 
+        class="metric-pill ${invertedClass} ${selectedClass}" 
         data-metric="${metric.id}"
-        title="${metric.description}${metric.inverted ? ' (inversé: plus bas = mieux)' : ''}"
+        title="${metric.description}"
       >
-        <span class="category-dot ${categoryClasses[metric.category]}"></span>
         ${metric.label}
+        <span class="metric-arrow">${arrow}</span>
       </button>
     `;
   }
@@ -138,20 +129,22 @@ export class MetricsSelectorModule implements BMADModule {
   update(state: any): void {
     if (this.isUpdating) return;
     
-    const playerRole = state.selectedPlayer?.role;
+    const currentRole = state.currentRole || 'ALL';
     
-    if (playerRole && playerRole !== this.currentRole) {
+    if (currentRole !== this.currentRole) {
       this.isUpdating = true;
       
-      const roleMetrics = getMetricsForRole(playerRole);
-      const defaultMetrics = roleMetrics.map(m => m.id);
+      // Mettre à jour avec TOUTES les métriques du nouveau rôle
+      const roleMetrics = getMetricsForRole(currentRole);
+      const allMetricIds = roleMetrics.map(m => m.id);
       
       requestAnimationFrame(() => {
-        this.coordinator.setState('selectedMetrics', defaultMetrics);
+        this.coordinator.setState('selectedMetrics', allMetricIds);
         this.renderMetrics();
         this.isUpdating = false;
       });
     } else {
+      // Juste mettre à jour l'UI
       this.renderMetrics();
     }
   }
@@ -165,7 +158,8 @@ export class MetricsSelectorModule implements BMADModule {
     let selected = [...(state.selectedMetrics || [])];
 
     if (selected.includes(metricId)) {
-      if (selected.length > 3) {
+      // Ne pas désélectionner si c'est la dernière métrique
+      if (selected.length > 1) {
         selected = selected.filter(m => m !== metricId);
       }
     } else {
@@ -173,7 +167,7 @@ export class MetricsSelectorModule implements BMADModule {
     }
 
     this.coordinator.setState('selectedMetrics', selected);
-    pill.classList.toggle('active', selected.includes(metricId));
+    pill.classList.toggle('selected', selected.includes(metricId));
   }
 
   destroy(): void {

@@ -1,4 +1,4 @@
-// RadarChartModule.ts - Radar Chart avec toutes les métriques
+// RadarChartModule.ts - Affiche TOUTES les métriques sélectionnées
 // @ts-nocheck
 import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import type { BMADModule } from '../core/types';
@@ -34,21 +34,80 @@ export class RadarChartModule implements BMADModule {
         <canvas id="radar-chart-canvas"></canvas>
       </div>
       <style>
-        .v4-grade-badge {
-          padding: 4px 12px; border-radius: 4px; font-size: 14px; font-weight: 800;
-          margin-left: 8px;
+        .v4-radar-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px 16px;
+          border-bottom: 1px solid var(--v4-border);
         }
-        .grade-S { background: #3FE0D0; color: #000; }
-        .grade-A { background: #22C55E; color: #000; }
-        .grade-B { background: #FACC15; color: #000; }
-        .grade-C { background: #F59E0B; color: #000; }
-        .grade-D { background: #EF4444; color: #fff; }
+        .v4-player-badge {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .v4-player-name {
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--v4-text);
+        }
+        .v4-role-tag {
+          padding: 4px 10px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          background: var(--v4-accent);
+          color: #000;
+        }
+        .v4-grade-badge {
+          padding: 4px 12px;
+          border-radius: 4px;
+          font-size: 14px;
+          font-weight: 800;
+        }
+        .grade-S { background: #00D9C0; color: #000; }
+        .grade-A { background: #00E676; color: #000; }
+        .grade-B { background: #FFD93D; color: #000; }
+        .grade-C { background: #FF9F43; color: #000; }
+        .grade-D { background: #FF6B6B; color: #fff; }
+        .v4-view-toggle {
+          display: flex;
+          gap: 8px;
+        }
+        .v4-toggle-btn {
+          padding: 6px 14px;
+          background: var(--v4-bg-input);
+          border: 1px solid var(--v4-border);
+          border-radius: 6px;
+          color: var(--v4-text-muted);
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .v4-toggle-btn:hover {
+          border-color: var(--v4-border-visible);
+          color: var(--v4-text);
+        }
+        .v4-toggle-btn.active {
+          background: var(--v4-accent);
+          border-color: var(--v4-accent);
+          color: #000;
+        }
+        .v4-radar-container {
+          position: relative;
+          height: 400px;
+          padding: 16px;
+        }
+        #radar-chart-canvas {
+          max-height: 100%;
+        }
       </style>
     `;
 
     this.canvas = container.querySelector('#radar-chart-canvas') as HTMLCanvasElement;
     
-    // Event listeners
     container.querySelector('#radar-toggle-values')?.addEventListener('click', () => {
       this.showPercentile = false;
       container.querySelector('#radar-toggle-values')?.classList.add('active');
@@ -81,7 +140,6 @@ export class RadarChartModule implements BMADModule {
       if (nameEl) nameEl.textContent = player.name;
       if (roleEl) {
         roleEl.textContent = player.role;
-        roleEl.className = `v4-role-tag role-${player.role.toLowerCase()}`;
         roleEl.style.display = 'inline-block';
       }
     } else {
@@ -102,18 +160,26 @@ export class RadarChartModule implements BMADModule {
     const stats = player.stats || {};
     const metrics = state.selectedMetrics || [];
     
-    // 🔥 PAS DE LIMITE - Toutes les métriques sélectionnées sont affichées
+    // 🔥 Afficher TOUTES les métriques sélectionnées (pas de limite)
     const labels = metrics.map(m => {
       const config = ALL_METRICS.find(metric => metric.id === m);
-      return config?.label || m.toUpperCase();
+      return config?.label || m;
     });
     
     const data = metrics.map(m => {
-      const val = stats[m] || 0;
+      const val = stats[m] ?? 0;
       return this.showPercentile ? normalizeMetric(val, m) : val;
     });
 
-    const accentColor = this.getRoleColor(player.role);
+    // Couleur selon le rôle
+    const roleColors: Record<string, string> = {
+      TOP: '#FF6B6B',
+      JUNGLE: '#00E676', 
+      MID: '#00D4FF',
+      ADC: '#FFD93D',
+      SUPPORT: '#E040FB'
+    };
+    const color = roleColors[player.role] || '#4ECDC4';
 
     this.chart = new Chart(this.canvas, {
       type: 'radar',
@@ -122,13 +188,13 @@ export class RadarChartModule implements BMADModule {
         datasets: [{
           label: player.name,
           data,
-          backgroundColor: accentColor + '33',
-          borderColor: accentColor,
+          backgroundColor: color + '33',
+          borderColor: color,
           borderWidth: 2,
-          pointBackgroundColor: accentColor,
+          pointBackgroundColor: color,
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: accentColor
+          pointHoverBorderColor: color
         }]
       },
       options: {
@@ -159,9 +225,8 @@ export class RadarChartModule implements BMADModule {
             callbacks: {
               label: (ctx: any) => {
                 const metricId = metrics[ctx.dataIndex];
-                const rawValue = stats[metricId] || 0;
+                const rawValue = stats[metricId] ?? 0;
                 const normalized = normalizeMetric(rawValue, metricId);
-                const config = ALL_METRICS.find(m => m.id === metricId);
                 
                 if (this.showPercentile) {
                   return `${ctx.label}: ${normalized.toFixed(0)}% (raw: ${formatMetricValue(rawValue, metricId)})`;
@@ -173,14 +238,6 @@ export class RadarChartModule implements BMADModule {
         }
       }
     });
-  }
-
-  private getRoleColor(role: string): string {
-    const colors: Record<string, string> = {
-      TOP: '#FF4444', JUNGLE: '#00E676', MID: '#00D4FF',
-      ADC: '#FFD700', SUPPORT: '#E040FB'
-    };
-    return colors[role] || '#05AACE';
   }
 
   destroy(): void {

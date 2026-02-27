@@ -11,11 +11,8 @@ export { Icons, injectIcon, createIcon } from './design/Icons';
 // Config
 export { 
   ALL_METRICS, 
-  ROLE_METRICS, 
-  ROLE_WEIGHTS, 
-  METRIC_RANGES,
-  getMetricsForRole, 
-  getWeightsForRole,
+  ROLE_METRICS,
+  getMetricsForRole,
   normalizeMetric,
   formatMetricValue
 } from './config/metrics.config';
