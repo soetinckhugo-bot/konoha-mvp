@@ -5,6 +5,9 @@
 export { ModuleCoordinator } from './core/ModuleCoordinator';
 export type { BMADModule, Player } from './core/types';
 
+// Design System
+export { Icons, injectIcon, createIcon } from './design/Icons';
+
 // Config
 export { 
   ALL_METRICS, 

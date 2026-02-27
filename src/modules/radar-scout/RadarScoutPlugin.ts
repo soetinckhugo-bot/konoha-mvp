@@ -1,6 +1,7 @@
-// RadarScoutPlugin.ts - Point d'entrée BMAD v2.0
+// RadarScoutPlugin.ts - Point d'entrée BMAD v2.0 avec Design System
 // @ts-nocheck
 import { ModuleCoordinator } from './core/ModuleCoordinator';
+import { Icons } from './design/Icons';
 import { PlayerSelectModule } from './modules/PlayerSelectModule';
 import { ModeSelectorModule } from './modules/ModeSelectorModule';
 import { RoleFilterModule } from './modules/RoleFilterModule';
@@ -27,10 +28,7 @@ export default class RadarScoutPlugin {
       return;
     }
 
-    // Initialiser le coordinator
     this.coordinator = new ModuleCoordinator(api);
-
-    // Rendre le layout V4
     this.renderLayout(container);
 
     // Enregistrer les modules BMAD
@@ -43,7 +41,6 @@ export default class RadarScoutPlugin {
     this.coordinator.register(new RadarChartModule(), 'radar-chart-container');
     this.coordinator.register(new LeaderboardModule(), 'leaderboard-container');
 
-    // Charger les données initiales
     const players = api.getState('players') || [];
     this.coordinator.setState('players', players);
     
@@ -51,7 +48,6 @@ export default class RadarScoutPlugin {
       this.coordinator.setState('selectedPlayer', players[0]);
     }
 
-    // S'abonner aux changements de players
     api.subscribe?.('players', (players: any[]) => {
       this.coordinator?.setState('players', players);
       if (players.length > 0 && !this.coordinator?.getState().selectedPlayer) {
@@ -71,10 +67,10 @@ export default class RadarScoutPlugin {
       <div class="v4-layout v4-layout-wrapper" data-role="ALL">
         <!-- Left Sidebar -->
         <aside class="v4-sidebar-left">
-          <!-- Player Selection Card -->
+          <!-- Player Selection -->
           <div class="v4-card">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">👤</span>
+              <span class="header-icon">${Icons.user}</span>
               <span class="v4-header-title">Sélection Joueur</span>
             </div>
             <div class="v4-card-body" id="player-select-container"></div>
@@ -83,7 +79,7 @@ export default class RadarScoutPlugin {
           <!-- Mode Selection -->
           <div class="v4-card" style="margin-top:8px;">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">🎮</span>
+              <span class="header-icon">${Icons.gamepad}</span>
               <span class="v4-header-title">Mode</span>
             </div>
             <div class="v4-card-body" id="mode-selector-container"></div>
@@ -92,7 +88,7 @@ export default class RadarScoutPlugin {
           <!-- Role Filter -->
           <div class="v4-card" style="margin-top:8px;">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">🎯</span>
+              <span class="header-icon">${Icons.target}</span>
               <span class="v4-header-title">Rôle</span>
             </div>
             <div class="v4-card-body" id="role-filter-container"></div>
@@ -101,7 +97,7 @@ export default class RadarScoutPlugin {
           <!-- Metrics -->
           <div class="v4-card" style="margin-top:8px;">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">📈</span>
+              <span class="header-icon">${Icons.chart}</span>
               <span class="v4-header-title">Métriques</span>
             </div>
             <div class="v4-card-body" id="metrics-selector-container"></div>
@@ -110,7 +106,7 @@ export default class RadarScoutPlugin {
           <!-- Export -->
           <div class="v4-card" style="margin-top:8px;">
             <div class="v4-card-header compact">
-              <span class="v4-header-icon">💾</span>
+              <span class="header-icon">${Icons.save}</span>
               <span class="v4-header-title">Export</span>
             </div>
             <div class="v4-card-body" id="export-container"></div>
@@ -119,26 +115,29 @@ export default class RadarScoutPlugin {
         
         <!-- Center Column -->
         <div class="v4-center-col">
-          <!-- Radar Chart -->
           <div class="v4-card" id="radar-chart-container" style="flex:1; min-height:400px;"></div>
-          
-          <!-- Player Analysis (under radar) -->
           <div id="player-analysis-container" style="margin-top:8px;"></div>
         </div>
         
         <!-- Right Sidebar - Leaderboard -->
         <aside class="v4-sidebar-right">
-          <div class="v4-card" id="leaderboard-container" style="height:100%;"></div>
+          <div class="v4-card" id="leaderboard-container" style="height:100%;">
+            <div class="v4-card-header compact" id="leaderboard-header">
+              <span class="header-icon">${Icons.trophy}</span>
+              <span class="v4-header-title">Classement</span>
+              <span class="v4-player-count-badge" id="leaderboard-count">0</span>
+            </div>
+            <div class="v4-card-body v4-card-body-scroll" id="leaderboard-list"></div>
+          </div>
         </aside>
       </div>
       
       <style>
-        /* Layout 3 colonnes */
         .v4-layout-wrapper { 
           display: grid; 
-          grid-template-columns: 220px 1fr 240px; 
-          gap: 12px; 
-          padding: 12px 16px;
+          grid-template-columns: 240px 1fr 260px; 
+          gap: 16px; 
+          padding: 16px;
           max-width: 1600px;
           margin: 0 auto;
         }
@@ -150,76 +149,81 @@ export default class RadarScoutPlugin {
         .v4-sidebar-left, .v4-sidebar-right {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 12px;
         }
-        
-        /* Styles complémentaires pour le leaderboard */
-        .v4-leaderboard-empty {
-          text-align: center;
-          padding: 40px 20px;
-          color: var(--v4-text-muted);
-          font-size: 13px;
+        .v4-card {
+          background: var(--v4-bg-card);
+          border: 1px solid var(--v4-border);
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: var(--shadow-card);
+          transition: all 0.3s ease;
         }
-        .v4-leaderboard-item {
+        .v4-card:hover {
+          border-color: var(--v4-border-visible);
+          box-shadow: var(--shadow-card), 0 0 30px var(--role-glow, transparent);
+        }
+        .v4-card-header {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 10px;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.2s ease;
+          padding: 14px 16px;
+          background: rgba(255, 255, 255, 0.02);
+          border-bottom: 1px solid var(--v4-border);
         }
-        .v4-leaderboard-item:hover {
-          background: var(--v4-bg-hover);
+        .v4-card-header.compact {
+          padding: 12px;
         }
-        .v4-leaderboard-item.active {
-          background: var(--role-glow, rgba(5, 170, 206, 0.15));
-          border: 1px solid var(--v4-accent);
+        .header-icon {
+          width: 18px;
+          height: 18px;
+          color: var(--v4-accent);
         }
-        .v4-rank {
-          width: 24px;
-          height: 24px;
+        .v4-header-title {
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--v4-text);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          flex: 1;
+        }
+        .v4-card-body {
+          padding: 12px;
+        }
+        .v4-card-body-scroll {
+          max-height: 400px;
+          overflow-y: auto;
+        }
+        .v4-player-count-badge {
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 4px;
+          min-width: 24px;
+          height: 24px;
+          padding: 0 8px;
+          background: var(--v4-accent);
+          border-radius: 12px;
+          color: #000;
           font-size: 12px;
           font-weight: 700;
         }
-        .v4-rank.top3 {
-          background: var(--v4-accent);
-          color: #000;
+        
+        /* Scrollbar */
+        .v4-card-body-scroll::-webkit-scrollbar {
+          width: 6px;
         }
-        .v4-rank.other {
-          background: var(--v4-bg-input);
-          color: var(--v4-text-muted);
+        .v4-card-body-scroll::-webkit-scrollbar-track {
+          background: var(--v4-bg);
+          border-radius: 3px;
         }
-        .v4-leaderboard-info {
-          flex: 1;
-          min-width: 0;
+        .v4-card-body-scroll::-webkit-scrollbar-thumb {
+          background: var(--v4-border);
+          border-radius: 3px;
         }
-        .v4-leaderboard-name {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--v4-text);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        .v4-card-body-scroll::-webkit-scrollbar-thumb:hover {
+          background: var(--v4-text-muted);
         }
-        .v4-leaderboard-team {
-          font-size: 11px;
-          color: var(--v4-text-muted);
-        }
-        .v4-leaderboard-score {
-          font-size: 14px;
-          font-weight: 700;
-          color: var(--v4-accent);
-        }
-        .player-info { animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-5px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        
         @media (max-width: 1100px) {
           .v4-layout-wrapper { grid-template-columns: 200px 1fr 200px; }
         }
