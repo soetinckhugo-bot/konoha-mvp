@@ -29,7 +29,7 @@ export { RoleFilterModule } from './modules/RoleFilterModule';
 export { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 export { RadarChartModule } from './modules/RadarChartModule';
 export { LeaderboardModule } from './modules/LeaderboardModule';
-export { PercentilePanelModule } from './modules/PercentilePanelModule';
+export { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
 
 // Plugin Entry Point
 export { default } from './RadarScoutPlugin';

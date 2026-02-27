@@ -7,7 +7,7 @@ import { RoleFilterModule } from './modules/RoleFilterModule';
 import { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 import { RadarChartModule } from './modules/RadarChartModule';
 import { LeaderboardModule } from './modules/LeaderboardModule';
-import { PercentilePanelModule } from './modules/PercentilePanelModule';
+import { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
 
 export default class RadarScoutPlugin {
   id = 'radar-scout';
@@ -29,7 +29,7 @@ export default class RadarScoutPlugin {
     // Initialiser le coordinator
     this.coordinator = new ModuleCoordinator(api);
 
-    // Rendre le layout V4 avec le nouveau panel de centiles
+    // Rendre le layout V4
     this.renderLayout(container);
 
     // Enregistrer les modules BMAD
@@ -37,7 +37,7 @@ export default class RadarScoutPlugin {
     this.coordinator.register(new ModeSelectorModule(), 'mode-selector-container');
     this.coordinator.register(new RoleFilterModule(), 'role-filter-container');
     this.coordinator.register(new MetricsSelectorModule(), 'metrics-selector-container');
-    this.coordinator.register(new PercentilePanelModule(), 'percentile-panel-container');
+    this.coordinator.register(new PlayerAnalysisModule(), 'player-analysis-container');
     this.coordinator.register(new RadarChartModule(), 'radar-chart-container');
     this.coordinator.register(new LeaderboardModule(), 'leaderboard-container');
 
@@ -109,10 +109,10 @@ export default class RadarScoutPlugin {
         <!-- Center Column -->
         <div class="v4-center-col">
           <!-- Radar Chart -->
-          <div class="v4-card" id="radar-chart-container" style="flex:1;"></div>
+          <div class="v4-card" id="radar-chart-container" style="flex:1; min-height:400px;"></div>
           
-          <!-- Percentile Panel (under radar) -->
-          <div class="v4-card" id="percentile-panel-container" style="margin-top:8px;"></div>
+          <!-- Player Analysis (under radar) -->
+          <div id="player-analysis-container" style="margin-top:8px;"></div>
         </div>
         
         <!-- Right Sidebar - Leaderboard -->
