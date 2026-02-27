@@ -1,4 +1,4 @@
-// ModeSelectorModule.ts - BMAD Pattern
+// ModeSelectorModule.ts - Seulement Solo, Compare, Benchmark
 // @ts-nocheck
 import type { BMADModule } from '../core/types';
 

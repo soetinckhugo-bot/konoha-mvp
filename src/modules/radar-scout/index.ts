@@ -30,6 +30,7 @@ export { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 export { RadarChartModule } from './modules/RadarChartModule';
 export { LeaderboardModule } from './modules/LeaderboardModule';
 export { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
+export { ExportModule } from './modules/ExportModule';
 
 // Plugin Entry Point
 export { default } from './RadarScoutPlugin';

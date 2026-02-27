@@ -8,6 +8,7 @@ import { MetricsSelectorModule } from './modules/MetricsSelectorModule';
 import { RadarChartModule } from './modules/RadarChartModule';
 import { LeaderboardModule } from './modules/LeaderboardModule';
 import { PlayerAnalysisModule } from './modules/PlayerAnalysisModule';
+import { ExportModule } from './modules/ExportModule';
 
 export default class RadarScoutPlugin {
   id = 'radar-scout';
@@ -37,6 +38,7 @@ export default class RadarScoutPlugin {
     this.coordinator.register(new ModeSelectorModule(), 'mode-selector-container');
     this.coordinator.register(new RoleFilterModule(), 'role-filter-container');
     this.coordinator.register(new MetricsSelectorModule(), 'metrics-selector-container');
+    this.coordinator.register(new ExportModule(), 'export-container');
     this.coordinator.register(new PlayerAnalysisModule(), 'player-analysis-container');
     this.coordinator.register(new RadarChartModule(), 'radar-chart-container');
     this.coordinator.register(new LeaderboardModule(), 'leaderboard-container');
@@ -103,6 +105,15 @@ export default class RadarScoutPlugin {
               <span class="v4-header-title">Métriques</span>
             </div>
             <div class="v4-card-body" id="metrics-selector-container"></div>
+          </div>
+          
+          <!-- Export -->
+          <div class="v4-card" style="margin-top:8px;">
+            <div class="v4-card-header compact">
+              <span class="v4-header-icon">💾</span>
+              <span class="v4-header-title">Export</span>
+            </div>
+            <div class="v4-card-body" id="export-container"></div>
           </div>
         </aside>
         
