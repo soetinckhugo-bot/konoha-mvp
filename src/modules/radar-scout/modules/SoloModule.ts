@@ -14,7 +14,7 @@ import type { BMADModule, RenderContext } from '../../../core/types/bmad';
 import type { CoreAPI } from '../../../core/types';
 import Store from '../../../core/Store';
 import { FeatureFlagService } from '../../../core/services/FeatureFlagService';
-import { RadarChart } from '../components/RadarChart';
+// RadarChart import removed - using RadarChartModule instead
 import { RadarDataService } from '../services/RadarDataService';
 import { PercentileService } from '../services/PercentileService';
 import { GradeService } from '../services/GradeService';

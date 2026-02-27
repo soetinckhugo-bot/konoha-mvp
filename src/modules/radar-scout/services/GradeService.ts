@@ -38,16 +38,6 @@ const STATS_GRADES: Record<string, GradeConfig> = {
 };
 
 /**
- * Seuils pour les grades de joueurs (plus permissifs)
- */
-const PLAYER_GRADES: Record<string, GradeConfig> = {
-  S: { min: 75, max: 100, label: 'Elite', color: '#00D9C0', description: 'Elite' },
-  A: { min: 60, max: 74, label: 'Excellent', color: '#22C55E', description: 'Excellent' },
-  B: { min: 50, max: 59, label: 'Good', color: '#FACC15', description: 'Bon' },
-  C: { min: 0, max: 49, label: 'Average', color: '#F59E0B', description: 'Moyen' },
-};
-
-/**
  * Service de calcul des grades
  * Uniformise la logique entre GradeCalculator et V4
  */

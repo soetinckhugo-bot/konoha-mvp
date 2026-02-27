@@ -7,6 +7,7 @@
  */
 
 import type { Player } from './index';
+export type { Player };
 
 // ============================================================================
 // Core Module Interface

@@ -8,10 +8,10 @@ import { GradeService } from '../GradeService';
 import type { Player } from '../../../../core/types';
 
 const createMockPlayers = (): Player[] => [
-  { id: 'p1', name: 'Elite', role: 'MID', team: 'T1', stats: { kda: 6.0, kp: 80 } },
-  { id: 'p2', name: 'Good', role: 'MID', team: 'GEN', stats: { kda: 4.0, kp: 70 } },
-  { id: 'p3', name: 'Average', role: 'MID', team: 'DK', stats: { kda: 2.5, kp: 55 } },
-  { id: 'p4', name: 'Weak', role: 'MID', team: 'G2', stats: { kda: 1.0, kp: 40 } },
+  { id: 'p1', name: 'Elite', role: 'MID', team: 'T1', gamesPlayed: 10, stats: { kda: 6.0, kp: 80 }, _source: 'csv', _importedAt: Date.now() },
+  { id: 'p2', name: 'Good', role: 'MID', team: 'GEN', gamesPlayed: 10, stats: { kda: 4.0, kp: 70 }, _source: 'csv', _importedAt: Date.now() },
+  { id: 'p3', name: 'Average', role: 'MID', team: 'DK', gamesPlayed: 10, stats: { kda: 2.5, kp: 55 }, _source: 'csv', _importedAt: Date.now() },
+  { id: 'p4', name: 'Weak', role: 'MID', team: 'G2', gamesPlayed: 10, stats: { kda: 1.0, kp: 40 }, _source: 'csv', _importedAt: Date.now() },
 ];
 
 describe('GradeService', () => {

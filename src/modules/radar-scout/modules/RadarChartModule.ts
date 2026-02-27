@@ -4,7 +4,7 @@
  * Responsabilité : Afficher le radar Chart.js des statistiques
  */
 
-import { IBaseModule, IModuleContext, Player } from '../../../core/types/bmad';
+import type { BMADModule as IBaseModule, RenderContext as IModuleContext, Player } from '../../../core/types/bmad';
 import { PercentileService } from '../services/PercentileService';
 import { GradeService } from '../services/GradeService';
 import { ExportService } from '../services/ExportService';

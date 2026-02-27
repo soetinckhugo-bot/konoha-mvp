@@ -8,11 +8,11 @@ import { PlayerFilterService } from '../PlayerFilterService';
 import type { Player } from '../../../../core/types';
 
 const createMockPlayers = (): Player[] => [
-  { id: 'p1', name: 'Faker', role: 'MID', team: 'T1', stats: { kda: 5.0, kp: 70 } },
-  { id: 'p2', name: 'Zeus', role: 'TOP', team: 'T1', stats: { kda: 4.0, kp: 60 } },
-  { id: 'p3', name: 'Chovy', role: 'MID', team: 'GEN', stats: { kda: 4.5, kp: 65 } },
-  { id: 'p4', name: 'Peanut', role: 'JUNGLE', team: 'GEN', stats: { kda: 3.5, kp: 75 } },
-  { id: 'p5', name: 'Gumayusi', role: 'ADC', team: 'T1', stats: { kda: 3.0, kp: 55 } },
+  { id: 'p1', name: 'Faker', role: 'MID', team: 'T1', gamesPlayed: 10, stats: { kda: 5.0, kp: 70 }, _source: 'csv' as const, _importedAt: Date.now() },
+  { id: 'p2', name: 'Zeus', role: 'TOP', team: 'T1', gamesPlayed: 10, stats: { kda: 4.0, kp: 60 }, _source: 'csv' as const, _importedAt: Date.now() },
+  { id: 'p3', name: 'Chovy', role: 'MID', team: 'GEN', gamesPlayed: 10, stats: { kda: 4.5, kp: 65 }, _source: 'csv' as const, _importedAt: Date.now() },
+  { id: 'p4', name: 'Peanut', role: 'JUNGLE', team: 'GEN', gamesPlayed: 10, stats: { kda: 3.5, kp: 75 }, _source: 'csv' as const, _importedAt: Date.now() },
+  { id: 'p5', name: 'Gumayusi', role: 'ADC', team: 'T1', gamesPlayed: 10, stats: { kda: 3.0, kp: 55 }, _source: 'csv' as const, _importedAt: Date.now() },
 ];
 
 describe('PlayerFilterService', () => {

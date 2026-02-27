@@ -55,6 +55,7 @@ interface MockElement {
   removeEventListener(event: string, handler: Function): void;
   dispatchEvent(event: Event): boolean;
   click(): void;
+  updateInnerHTML(): void;
 }
 
 function createMockElement(tag: string): MockElement {
